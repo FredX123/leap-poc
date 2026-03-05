@@ -1,7 +1,5 @@
 package com.leappoc.app.config;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -10,23 +8,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Central security configuration for the BFF.
@@ -80,8 +77,10 @@ public class SecurityConfig {
 
             // --- OAuth 2.0 Login (OIDC) ---
             .oauth2Login(oauth -> oauth
-                // After successful login, redirect to the Angular frontend
                 .defaultSuccessUrl(frontendUrl + "/", true)
+                .userInfoEndpoint(userInfo -> userInfo
+                    .oidcUserService(oidcUserService())   // custom service maps roles
+                )
             )
 
             // --- Logout: redirect to Entra end_session_endpoint for federated logout ---
@@ -104,46 +103,38 @@ public class SecurityConfig {
     }
 
     /**
-     * Maps Entra "roles" claim to Spring ROLE_* authorities.
+     * Configures a custom {@link OAuth2UserService} to process OpenID Connect (OIDC) user information
+     * and map claims such as roles into Spring Security's granted authorities.
+     * The method establishes a default OIDC delegate and processes roles from the "roles" claim,
+     * mapping them into authorities prefixed with "ROLE_". Additionally, it creates a new
+     * {@link DefaultOidcUser} instance with these mapped authorities alongside the original token
+     * and user info.
+     *
+     * @return a customized {@link OAuth2UserService} for handling OIDC user processing
      */
     @Bean
-    public GrantedAuthoritiesMapper grantedAuthoritiesMapper() {
-        return authorities -> {
-            Set<GrantedAuthority> mapped = new HashSet<>();
-            for (GrantedAuthority authority : authorities) {
-                mapped.add(authority);                           // keep original authority
+    public OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+        OidcUserService delegate = new OidcUserService();
 
-                Map<String, Object> attributes = Collections.emptyMap();
-                if (authority instanceof OidcUserAuthority oidc) {
-                    attributes = oidc.getIdToken().getClaims();
-                } else if (authority instanceof OAuth2UserAuthority oauth) {
-                    attributes = oauth.getAttributes();
-                }
+        return (OidcUserRequest userRequest) -> {
+            OidcUser oidcUser = delegate.loadUser(userRequest);
 
-                // --- DEBUG: log all claims so we can verify what Entra sends ---
-                if (!attributes.isEmpty()) {
-                    log.debug("===== ID Token Claims =====");
-                    attributes.forEach((k, v) -> log.debug("  claim [{}] = {}", k, v));
-                    log.debug("===========================");
-                }
+            // Read Entra app roles from claim "roles"
+            List<String> roles = oidcUser.getClaimAsStringList("roles");
+            if (roles == null) roles = List.of();
 
-                // Entra puts roles in the "roles" claim (a JSON array of strings)
-                Object rolesObj = attributes.get("roles");
-                if (rolesObj instanceof Collection<?> roles) {
-                    log.debug("Found roles claim with {} entries: {}", roles.size(), roles);
-                    for (Object role : roles) {
-                        mapped.add(new SimpleGrantedAuthority("ROLE_" + role.toString()));
-                    }
-                } else {
-                    log.warn("No 'roles' claim found in token. Available claims: {}", attributes.keySet());
-                }
+            Set<GrantedAuthority> mappedAuthorities = new HashSet<>(oidcUser.getAuthorities());
+
+            // Convert APP_ADMIN -> ROLE_APP_ADMIN
+            for (String role : roles) {
+                mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role));
             }
-            log.debug("Final mapped authorities: {}", mapped);
-            return mapped;
+
+            // Return a new OidcUser with the mapped authorities
+            return new DefaultOidcUser(mappedAuthorities,
+                    oidcUser.getIdToken(), oidcUser.getUserInfo(), "preferred_username");
         };
     }
-
-    // --------------- helpers ---------------
 
     /**
      * OIDC-aware logout: redirects to Entra's end_session_endpoint so the
