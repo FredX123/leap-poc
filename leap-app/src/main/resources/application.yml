@@ -1,0 +1,27 @@
+server:
+  port: 18080
+
+app:
+  frontend-url: http://localhost:4200
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          entra:
+            client-id: ${ENTRA_CLIENT_ID}
+            client-secret: ${ENTRA_CLIENT_SECRET}
+            scope: openid, profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-name: Microsoft Entra ID
+        provider:
+          entra:
+            issuer-uri: https://login.microsoftonline.com/${ENTRA_TENANT_ID}/v2.0
+            # Spring auto-discovers authorize, token, jwks, and userinfo endpoints from issuer-uri
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.leappoc: DEBUG

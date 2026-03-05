@@ -1,0 +1,25 @@
+# Maven
+target/
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+
+# Angular
+leap-frontend/node_modules/
+leap-frontend/dist/
+leap-frontend/.angular/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.env

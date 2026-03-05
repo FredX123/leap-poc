@@ -1,0 +1,22 @@
+{
+  "/api": {
+    "target": "http://localhost:18080",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/oauth2": {
+    "target": "http://localhost:18080",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/login": {
+    "target": "http://localhost:18080",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/logout": {
+    "target": "http://localhost:18080",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
