@@ -16,5 +16,34 @@ export const routes: Routes = [
       import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
     canActivate: [roleGuard('APP_READ', 'APP_WRITE')]
   },
+  {
+    path: 'budget-report',
+    loadComponent: () =>
+      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
+    canActivate: [roleGuard('APP_READ', 'APP_WRITE')]
+  },
+  {
+    path: 'admin-only',
+    loadComponent: () =>
+      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
+    canActivate: [roleGuard('APP_ADMIN')]
+  },
+  {
+    path: 'write-only',
+    loadComponent: () =>
+      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
+    canActivate: [roleGuard('APP_WRITE')]
+  },
+  {
+    path: 'read-only',
+    loadComponent: () =>
+      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
+    canActivate: [roleGuard('APP_READ')]
+  },
+  {
+    path: 'access-denied',
+    loadComponent: () =>
+      import('./pages/access-denied/access-denied.component').then(m => m.AccessDeniedComponent)
+  },
   { path: '**', redirectTo: '' }
 ];

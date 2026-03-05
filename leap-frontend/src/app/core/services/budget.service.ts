@@ -17,4 +17,8 @@ export class BudgetService {
   update(id: number, data: Partial<BudgetRow>): Observable<BudgetRow> {
     return this.http.put<BudgetRow>(`${this.baseUrl}/${id}`, data);
   }
+
+  testEndpoint(url: string): Observable<void> {
+    return this.http.get<void>(url);
+  }
 }

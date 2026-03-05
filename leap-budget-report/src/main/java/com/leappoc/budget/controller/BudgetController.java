@@ -41,4 +41,22 @@ public class BudgetController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping( "/admin-only")
+    @PreAuthorize("hasRole('" + RoleConstants.APP_ADMIN + "')")
+    public void adminOnly() {
+        // Do nothing. for authorization testing only.
+    }
+
+    @GetMapping( "/write-only")
+    @PreAuthorize("hasRole('" + RoleConstants.APP_WRITE + "')")
+    public void writeOnly() {
+        // Do nothing. for authorization testing only.
+    }
+
+    @GetMapping( "/read-only")
+    @PreAuthorize("hasRole('" + RoleConstants.APP_READ + "')")
+    public void readOnly() {
+        // Do nothing. for authorization testing only.
+    }
 }

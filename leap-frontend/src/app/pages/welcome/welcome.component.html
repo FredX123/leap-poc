@@ -1,0 +1,81 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 text-center">
+      <h1 class="display-4 fw-bold mb-3">
+        <i class="bi bi-shield-lock text-primary me-2"></i>LEAP POC
+      </h1>
+      <p class="lead text-muted mb-4">
+        Secure BFF Pattern — Spring Boot + Angular + Microsoft Entra ID
+      </p>
+      <hr class="my-4" />
+
+      <!-- Not logged in -->
+      <div *ngIf="!auth.isAuthenticated">
+        <p class="mb-4">
+          This proof-of-concept demonstrates single sign-on via Microsoft Entra
+          ID with MFA, role-based access control, and the Backend-for-Frontend
+          (BFF) session pattern — zero tokens stored in the browser.
+        </p>
+        <button class="btn btn-primary btn-lg" (click)="auth.login()">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Sign in with Microsoft
+        </button>
+      </div>
+
+      <!-- Logged in -->
+      <div *ngIf="auth.isAuthenticated">
+        <div class="alert alert-success text-start" role="alert">
+          <h5 class="alert-heading">
+            <i class="bi bi-check-circle me-1"></i>
+            Welcome, {{ auth.user?.displayName || auth.user?.email }}!
+          </h5>
+          <p class="mb-1">You are authenticated. Your assigned roles:</p>
+          <ul class="mb-0">
+            <li *ngFor="let role of auth.user?.roles">{{ role }}</li>
+          </ul>
+        </div>
+        <p class="text-muted">
+          Use the navigation bar above to access your authorized pages.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="message"
+       class="alert alert-{{ message.type }} alert-dismissible fade show"
+       [class.alert-success]="message.type === 'success'"
+       [class.alert-danger]="message.type === 'danger'"
+       role="alert">
+    {{ message.text }}
+    <button type="button" class="btn-close" (click)="message = null"></button>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      <h5 class="mb-0">Authentication & Authorization API Tests</h5>
+    </div>
+
+    <div class="card-body">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <a href="#" class="link-primary"
+             (click)="testAuth('APP_ADMIN'); $event.preventDefault()">
+            admin-only API – Admin Role Required
+          </a>
+        </li>
+        <li class="list-group-item">
+          <a href="#" class="link-primary"
+             (click)="testAuth('APP_WRITE'); $event.preventDefault()">
+            write-only API – Write Role Required
+          </a>
+        </li>
+        <li class="list-group-item">
+          <a href="#" class="link-primary"
+             (click)="testAuth('APP_READ'); $event.preventDefault()">
+            read-only API – Read Role Required
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>

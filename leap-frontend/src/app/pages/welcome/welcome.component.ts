@@ -1,54 +1,60 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BudgetService } from '../../core/services/budget.service';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-welcome',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-8 text-center">
-          <h1 class="display-4 fw-bold mb-3">
-            <i class="bi bi-shield-lock text-primary me-2"></i>LEAP POC
-          </h1>
-          <p class="lead text-muted mb-4">
-            Secure BFF Pattern — Spring Boot + Angular + Microsoft Entra ID
-          </p>
-          <hr class="my-4">
+  templateUrl: './welcome.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 
-          <!-- Not logged in -->
-          <div *ngIf="!auth.isAuthenticated">
-            <p class="mb-4">
-              This proof-of-concept demonstrates single sign-on via Microsoft Entra ID
-              with MFA, role-based access control, and the Backend-for-Frontend (BFF) session
-              pattern — zero tokens stored in the browser.
-            </p>
-            <button class="btn btn-primary btn-lg" (click)="auth.login()">
-              <i class="bi bi-box-arrow-in-right me-2"></i>Sign in with Microsoft
-            </button>
-          </div>
-
-          <!-- Logged in -->
-          <div *ngIf="auth.isAuthenticated">
-            <div class="alert alert-success text-start" role="alert">
-              <h5 class="alert-heading">
-                <i class="bi bi-check-circle me-1"></i>
-                Welcome, {{ auth.user?.displayName || auth.user?.email }}!
-              </h5>
-              <p class="mb-1">You are authenticated. Your assigned roles:</p>
-              <ul class="mb-0">
-                <li *ngFor="let role of auth.user?.roles">{{ role }}</li>
-              </ul>
-            </div>
-            <p class="text-muted">Use the navigation bar above to access your authorized pages.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `
 })
 export class WelcomeComponent {
-  constructor(public auth: AuthService) {}
+  
+  apiUrls: Record<string, string> = {
+    'APP_ADMIN': '/api/budget/admin-only',
+    'APP_WRITE': '/api/budget/write-only',
+    'APP_READ': '/api/budget/read-only'
+  };
+
+  message: { text: string; type: 'success' | 'danger' } | null = null;
+
+  private destroyRef = inject(DestroyRef);
+
+  constructor(
+    private cd: ChangeDetectorRef,
+    public auth: AuthService,
+    private budgetService: BudgetService
+  ) {}
+
+
+  testAuth(role: string): void {
+    const url = this.apiUrls[role];
+
+    this.budgetService.testEndpoint(url).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: () => this.showMessage(`Successfully accessed ${url} as ${role}.`, 'success'),
+      error: (err: HttpErrorResponse) => {
+        const msg = err.status === 401
+          ? 'Please log in first...' 
+          : err.status === 403 ? 'Access denied...' : 'Failed to save changes.';
+        this.showMessage(msg, 'danger');
+        this.cd.markForCheck();
+      }
+    });
+  }
+
+  private showMessage(text: string, type: 'success' | 'danger'): void {
+    this.message = { text, type };
+    setTimeout(() => {
+      this.message = null;
+      this.cd.markForCheck();
+    }, 4000);
+  }
+
 }

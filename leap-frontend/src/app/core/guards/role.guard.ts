@@ -20,7 +20,7 @@ export function roleGuard(...requiredRoles: string[]): CanActivateFn {
       return true;
     }
 
-    // Logged in but lacks required role → redirect to home
-    return router.createUrlTree(['/']);
+    // Logged in but lacks required role → redirect to access-denied page
+    return router.createUrlTree(['/access-denied']);
   };
 }

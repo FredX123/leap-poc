@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
 import { BudgetService } from '../../core/services/budget.service';
 import { BudgetRow } from '../../shared/models/budget-row.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-budget-report',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './budget-report.component.html',
-  styleUrl: './budget-report.component.scss'
+  styleUrl: './budget-report.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BudgetReportComponent implements OnInit {
 
@@ -23,7 +26,10 @@ export class BudgetReportComponent implements OnInit {
 
   canWrite = false;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
+    private cd: ChangeDetectorRef,
     public auth: AuthService,
     private budgetService: BudgetService
   ) {}
@@ -35,9 +41,21 @@ export class BudgetReportComponent implements OnInit {
 
   loadData(): void {
     this.loading = true;
-    this.budgetService.getAll().subscribe({
-      next: data => { this.rows = data; this.loading = false; },
-      error: () => { this.showMessage('Failed to load budget data.', 'danger'); this.loading = false; }
+    this.budgetService.getAll().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: data => {
+        this.rows = data; this.loading = false;
+        this.cd.markForCheck();
+      },
+      error: (err: HttpErrorResponse) => {
+        const msg = err.status === 403
+          ? 'You are not allowed to load budget data.'
+          : 'Failed to load budget data.';
+        this.showMessage(msg, 'danger');
+        this.loading = false;
+        this.cd.markForCheck();
+      }
     });
   }
 
@@ -56,15 +74,22 @@ export class BudgetReportComponent implements OnInit {
     this.budgetService.update(row.id, {
       monthlyExpenses: this.editExpenses,
       monthlyBudget: this.editBudget
-    }).subscribe({
+    }).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: updated => {
         const idx = this.rows.findIndex(r => r.id === updated.id);
         if (idx >= 0) this.rows[idx] = updated;
         this.editingId = null;
         this.showMessage(`"${updated.itemDescription}" updated successfully.`, 'success');
+        this.cd.markForCheck();
       },
-      error: () => {
-        this.showMessage('Failed to save changes.', 'danger');
+      error: (err: HttpErrorResponse) => {
+        const msg = err.status === 403
+          ? 'You are not allowed to change budget data.'
+          : 'Failed to save changes.';
+        this.showMessage(msg, 'danger');
+        this.cd.markForCheck();
       }
     });
   }
