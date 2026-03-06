@@ -15,6 +15,9 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,6 +26,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -78,6 +82,9 @@ public class SecurityConfig {
             // --- OAuth 2.0 Login (OIDC) ---
             .oauth2Login(oauth -> oauth
                 .defaultSuccessUrl(frontendUrl + "/", true)
+                .authorizationEndpoint(authorization -> authorization
+                    .authorizationRequestResolver(mfaAuthorizationRequestResolver())
+                )
                 .userInfoEndpoint(userInfo -> userInfo
                     .oidcUserService(oidcUserService())   // custom service maps roles
                 )
@@ -103,12 +110,70 @@ public class SecurityConfig {
     }
 
     /**
+     * Custom authorization request resolver that forces MFA at Entra ID.
+     * <p>
+     * Security Defaults uses <b>risk-based</b> MFA — it does NOT enforce MFA on
+     * every sign-in for custom applications. Azure Portal always triggers MFA
+     * because Microsoft has built-in first-party policies for it.
+     * <p>
+     * To explicitly request MFA for our app, we add the OIDC {@code claims}
+     * request parameter telling Entra that the {@code amr} claim with value
+     * {@code "mfa"} is <b>essential</b>. This causes Entra to step up to MFA
+     * even when its risk engine wouldn't otherwise require it.
+     * <p>
+     * Parameters added to the /authorize request:
+     * <ul>
+     *   <li>{@code prompt=login} — forces re-authentication (no SSO reuse)</li>
+     *   <li>{@code claims={"id_token":{"amr":{"essential":true,"values":["mfa"]}}}}
+     *       — tells Entra that MFA is required</li>
+     * </ul>
+     * <p>
+     * <b>Note:</b> For production, a Conditional Access policy (Entra P1) targeting
+     * this app with "Require MFA" grant control is the recommended approach.
+     */
+    private OAuth2AuthorizationRequestResolver mfaAuthorizationRequestResolver() {
+        DefaultOAuth2AuthorizationRequestResolver defaultResolver =
+                new DefaultOAuth2AuthorizationRequestResolver(
+                        clientRegistrationRepository, "/oauth2/authorization");
+
+        return new OAuth2AuthorizationRequestResolver() {
+            @Override
+            public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
+                return addMfaParameters(defaultResolver.resolve(request));
+            }
+
+            @Override
+            public OAuth2AuthorizationRequest resolve(HttpServletRequest request, String clientRegistrationId) {
+                return addMfaParameters(defaultResolver.resolve(request, clientRegistrationId));
+            }
+        };
+    }
+
+    /**
+     * Adds MFA-enforcing parameters to the Entra /authorize request.
+     */
+    private OAuth2AuthorizationRequest addMfaParameters(OAuth2AuthorizationRequest request) {
+        if (request == null) return null;
+
+        Map<String, Object> additionalParams = new LinkedHashMap<>(request.getAdditionalParameters());
+
+        // Force fresh authentication (no SSO session reuse)
+        additionalParams.put("prompt", "login");
+
+        // OIDC claims request: tell Entra that the "amr" claim must contain "mfa".
+        // When marked as essential, Entra will step up to MFA to satisfy the request.
+        additionalParams.put("claims",
+                "{\"id_token\":{\"amr\":{\"essential\":true,\"values\":[\"mfa\"]}}}");
+
+        return OAuth2AuthorizationRequest.from(request)
+                .additionalParameters(additionalParams)
+                .build();
+    }
+
+    /**
      * Configures a custom {@link OAuth2UserService} to process OpenID Connect (OIDC) user information
      * and map claims such as roles into Spring Security's granted authorities.
-     * The method establishes a default OIDC delegate and processes roles from the "roles" claim,
-     * mapping them into authorities prefixed with "ROLE_". Additionally, it creates a new
-     * {@link DefaultOidcUser} instance with these mapped authorities alongside the original token
-     * and user info.
+     * Also validates that MFA was performed by checking the {@code amr} claim.
      *
      * @return a customized {@link OAuth2UserService} for handling OIDC user processing
      */
@@ -118,6 +183,16 @@ public class SecurityConfig {
 
         return (OidcUserRequest userRequest) -> {
             OidcUser oidcUser = delegate.loadUser(userRequest);
+
+            // --- Verify MFA was performed via the 'amr' (auth method reference) claim ---
+            List<String> amr = oidcUser.getClaimAsStringList("amr");
+            if (amr != null && amr.contains("mfa")) {
+                log.info("MFA verified for user '{}'. amr claim: {}", oidcUser.getPreferredUsername(), amr);
+            } else {
+                log.warn("MFA NOT detected for user '{}'. amr claim: {}. "
+                       + "Ensure Security Defaults is enabled in Entra ID.",
+                         oidcUser.getPreferredUsername(), amr);
+            }
 
             // Read Entra app roles from claim "roles"
             List<String> roles = oidcUser.getClaimAsStringList("roles");

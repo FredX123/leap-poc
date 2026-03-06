@@ -51,6 +51,7 @@ export class WelcomeComponent {
 
   private showMessage(text: string, type: 'success' | 'danger'): void {
     this.message = { text, type };
+    this.cd.markForCheck();
     setTimeout(() => {
       this.message = null;
       this.cd.markForCheck();
