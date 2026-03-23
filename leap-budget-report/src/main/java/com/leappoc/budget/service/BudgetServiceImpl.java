@@ -1,9 +1,10 @@
 package com.leappoc.budget.service;
 
-import com.leappoc.budget.model.BudgetRow;
+import com.leappoc.budget.model.BudgetReport;
 import com.leappoc.budget.repository.BudgetRepository;
 import com.leappoc.shared.dto.BudgetRowDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -21,6 +22,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BudgetRowDto> getAllRows() {
         return repository.findAll().stream()
                 .map(this::toDto)
@@ -28,8 +30,9 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
+    @Transactional
     public BudgetRowDto updateRow(Long id, BudgetRowDto dto) {
-        BudgetRow row = repository.findById(id)
+        BudgetReport row = repository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Budget row not found: " + id));
 
         if (dto.getMonthlyExpenses() != null) {
@@ -45,7 +48,7 @@ public class BudgetServiceImpl implements BudgetService {
 
     // --------------- mapping helpers ---------------
 
-    private BudgetRowDto toDto(BudgetRow row) {
+    private BudgetRowDto toDto(BudgetReport row) {
         BudgetRowDto dto = new BudgetRowDto();
         dto.setId(row.getId());
         dto.setItemDescription(row.getItemDescription());

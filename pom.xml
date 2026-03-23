@@ -27,6 +27,7 @@
         <module>leap-shared</module>
         <module>leap-user-management</module>
         <module>leap-budget-report</module>
+        <module>leap-comment</module>
         <module>leap-app</module>
     </modules>
 
@@ -46,6 +47,11 @@
             <dependency>
                 <groupId>com.leappoc</groupId>
                 <artifactId>leap-budget-report</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.leappoc</groupId>
+                <artifactId>leap-comment</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

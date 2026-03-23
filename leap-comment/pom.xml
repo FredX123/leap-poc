@@ -10,9 +10,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>leap-budget-report</artifactId>
-    <name>LEAP Budget Report</name>
-    <description>Budget report endpoints and in-memory data</description>
+    <artifactId>leap-comment</artifactId>
+    <name>LEAP Comment</name>
+    <description>Conversation and comment system — entities and repository</description>
 
     <dependencies>
         <dependency>
@@ -21,15 +21,15 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
     </dependencies>
 </project>
