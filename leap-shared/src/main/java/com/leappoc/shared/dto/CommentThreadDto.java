@@ -1,75 +1,34 @@
-package com.leappoc.comment.model;
+package com.leappoc.shared.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
-@Table(name = "COMMENT")
-public class Comment {
+public class CommentThreadDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "user_id", nullable = false)
     private String userId;
-
-    @Column(name = "display_name")
     private String displayName;
-
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "content", columnDefinition = "NVARCHAR(MAX)")
     private String content;
-
-    @Column(name = "parent_id")
     private Long parentId;
-
-    @Column(name = "entity_type", nullable = false, length = 50)
     private String entityType;
-
-    @Column(name = "entity_id", nullable = false)
     private Long entityId;
-
-    @Column(name = "event_type", nullable = false, length = 50)
     private String eventType;
-
-    @Column(name = "metadata", columnDefinition = "NVARCHAR(MAX)")
     private String metadata;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    @JsonProperty("isEdited")
+    private boolean edited;
 
-    public Comment() {}
+    @JsonProperty("isOwner")
+    private boolean owner;
 
-    @PrePersist
-    protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
-        this.createdAt = now;
-        this.updatedAt = now;
-    }
+    private List<CommentThreadDto> replies = new ArrayList<>();
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    // --- Convenience methods ---
-
-    public boolean isDeleted() {
-        return deletedAt != null;
-    }
-
-    public boolean isEdited() {
-        return createdAt != null && updatedAt != null && updatedAt.isAfter(createdAt);
-    }
+    public CommentThreadDto() {}
 
     // --- Getters & Setters ---
 
@@ -109,6 +68,12 @@ public class Comment {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    public LocalDateTime getDeletedAt() { return deletedAt; }
-    public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
+    public boolean isEdited() { return edited; }
+    public void setEdited(boolean edited) { this.edited = edited; }
+
+    public boolean isOwner() { return owner; }
+    public void setOwner(boolean owner) { this.owner = owner; }
+
+    public List<CommentThreadDto> getReplies() { return replies; }
+    public void setReplies(List<CommentThreadDto> replies) { this.replies = replies; }
 }

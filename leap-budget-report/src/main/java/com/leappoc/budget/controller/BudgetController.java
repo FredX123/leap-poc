@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/budget")
@@ -35,11 +34,7 @@ public class BudgetController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('" + RoleConstants.APP_WRITE + "')")
     public ResponseEntity<BudgetRowDto> update(@PathVariable Long id, @RequestBody BudgetRowDto dto) {
-        try {
-            return ResponseEntity.ok(budgetService.updateRow(id, dto));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(budgetService.updateRow(id, dto));
     }
 
     @GetMapping( "/admin-only")

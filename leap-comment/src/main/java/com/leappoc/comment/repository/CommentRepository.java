@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findByEntityTypeValueAndEntityIdAndDeletedAtIsNullOrderByCreatedAtAsc(
+    List<Comment> findByEntityTypeAndEntityIdAndDeletedAtIsNullOrderByCreatedAtAsc(
             String entityType, Long entityId);
 }
