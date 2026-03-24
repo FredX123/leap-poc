@@ -8,8 +8,8 @@
 | 1 | Spring Data JPA + Budget Migration | ✅ Done | 2025-01-XX |
 | 2 | Comment Module & Entities | ✅ Done | 2025-01-XX |
 | 3 | Comment API (DTOs, Service, Controller) | ✅ Done | 2025-01-XX |
-| 4 | Frontend — Comment Service + Models | ⬜ Not Started | — |
-| 5 | Frontend — Comment UI Components | ⬜ Not Started | — |
+| 4 | Frontend — Comment Service + Models | ✅ Done | 2026-03-23 |
+| 5 | Frontend — Comment UI Components | ✅ Done | 2026-03-23 |
 | 6 | Polish & Hardening | ⬜ Not Started | — |
 
 ---
@@ -79,13 +79,30 @@
 - [x] POMs: MapStruct + validation dependencies
 - [x] Maven compile verified
 
-## Phase 4 — Frontend Comment Service ⬜
+## Phase 4 — Frontend Comment Service + Models ✅
 
-_Not started_
+- [x] Created `shared/models/comment.model.ts` — `CommentDto`, `CommentThreadDto`, `CreateCommentRequest` interfaces
+- [x] Created `core/services/comment.service.ts` — `getThread()`, `create()`, `update()`, `delete()`
+- [x] `ng build` verified
 
-## Phase 5 — Frontend Comment UI ⬜
+## Phase 5 — Frontend Comment UI Components ✅
 
-_Not started_
+**New components:**
+- [x] `CommentInputComponent` — textarea + send button, emits `submitted` event
+- [x] `CommentEntryComponent` — recursive rendering with reply/edit/delete, system event styling, avatar initials, "Edited" badge
+- [x] `CommentThreadPanelComponent` — slide-out side panel with backdrop, loading/empty/error states, loads thread on open
+
+**Integration:**
+- [x] `BudgetReportComponent` — added Comments column with chat icon + count badge per row
+- [x] `<app-comment-thread-panel>` integrated with entityType=BUDGET_REPORT + entityId=row.id
+- [x] Comment count updates when panel loads via `commentCountChanged` event
+
+**Visual features:**
+- [x] Slide-out animation (right: -420px → 0) with backdrop overlay
+- [x] Threaded indentation with left border styling
+- [x] System events (ADJUSTMENT/STATUS_CHANGE) with amber background + gear icon
+- [x] Avatar initials circle for user comments
+- [x] `ng build` verified
 
 ## Phase 6 — Polish & Hardening ⬜
 

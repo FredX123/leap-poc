@@ -7,6 +7,7 @@ import com.leappoc.shared.dto.*;
 import com.leappoc.shared.enums.CommentEntityType;
 import com.leappoc.shared.enums.CommentEventType;
 import com.leappoc.shared.exception.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,8 @@ import java.util.*;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private static final int MAX_THREAD_DEPTH = 5;
+    @Value( "${comment.max-thread-depth:5}")
+    private int maxThreadDepth;
 
     private final CommentRepository repository;
     private final CommentMapper mapper;
@@ -76,8 +78,8 @@ public class CommentServiceImpl implements CommentService {
 
             // Enforce max thread depth
             int depth = calculateDepth(parent);
-            if (depth >= MAX_THREAD_DEPTH) {
-                throw new CommentDepthExceededException(MAX_THREAD_DEPTH);
+            if (depth >= maxThreadDepth) {
+                throw new CommentDepthExceededException(maxThreadDepth);
             }
 
             eventType = CommentEventType.REPLY.name();
@@ -144,7 +146,7 @@ public class CommentServiceImpl implements CommentService {
     private int calculateDepth(Comment comment) {
         int depth = 1;
         Long parentId = comment.getParentId();
-        while (parentId != null && depth < MAX_THREAD_DEPTH + 1) {
+        while (parentId != null && depth < maxThreadDepth + 1) {
             Comment parent = repository.findById(parentId).orElse(null);
             if (parent == null) break;
             parentId = parent.getParentId();

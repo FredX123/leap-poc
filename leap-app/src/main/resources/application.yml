@@ -39,3 +39,6 @@ logging:
   level:
     org.springframework.security: DEBUG
     com.leappoc: DEBUG
+
+comment:
+  max-thread-depth: 5

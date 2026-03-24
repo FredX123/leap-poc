@@ -30,6 +30,7 @@
           <th class="text-end">Monthly Budget</th>
           <th class="text-center">Budget Performance</th>
           <th class="text-center" *ngIf="canWrite">Action</th>
+          <th class="text-center">Comments</th>
         </tr>
       </thead>
       <tbody>
@@ -89,6 +90,18 @@
               </button>
             </ng-container>
           </td>
+
+          <!-- Comments column -->
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-secondary position-relative"
+                    title="Comments" (click)="openComments(row)">
+              <i class="bi bi-chat-dots"></i>
+              <span *ngIf="commentCounts[row.id]"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                {{ commentCounts[row.id] }}
+              </span>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -99,4 +112,13 @@
     Usage% = (Monthly Expenses &divide; Monthly Budget) &times; 100 &nbsp;|&nbsp;
     Variance = Monthly Budget &minus; Monthly Expenses (positive = under budget)
   </p>
+
+  <!-- Comment thread panel (slide-out) -->
+  <app-comment-thread-panel
+    [entityType]="commentEntityType"
+    [entityId]="commentEntityId"
+    [isOpen]="commentPanelOpen"
+    (closed)="closeComments()"
+    (commentCountChanged)="onCommentCountChanged($event)"
+  ></app-comment-thread-panel>
 </div>

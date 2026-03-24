@@ -5,12 +5,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
 import { BudgetService } from '../../core/services/budget.service';
 import { BudgetRow } from '../../shared/models/budget-row.model';
+import { CommentThreadPanelComponent } from '../../shared/components/comment-thread-panel/comment-thread-panel.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-budget-report',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CommentThreadPanelComponent],
   templateUrl: './budget-report.component.html',
   styleUrl: './budget-report.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,6 +26,12 @@ export class BudgetReportComponent implements OnInit {
   loading = false;
 
   canWrite = false;
+
+  // Comment panel state
+  commentPanelOpen = false;
+  commentEntityType = 'BUDGET_REPORT';
+  commentEntityId = 0;
+  commentCounts: Record<number, number> = {};
 
   private destroyRef = inject(DestroyRef);
 
@@ -99,6 +106,22 @@ export class BudgetReportComponent implements OnInit {
     if (row.budgetUsagePercent <= 75) return 'bg-success';
     if (row.budgetUsagePercent <= 100) return 'bg-warning text-dark';
     return 'bg-danger';
+  }
+
+  // --- Comment panel ---
+
+  openComments(row: BudgetRow): void {
+    this.commentEntityId = row.id;
+    this.commentPanelOpen = true;
+  }
+
+  closeComments(): void {
+    this.commentPanelOpen = false;
+  }
+
+  onCommentCountChanged(count: number): void {
+    this.commentCounts[this.commentEntityId] = count;
+    this.cd.markForCheck();
   }
 
   private showMessage(text: string, type: 'success' | 'danger'): void {
