@@ -451,7 +451,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
   private countComments(entries: CommentThreadDto[]): number {
     let count = 0;
     for (const e of entries) {
-      if (!e.isDeleted) count++;
+      count++;
       if (e.replies?.length) {
         count += this.countComments(e.replies);
       }
@@ -476,7 +476,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       updatedAt: new Date().toISOString(),
       isEdited: false,
       isOwner: true,
-      isDeleted: false,
+      hasReplies: false,
       replies: []
     };
   }

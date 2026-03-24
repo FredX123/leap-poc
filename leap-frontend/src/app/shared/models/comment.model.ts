@@ -30,7 +30,7 @@ export interface CommentThreadDto {
   updatedAt: string;
   isEdited: boolean;
   isOwner: boolean;
-  isDeleted: boolean;
+  hasReplies: boolean;
   replies: CommentThreadDto[];
 }
 

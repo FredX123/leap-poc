@@ -13,33 +13,7 @@ import { CommentInputComponent } from '../comment-input/comment-input.component'
   imports: [CommonModule, FormsModule, CommentInputComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <!-- Deleted placeholder (foldable) -->
-    <div *ngIf="comment.isDeleted; else liveComment"
-         class="deleted-entry mb-2 p-2 rounded" role="article"
-         [attr.aria-label]="'Deleted comment'">
-      <div class="d-flex align-items-center gap-2 text-muted">
-        <button *ngIf="comment.replies?.length" class="btn btn-link btn-sm p-0 text-muted"
-                (click)="deletedExpanded = !deletedExpanded"
-                [attr.aria-expanded]="deletedExpanded"
-                [attr.aria-label]="deletedExpanded ? 'Collapse deleted replies' : 'Expand deleted replies'">
-          <i class="bi" [ngClass]="deletedExpanded ? 'bi-chevron-down' : 'bi-chevron-right'"
-             aria-hidden="true"></i>
-        </button>
-        <i class="bi bi-x-circle" aria-hidden="true"></i>
-        <em class="small">[This comment has been removed]</em>
-        <span *ngIf="comment.replies?.length && !deletedExpanded" class="badge bg-secondary badge-sm">
-          {{ countAllReplies(comment.replies) }} {{ countAllReplies(comment.replies) === 1 ? 'reply' : 'replies' }}
-        </span>
-      </div>
-      <!-- Foldable replies of a deleted parent -->
-      <ng-container *ngIf="deletedExpanded">
-        <ng-container *ngTemplateOutlet="repliesBlock"></ng-container>
-      </ng-container>
-    </div>
-
-    <!-- Live comment -->
-    <ng-template #liveComment>
-      <!-- System event (ADJUSTMENT / STATUS_CHANGE) -->
+    <!-- System event (ADJUSTMENT / STATUS_CHANGE) -->
       <div *ngIf="isSystemEvent; else userComment"
            class="system-event d-flex align-items-start gap-2 mb-2 p-2 rounded"
            role="article" [attr.aria-label]="'System event from ' + (comment.createdAt | date:'short')">
@@ -52,7 +26,6 @@ import { CommentInputComponent } from '../comment-input/comment-input.component'
         </div>
       </div>
 
-      <!-- User comment -->
       <ng-template #userComment>
         <div class="comment-entry mb-2" role="article"
              [attr.aria-label]="'Comment by ' + (comment.displayName || 'Unknown')">
@@ -108,10 +81,25 @@ import { CommentInputComponent } from '../comment-input/comment-input.component'
                 </button>
                 <button *ngIf="comment.isOwner || isAdmin"
                         class="btn btn-link btn-sm p-0 text-danger"
-                        (click)="onDelete()"
+                        (click)="requestDelete()"
                         aria-label="Delete comment">
                   <i class="bi bi-trash" aria-hidden="true"></i> Delete
                 </button>
+              </div>
+
+              <!-- Delete confirmation dialog (inline) -->
+              <div *ngIf="confirmingDelete" class="delete-confirm mt-2 p-2 border border-danger rounded small"
+                   role="alertdialog" aria-label="Confirm deletion">
+                <p class="mb-2 text-danger fw-bold">
+                  <i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>
+                  This comment has {{ countAllReplies(comment.replies) }}
+                  {{ countAllReplies(comment.replies) === 1 ? 'reply' : 'replies' }}
+                  that will also be deleted.
+                </p>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-danger" (click)="confirmDelete()">Delete all</button>
+                  <button class="btn btn-sm btn-secondary" (click)="confirmingDelete = false">Cancel</button>
+                </div>
               </div>
 
               <!-- Inline reply input + inline error -->
@@ -132,9 +120,8 @@ import { CommentInputComponent } from '../comment-input/comment-input.component'
           <ng-container *ngTemplateOutlet="repliesBlock"></ng-container>
         </div>
       </ng-template>
-    </ng-template>
 
-    <!-- Shared replies template (6.5: collapse deep threads) -->
+    <!-- Shared replies template (collapse deep threads) -->
     <ng-template #repliesBlock>
       <div *ngIf="comment.replies?.length" class="replies-container">
         <!-- Auto-collapse beyond depth 3 -->
@@ -205,10 +192,8 @@ import { CommentInputComponent } from '../comment-input/comment-input.component'
       background-color: #fff3cd;
       border-left: 3px solid #ffc107;
     }
-    .deleted-entry {
-      background-color: #f8f9fa;
-      border-left: 2px dashed #adb5bd;
-      padding-left: 12px;
+    .delete-confirm {
+      background-color: #fff5f5;
     }
     .badge-sm { font-size: 0.65rem; }
     .min-width-0 { min-width: 0; }
@@ -232,7 +217,7 @@ export class CommentEntryComponent implements OnChanges {
   isEditing = false;
   editText = '';
   expanded = false;
-  deletedExpanded = false;
+  confirmingDelete = false;
   inlineError: string | null = null;
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -261,7 +246,7 @@ export class CommentEntryComponent implements OnChanges {
   countAllReplies(replies: CommentThreadDto[]): number {
     let count = 0;
     for (const r of replies) {
-      if (!r.isDeleted) count++;
+      count++;
       if (r.replies?.length) count += this.countAllReplies(r.replies);
     }
     return count;
@@ -309,7 +294,17 @@ export class CommentEntryComponent implements OnChanges {
     }
   }
 
-  onDelete(): void {
+  /** Show confirmation dialog if comment has replies, otherwise delete immediately */
+  requestDelete(): void {
+    if (this.comment.hasReplies || this.comment.replies?.length) {
+      this.confirmingDelete = true;
+    } else {
+      this.deleted.emit(this.comment.id);
+    }
+  }
+
+  confirmDelete(): void {
+    this.confirmingDelete = false;
     this.deleted.emit(this.comment.id);
   }
 }

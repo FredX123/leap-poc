@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,61 +33,31 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentThreadDto> getThread(String entityType, Long entityId, String currentUserId) {
         validateEntityType(entityType);
 
-        // Fetch ALL comments (including soft-deleted) so deleted parents can appear as placeholders
-        List<Comment> allComments = repository
+        List<Comment> comments = repository
                 .findByEntityTypeAndEntityIdOrderByCreatedAtAsc(entityType, entityId);
 
-        // Separate deleted and active IDs for pruning
-        Set<Long> deletedIds = new HashSet<>();
-        for (Comment c : allComments) {
-            if (c.isDeleted()) deletedIds.add(c.getId());
-        }
-
-        // Build set of deleted IDs that have non-deleted descendants (need placeholder)
-        Set<Long> parentIdsOfActive = new HashSet<>();
-        for (Comment c : allComments) {
-            if (!c.isDeleted() && c.getParentId() != null) {
-                // Walk up ancestry, marking any deleted ancestors as needed
-                Long pid = c.getParentId();
-                while (pid != null) {
-                    if (deletedIds.contains(pid)) parentIdsOfActive.add(pid);
-                    // Find parent in list
-                    Long nextPid = null;
-                    for (Comment p : allComments) {
-                        if (p.getId().equals(pid)) { nextPid = p.getParentId(); break; }
-                    }
-                    pid = nextPid;
-                }
-            }
-        }
-
-        // Map entities → DTOs, keeping active comments + deleted-with-descendants
+        // Map entities → DTOs and index by ID
         Map<Long, CommentThreadDto> dtoMap = new LinkedHashMap<>();
-        List<Comment> included = new ArrayList<>();
-        for (Comment c : allComments) {
-            if (!c.isDeleted() || parentIdsOfActive.contains(c.getId())) {
-                CommentThreadDto dto = mapper.toThreadDto(c);
-                dto.setOwner(c.getUserId().equals(currentUserId));
-                dto.setDeleted(c.isDeleted());
-                if (c.isDeleted()) {
-                    dto.setContent(null);   // hide content for deleted
-                    dto.setDisplayName(null);
-                    dto.setEmail(null);
-                }
-                dtoMap.put(c.getId(), dto);
-                included.add(c);
-            }
+        for (Comment c : comments) {
+            CommentThreadDto dto = mapper.toThreadDto(c);
+            dto.setOwner(c.getUserId().equals(currentUserId));
+            dtoMap.put(c.getId(), dto);
         }
 
         // Assemble adjacency tree
         List<CommentThreadDto> roots = new ArrayList<>();
-        for (Comment c : included) {
+        for (Comment c : comments) {
             CommentThreadDto dto = dtoMap.get(c.getId());
             if (c.getParentId() != null && dtoMap.containsKey(c.getParentId())) {
                 dtoMap.get(c.getParentId()).getReplies().add(dto);
             } else {
                 roots.add(dto);
             }
+        }
+
+        // Set hasReplies flag on each node
+        for (CommentThreadDto dto : dtoMap.values()) {
+            dto.setHasReplies(!dto.getReplies().isEmpty());
         }
 
         return roots;
@@ -158,14 +127,23 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(Long id, String currentUserId, boolean isAdmin) {
-        Comment comment = findActiveComment(id);
+        Comment comment = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", id));
 
         if (!isAdmin && !comment.getUserId().equals(currentUserId)) {
             throw new UnauthorizedOperationException("You can only delete your own comments");
         }
 
-        comment.setDeletedAt(LocalDateTime.now());
-        repository.save(comment);
+        // Recursively delete all descendants, then delete the comment itself
+        deleteRecursively(id);
+    }
+
+    private void deleteRecursively(Long commentId) {
+        List<Comment> children = repository.findByParentId(commentId);
+        for (Comment child : children) {
+            deleteRecursively(child.getId());
+        }
+        repository.deleteById(commentId);
     }
 
     @Override
@@ -184,12 +162,8 @@ public class CommentServiceImpl implements CommentService {
     // --------------- private helpers ---------------
 
     private Comment findActiveComment(Long id) {
-        Comment comment = repository.findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", id));
-        if (comment.isDeleted()) {
-            throw new ResourceNotFoundException("Comment", id);
-        }
-        return comment;
     }
 
     private int calculateDepth(Comment comment) {

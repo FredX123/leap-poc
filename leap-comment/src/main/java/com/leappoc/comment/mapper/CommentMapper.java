@@ -15,6 +15,7 @@ public interface CommentMapper {
 
     @Mapping(target = "edited", expression = "java(comment.isEdited())")
     @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "hasReplies", ignore = true)
     @Mapping(target = "replies", ignore = true)
     CommentThreadDto toThreadDto(Comment comment);
 }

@@ -44,9 +44,6 @@ public class Comment {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
-
     public Comment() {}
 
     @PrePersist
@@ -62,10 +59,6 @@ public class Comment {
     }
 
     // --- Convenience methods ---
-
-    public boolean isDeleted() {
-        return deletedAt != null;
-    }
 
     public boolean isEdited() {
         return createdAt != null && updatedAt != null && updatedAt.isAfter(createdAt);
@@ -108,7 +101,4 @@ public class Comment {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-    public LocalDateTime getDeletedAt() { return deletedAt; }
-    public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
 }

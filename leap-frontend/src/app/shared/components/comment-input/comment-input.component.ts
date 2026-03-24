@@ -28,7 +28,7 @@ import { FormsModule } from '@angular/forms';
     </div>
   `,
   styles: [`
-    textarea { resize: none; min-height: 40px; }
+    textarea { resize: vertical; min-height: 40px; max-height: 200px; }
   `]
 })
 export class CommentInputComponent {

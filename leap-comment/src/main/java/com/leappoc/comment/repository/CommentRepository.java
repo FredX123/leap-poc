@@ -9,19 +9,15 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findByEntityTypeAndEntityIdAndDeletedAtIsNullOrderByCreatedAtAsc(
-            String entityType, Long entityId);
-
-    /** Fetch ALL comments (including soft-deleted) for tree assembly with deleted placeholders. */
     List<Comment> findByEntityTypeAndEntityIdOrderByCreatedAtAsc(
             String entityType, Long entityId);
 
-    /** Count non-deleted comments for a single entity. */
-    long countByEntityTypeAndEntityIdAndDeletedAtIsNull(String entityType, Long entityId);
+    /** Find all direct and indirect children of a comment (by parentId chain). */
+    List<Comment> findByParentId(Long parentId);
 
-    /** Count non-deleted comments for multiple entities in one query. */
+    /** Count comments for multiple entities in one query. */
     @Query("SELECT c.entityId, COUNT(c) FROM Comment c " +
-           "WHERE c.entityType = :entityType AND c.entityId IN :entityIds AND c.deletedAt IS NULL " +
+           "WHERE c.entityType = :entityType AND c.entityId IN :entityIds " +
            "GROUP BY c.entityId")
     List<Object[]> countByEntityTypeAndEntityIds(@Param("entityType") String entityType,
                                                   @Param("entityIds") List<Long> entityIds);
