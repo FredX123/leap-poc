@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -76,6 +77,17 @@ public class CommentController {
 
         commentService.deleteComment(id, currentUserId, isAdmin);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/counts")
+    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_READ + "', '"
+            + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')")
+    public ResponseEntity<Map<Long, Long>> getCounts(
+            @RequestParam String entityType,
+            @RequestParam List<Long> entityIds) {
+
+        Map<Long, Long> counts = commentService.getCounts(entityType, entityIds);
+        return ResponseEntity.ok(counts);
     }
 
     // --------------- private helpers ---------------

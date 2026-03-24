@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -33,20 +34,55 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentThreadDto> getThread(String entityType, Long entityId, String currentUserId) {
         validateEntityType(entityType);
 
-        List<Comment> comments = repository
-                .findByEntityTypeAndEntityIdAndDeletedAtIsNullOrderByCreatedAtAsc(entityType, entityId);
+        // Fetch ALL comments (including soft-deleted) so deleted parents can appear as placeholders
+        List<Comment> allComments = repository
+                .findByEntityTypeAndEntityIdOrderByCreatedAtAsc(entityType, entityId);
 
-        // Map entities → DTOs and index by ID
+        // Separate deleted and active IDs for pruning
+        Set<Long> deletedIds = new HashSet<>();
+        for (Comment c : allComments) {
+            if (c.isDeleted()) deletedIds.add(c.getId());
+        }
+
+        // Build set of deleted IDs that have non-deleted descendants (need placeholder)
+        Set<Long> parentIdsOfActive = new HashSet<>();
+        for (Comment c : allComments) {
+            if (!c.isDeleted() && c.getParentId() != null) {
+                // Walk up ancestry, marking any deleted ancestors as needed
+                Long pid = c.getParentId();
+                while (pid != null) {
+                    if (deletedIds.contains(pid)) parentIdsOfActive.add(pid);
+                    // Find parent in list
+                    Long nextPid = null;
+                    for (Comment p : allComments) {
+                        if (p.getId().equals(pid)) { nextPid = p.getParentId(); break; }
+                    }
+                    pid = nextPid;
+                }
+            }
+        }
+
+        // Map entities → DTOs, keeping active comments + deleted-with-descendants
         Map<Long, CommentThreadDto> dtoMap = new LinkedHashMap<>();
-        for (Comment c : comments) {
-            CommentThreadDto dto = mapper.toThreadDto(c);
-            dto.setOwner(c.getUserId().equals(currentUserId));
-            dtoMap.put(c.getId(), dto);
+        List<Comment> included = new ArrayList<>();
+        for (Comment c : allComments) {
+            if (!c.isDeleted() || parentIdsOfActive.contains(c.getId())) {
+                CommentThreadDto dto = mapper.toThreadDto(c);
+                dto.setOwner(c.getUserId().equals(currentUserId));
+                dto.setDeleted(c.isDeleted());
+                if (c.isDeleted()) {
+                    dto.setContent(null);   // hide content for deleted
+                    dto.setDisplayName(null);
+                    dto.setEmail(null);
+                }
+                dtoMap.put(c.getId(), dto);
+                included.add(c);
+            }
         }
 
         // Assemble adjacency tree
         List<CommentThreadDto> roots = new ArrayList<>();
-        for (Comment c : comments) {
+        for (Comment c : included) {
             CommentThreadDto dto = dtoMap.get(c.getId());
             if (c.getParentId() != null && dtoMap.containsKey(c.getParentId())) {
                 dtoMap.get(c.getParentId()).getReplies().add(dto);
@@ -130,6 +166,19 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setDeletedAt(LocalDateTime.now());
         repository.save(comment);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<Long, Long> getCounts(String entityType, List<Long> entityIds) {
+        validateEntityType(entityType);
+        if (entityIds == null || entityIds.isEmpty()) return Collections.emptyMap();
+
+        List<Object[]> rows = repository.countByEntityTypeAndEntityIds(entityType, entityIds);
+        return rows.stream().collect(Collectors.toMap(
+                r -> (Long) r[0],
+                r -> (Long) r[1]
+        ));
     }
 
     // --------------- private helpers ---------------

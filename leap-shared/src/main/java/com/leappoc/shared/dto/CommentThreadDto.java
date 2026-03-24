@@ -26,6 +26,9 @@ public class CommentThreadDto {
     @JsonProperty("isOwner")
     private boolean owner;
 
+    @JsonProperty("isDeleted")
+    private boolean deleted;
+
     private List<CommentThreadDto> replies = new ArrayList<>();
 
     public CommentThreadDto() {}
@@ -73,6 +76,9 @@ public class CommentThreadDto {
 
     public boolean isOwner() { return owner; }
     public void setOwner(boolean owner) { this.owner = owner; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 
     public List<CommentThreadDto> getReplies() { return replies; }
     public void setReplies(List<CommentThreadDto> replies) { this.replies = replies; }

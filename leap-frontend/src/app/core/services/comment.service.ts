@@ -28,4 +28,12 @@ export class CommentService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  getCounts(entityType: string, entityIds: number[]): Observable<Record<string, number>> {
+    let params = new HttpParams().set('entityType', entityType);
+    for (const id of entityIds) {
+      params = params.append('entityIds', id);
+    }
+    return this.http.get<Record<string, number>>(`${this.baseUrl}/counts`, { params });
+  }
 }

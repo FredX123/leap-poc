@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
 import { BudgetService } from '../../core/services/budget.service';
+import { CommentService } from '../../core/services/comment.service';
 import { BudgetRow } from '../../shared/models/budget-row.model';
 import { CommentThreadPanelComponent } from '../../shared/components/comment-thread-panel/comment-thread-panel.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -38,7 +39,8 @@ export class BudgetReportComponent implements OnInit {
   constructor(
     private cd: ChangeDetectorRef,
     public auth: AuthService,
-    private budgetService: BudgetService
+    private budgetService: BudgetService,
+    private commentService: CommentService
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +56,7 @@ export class BudgetReportComponent implements OnInit {
       next: data => {
         this.rows = data; this.loading = false;
         this.cd.markForCheck();
+        this.loadCommentCounts();
       },
       error: (err: HttpErrorResponse) => {
         const msg = err.status === 403
@@ -122,6 +125,24 @@ export class BudgetReportComponent implements OnInit {
   onCommentCountChanged(count: number): void {
     this.commentCounts[this.commentEntityId] = count;
     this.cd.markForCheck();
+  }
+
+  /** 6.6: Batch-load comment counts for all budget rows */
+  private loadCommentCounts(): void {
+    if (!this.rows.length) return;
+    const ids = this.rows.map(r => r.id);
+    this.commentService.getCounts(this.commentEntityType, ids).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: counts => {
+        // counts is { "1": 3, "2": 0, ... } — keys are strings from JSON
+        this.commentCounts = {};
+        for (const [key, value] of Object.entries(counts)) {
+          this.commentCounts[+key] = value;
+        }
+        this.cd.markForCheck();
+      }
+    });
   }
 
   private showMessage(text: string, type: 'success' | 'danger'): void {

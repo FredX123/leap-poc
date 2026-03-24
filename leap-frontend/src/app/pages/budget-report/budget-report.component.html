@@ -94,10 +94,13 @@
           <!-- Comments column -->
           <td class="text-center">
             <button class="btn btn-sm btn-outline-secondary position-relative"
-                    title="Comments" (click)="openComments(row)">
-              <i class="bi bi-chat-dots"></i>
+                    [attr.title]="'Comments for ' + row.itemDescription"
+                    [attr.aria-label]="'Open comments for ' + row.itemDescription + (commentCounts[row.id] ? ' (' + commentCounts[row.id] + ' comments)' : '')"
+                    (click)="openComments(row)">
+              <i class="bi bi-chat-dots" aria-hidden="true"></i>
               <span *ngIf="commentCounts[row.id]"
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary"
+                    aria-hidden="true">
                 {{ commentCounts[row.id] }}
               </span>
             </button>
