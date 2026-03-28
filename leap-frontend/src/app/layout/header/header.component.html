@@ -6,7 +6,7 @@
   <!-- Role-based menus (only when authenticated) -->
   <div class="collapse navbar-collapse" *ngIf="auth.isAuthenticated">
     <ul class="navbar-nav me-auto">
-      <li class="nav-item" *ngIf="auth.hasRole('APP_ADMIN')">
+      <li class="nav-item" *ngIf="auth.hasAnyRoleOrGroup('APP_ADMIN')">
         <a
           class="nav-link"
           routerLink="/user-management"
@@ -15,7 +15,7 @@
           <i class="bi bi-people me-1"></i>User Management
         </a>
       </li>
-      <li class="nav-item" *ngIf="auth.hasAnyRole('APP_READ', 'APP_WRITE')">
+      <li class="nav-item" *ngIf="auth.hasAnyRoleOrGroup('APP_READ', 'APP_WRITE')">
         <a
           class="nav-link"
           routerLink="/budget-report"

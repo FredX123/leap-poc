@@ -6,30 +6,8 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="comment-input d-flex gap-2 align-items-start" role="form"
-         aria-label="Write a comment">
-      <textarea
-        class="form-control form-control-sm"
-        placeholder="Write a comment..."
-        [(ngModel)]="text"
-        (keydown.enter)="onSubmit($event)"
-        maxlength="4000"
-        aria-label="Comment text"
-        [style.height.px]="textareaHeight"
-      ></textarea>
-      <button
-        class="btn btn-sm btn-primary flex-shrink-0"
-        [disabled]="!text.trim()"
-        (click)="onSubmit($event)"
-        aria-label="Send comment">
-        <i class="bi bi-send" aria-hidden="true"></i>
-      </button>
-    </div>
-  `,
-  styles: [`
-    textarea { resize: vertical; min-height: 40px; max-height: 200px; }
-  `]
+  templateUrl: './comment-input.component.html',
+  styleUrl: './comment-input.component.scss'
 })
 export class CommentInputComponent {
   @Input() textareaHeight = 52;

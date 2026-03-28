@@ -9,9 +9,7 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [`
-    .navbar-brand { font-weight: 600; letter-spacing: 1px; }
-  `]
+  styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit {
   constructor(public auth: AuthService) {}

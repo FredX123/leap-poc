@@ -1,0 +1,92 @@
+<!-- Backdrop -->
+<div class="panel-backdrop" *ngIf="isOpen" (click)="close()"
+     aria-hidden="true"></div>
+
+<!-- Slide-out panel -->
+<div class="comment-panel" [class.open]="isOpen"
+     [class.resizing]="isResizing"
+     [style.width.px]="panelWidth"
+     role="complementary" aria-label="Comment thread panel"
+     (keydown.escape)="close()">
+
+  <!-- Resize handle -->
+  <div class="resize-handle" (mousedown)="onResizeStart($event)"
+       role="separator" aria-orientation="vertical"
+       aria-label="Drag to resize comment panel"
+       tabindex="0"
+       (keydown.arrowLeft)="panelWidth = Math.min(panelWidth + 20, maxPanelWidth); cd.markForCheck()"
+       (keydown.arrowRight)="panelWidth = Math.max(panelWidth - 20, minPanelWidth); cd.markForCheck()">
+    <div class="resize-handle-indicator"></div>
+  </div>
+
+  <!-- Panel header -->
+  <div class="panel-header d-flex align-items-center justify-content-between p-3 border-bottom">
+    <h6 class="mb-0" id="comment-panel-title">
+      <i class="bi bi-chat-dots me-2" aria-hidden="true"></i>Comments
+    </h6>
+    <button class="btn btn-sm btn-outline-secondary" (click)="close()"
+            aria-label="Close comments panel">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <!-- Panel body -->
+  <div class="panel-body p-3" role="log" aria-labelledby="comment-panel-title"
+       aria-live="polite">
+    <!-- Loading -->
+    <div *ngIf="loading" class="text-center py-4" role="status">
+      <div class="spinner-border spinner-border-sm text-primary">
+        <span class="visually-hidden">Loading comments...</span>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error" class="alert alert-danger small d-flex align-items-center gap-2"
+         role="alert">
+      <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+      <span class="flex-grow-1">{{ error }}</span>
+      <button *ngIf="retryable" class="btn btn-sm btn-outline-danger flex-shrink-0"
+              (click)="loadThread()" aria-label="Retry loading comments">
+        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Retry
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!loading && !error && thread.length === 0"
+         class="text-center text-muted py-4">
+      <i class="bi bi-chat-square-text" style="font-size: 2rem;" aria-hidden="true"></i>
+      <p class="mt-2 small">No comments yet. Start the conversation!</p>
+    </div>
+
+    <!-- Thread entries -->
+    <div *ngIf="!loading && thread.length > 0" class="thread-list"
+         role="list" aria-label="Comment thread">
+      <app-comment-entry
+        *ngFor="let entry of thread; trackBy: trackById"
+        [comment]="entry"
+        [canWrite]="canWrite"
+        [isAdmin]="isAdmin"
+        [replyErrorMap]="replyErrorMap"
+        (replied)="onReply($event)"
+        (edited)="onEdit($event)"
+        (deleted)="onDelete($event)"
+      ></app-comment-entry>
+    </div>
+  </div>
+
+  <!-- Panel footer: new comment input -->
+  <div class="panel-footer" *ngIf="canWrite">
+    <div class="footer-resize-handle" (mousedown)="onFooterResizeStart($event)"
+         role="separator" aria-orientation="horizontal"
+         aria-label="Drag to resize input area"
+         tabindex="0"
+         (keydown.arrowUp)="footerHeight = Math.min(footerHeight + 20, maxFooterHeight); cd.markForCheck()"
+         (keydown.arrowDown)="footerHeight = Math.max(footerHeight - 20, minFooterHeight); cd.markForCheck()">
+      <div class="footer-resize-indicator"></div>
+    </div>
+    <div class="p-3">
+      <app-comment-input [textareaHeight]="footerHeight - 24"
+                         (submitted)="onNewComment($event)"></app-comment-input>
+    </div>
+  </div>
+</div>
