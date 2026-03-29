@@ -14,6 +14,7 @@ public class UserInfoDto {
     private List<String> roles;
     private List<String> groups;
     private boolean authenticated;
+    private boolean mock;
 
     public UserInfoDto() {}
 
@@ -41,4 +42,7 @@ public class UserInfoDto {
 
     public boolean isAuthenticated() { return authenticated; }
     public void setAuthenticated(boolean authenticated) { this.authenticated = authenticated; }
+
+    public boolean isMock() { return mock; }
+    public void setMock(boolean mock) { this.mock = mock; }
 }

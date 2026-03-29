@@ -77,7 +77,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Public: SPA assets, login trigger, and the /api/me endpoint (returns anon if not logged in)
                 .requestMatchers("/", "/index.html", "/assets/**", "/*.js", "/*.css", "/*.ico").permitAll()
-                .requestMatchers("/api/me").permitAll()
+                .requestMatchers("/api/me", "/api/mock/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )

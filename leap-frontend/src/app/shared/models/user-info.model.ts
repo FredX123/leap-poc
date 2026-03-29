@@ -4,4 +4,11 @@ export interface UserInfo {
   roles: string[];
   groups: string[];
   authenticated: boolean;
+  mock?: boolean;
+}
+
+export interface MockUserOption {
+  username: string;
+  displayName: string;
+  description: string;
 }

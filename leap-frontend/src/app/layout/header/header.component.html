@@ -43,22 +43,42 @@
   </div>
 
   <!-- Right-aligned login / logout -->
-  <div class="d-flex align-items-center ms-auto">
-    <span class="text-light me-3" *ngIf="auth.isAuthenticated">
+  <div class="d-flex align-items-center ms-auto gap-2">
+    <span class="text-light" *ngIf="auth.isAuthenticated">
       {{ auth.user?.displayName || auth.user?.email }}
+      <span *ngIf="auth.user?.mock" class="badge bg-info ms-1">Mock</span>
     </span>
-    <button
-      class="btn btn-outline-light btn-sm"
-      *ngIf="!auth.isAuthenticated"
-      (click)="auth.login()"
-    >
-      <i class="bi bi-box-arrow-in-right me-1"></i>Log in
-    </button>
-    <button
-      class="btn btn-outline-warning btn-sm"
-      *ngIf="auth.isAuthenticated"
-      (click)="auth.logout()"
-    >
+
+    <!-- Not authenticated: mock toggle + login options -->
+    <ng-container *ngIf="!auth.isAuthenticated">
+      <div class="form-check form-switch mb-0">
+        <input class="form-check-input" type="checkbox" id="mockToggle"
+               [(ngModel)]="mockMode" (ngModelChange)="onMockToggle()">
+        <label class="form-check-label text-light small" for="mockToggle">Mock Login</label>
+      </div>
+
+      <!-- Regular Entra ID login -->
+      <button *ngIf="!mockMode"
+              class="btn btn-outline-light btn-sm"
+              (click)="auth.login()">
+        <i class="bi bi-box-arrow-in-right me-1"></i>Log in
+      </button>
+
+      <!-- Mock user selector -->
+      <select *ngIf="mockMode && mockUsers.length"
+              class="form-select form-select-sm mock-user-select"
+              (change)="mockLogin($any($event.target).value); $any($event.target).value = ''">
+        <option value="" selected disabled>Select mock user...</option>
+        <option *ngFor="let u of mockUsers" [value]="u.username">
+          {{ u.displayName }} ({{ u.description }})
+        </option>
+      </select>
+    </ng-container>
+
+    <!-- Logout -->
+    <button class="btn btn-outline-warning btn-sm"
+            *ngIf="auth.isAuthenticated"
+            (click)="onLogout()">
       <i class="bi bi-box-arrow-right me-1"></i>Log out
     </button>
   </div>

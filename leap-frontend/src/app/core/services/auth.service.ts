@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
-import { UserInfo } from '../../shared/models/user-info.model';
+import { BehaviorSubject, Observable, tap, catchError, of, switchMap } from 'rxjs';
+import { UserInfo, MockUserOption } from '../../shared/models/user-info.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -31,6 +31,10 @@ export class AuthService {
 
   get isAuthenticated(): boolean {
     return this.userSubject.value?.authenticated === true;
+  }
+
+  get isMock(): boolean {
+    return this.userSubject.value?.mock === true;
   }
 
   hasRole(role: string): boolean {
@@ -90,6 +94,25 @@ export class AuthService {
 
     document.body.appendChild(form);
     form.submit();
+  }
+
+  /** Fetch the list of available mock users from the backend. */
+  getMockUsers(): Observable<MockUserOption[]> {
+    return this.http.get<MockUserOption[]>('/api/mock/users');
+  }
+
+  /** Authenticate as a mock user (no Entra ID required). */
+  mockLogin(username: string): Observable<UserInfo> {
+    return this.http.post<UserInfo>('/api/mock/login', { username }).pipe(
+      tap(user => this.userSubject.next(user))
+    );
+  }
+
+  /** Log out from a mock session and refresh user state. */
+  mockLogout(): Observable<UserInfo> {
+    return this.http.post('/api/mock/logout', {}).pipe(
+      switchMap(() => this.loadUser())
+    );
   }
 
   private getCookie(name: string): string | null {

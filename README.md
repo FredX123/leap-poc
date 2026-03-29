@@ -59,7 +59,7 @@ The frontend runs on **http://localhost:4200** and proxies `/api/**`, `/oauth2/*
 
 ### 4. Open in browser
 
-Go to `http://localhost:4200`. Click **Sign in with Microsoft**.
+Go to `http://localhost:4200`. Click **Login**.
 
 ---
 

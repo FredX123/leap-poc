@@ -2,14 +2,15 @@ package com.leappoc.comment.controller;
 
 import com.leappoc.comment.service.CommentService;
 import com.leappoc.shared.dto.*;
+import com.leappoc.shared.security.MockUserPrincipal;
 import com.leappoc.shared.security.RoleConstants;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,9 +34,9 @@ public class CommentController {
     public ResponseEntity<List<CommentThreadDto>> getThread(
             @RequestParam String entityType,
             @RequestParam Long entityId,
-            @AuthenticationPrincipal OidcUser principal) {
+            Authentication authentication) {
 
-        String currentUserId = extractUserId(principal);
+        String currentUserId = extractUserId(authentication);
         List<CommentThreadDto> thread = commentService.getThread(entityType, entityId, currentUserId);
         return ResponseEntity.ok(thread);
     }
@@ -45,11 +46,11 @@ public class CommentController {
             + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public ResponseEntity<CommentDto> createComment(
             @Valid @RequestBody CreateCommentRequest request,
-            @AuthenticationPrincipal OidcUser principal) {
+            Authentication authentication) {
 
-        String userId = extractUserId(principal);
-        String displayName = principal.getAttribute("name");
-        String email = extractEmail(principal);
+        String userId = extractUserId(authentication);
+        String displayName = extractDisplayName(authentication);
+        String email = extractEmail(authentication);
 
         CommentDto created = commentService.createComment(request, userId, displayName, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
@@ -61,9 +62,9 @@ public class CommentController {
     public ResponseEntity<CommentDto> updateComment(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCommentRequest request,
-            @AuthenticationPrincipal OidcUser principal) {
+            Authentication authentication) {
 
-        String currentUserId = extractUserId(principal);
+        String currentUserId = extractUserId(authentication);
         CommentDto updated = commentService.updateComment(id, request.getContent(), currentUserId);
         return ResponseEntity.ok(updated);
     }
@@ -73,10 +74,10 @@ public class CommentController {
             + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long id,
-            @AuthenticationPrincipal OidcUser principal) {
+            Authentication authentication) {
 
-        String currentUserId = extractUserId(principal);
-        boolean isAdmin = principal.getAuthorities().stream()
+        String currentUserId = extractUserId(authentication);
+        boolean isAdmin = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(a -> RoleConstants.ROLE_APP_ADMIN.equals(a)
                         || RoleConstants.GROUP_GRP_ADMIN.equals(a));
@@ -100,14 +101,38 @@ public class CommentController {
 
     // --------------- private helpers ---------------
 
-    private String extractUserId(OidcUser principal) {
-        // Prefer Entra Object ID (oid); fall back to subject (sub)
-        String oid = principal.getAttribute("oid");
-        return oid != null ? oid : principal.getSubject();
+    private String extractUserId(Authentication auth) {
+        Object principal = auth.getPrincipal();
+        if (principal instanceof OidcUser oidc) {
+            String oid = oidc.getAttribute("oid");
+            return oid != null ? oid : oidc.getSubject();
+        }
+        if (principal instanceof MockUserPrincipal mock) {
+            return mock.getUserId();
+        }
+        throw new IllegalStateException("Unknown principal type: " + principal.getClass());
     }
 
-    private String extractEmail(OidcUser principal) {
-        String email = principal.getAttribute("email");
-        return email != null ? email : principal.getAttribute("preferred_username");
+    private String extractDisplayName(Authentication auth) {
+        Object principal = auth.getPrincipal();
+        if (principal instanceof OidcUser oidc) {
+            return oidc.getAttribute("name");
+        }
+        if (principal instanceof MockUserPrincipal mock) {
+            return mock.getDisplayName();
+        }
+        return "Unknown";
+    }
+
+    private String extractEmail(Authentication auth) {
+        Object principal = auth.getPrincipal();
+        if (principal instanceof OidcUser oidc) {
+            String email = oidc.getAttribute("email");
+            return email != null ? email : oidc.getAttribute("preferred_username");
+        }
+        if (principal instanceof MockUserPrincipal mock) {
+            return mock.getEmail();
+        }
+        return null;
     }
 }
