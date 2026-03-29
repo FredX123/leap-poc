@@ -27,7 +27,9 @@ public class CommentController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('" + RoleConstants.APP_READ + "', '"
-            + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')")
+            + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')"
+            + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '"
+            + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public ResponseEntity<List<CommentThreadDto>> getThread(
             @RequestParam String entityType,
             @RequestParam Long entityId,
@@ -39,7 +41,8 @@ public class CommentController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')")
+    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')"
+            + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public ResponseEntity<CommentDto> createComment(
             @Valid @RequestBody CreateCommentRequest request,
             @AuthenticationPrincipal OidcUser principal) {
@@ -53,7 +56,8 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')")
+    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')"
+            + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public ResponseEntity<CommentDto> updateComment(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCommentRequest request,
@@ -65,7 +69,8 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')")
+    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')"
+            + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long id,
             @AuthenticationPrincipal OidcUser principal) {
@@ -73,7 +78,8 @@ public class CommentController {
         String currentUserId = extractUserId(principal);
         boolean isAdmin = principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .anyMatch(RoleConstants.ROLE_APP_ADMIN::equals);
+                .anyMatch(a -> RoleConstants.ROLE_APP_ADMIN.equals(a)
+                        || RoleConstants.GROUP_GRP_ADMIN.equals(a));
 
         commentService.deleteComment(id, currentUserId, isAdmin);
         return ResponseEntity.noContent().build();
@@ -81,7 +87,9 @@ public class CommentController {
 
     @GetMapping("/counts")
     @PreAuthorize("hasAnyRole('" + RoleConstants.APP_READ + "', '"
-            + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')")
+            + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')"
+            + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '"
+            + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public ResponseEntity<Map<Long, Long>> getCounts(
             @RequestParam String entityType,
             @RequestParam List<Long> entityIds) {

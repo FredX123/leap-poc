@@ -12,14 +12,16 @@ public class UserInfoDto {
     private String displayName;
     private String email;
     private List<String> roles;
+    private List<String> groups;
     private boolean authenticated;
 
     public UserInfoDto() {}
 
-    public UserInfoDto(String displayName, String email, List<String> roles, boolean authenticated) {
+    public UserInfoDto(String displayName, String email, List<String> roles, List<String> groups, boolean authenticated) {
         this.displayName = displayName;
         this.email = email;
         this.roles = roles;
+        this.groups = groups;
         this.authenticated = authenticated;
     }
 
@@ -33,6 +35,9 @@ public class UserInfoDto {
 
     public List<String> getRoles() { return roles; }
     public void setRoles(List<String> roles) { this.roles = roles; }
+
+    public List<String> getGroups() { return groups; }
+    public void setGroups(List<String> groups) { this.groups = groups; }
 
     public boolean isAuthenticated() { return authenticated; }
     public void setAuthenticated(boolean authenticated) { this.authenticated = authenticated; }

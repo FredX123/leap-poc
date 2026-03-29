@@ -18,7 +18,7 @@ export class AuthService {
     return this.http.get<UserInfo>('/api/me').pipe(
       tap(user => this.userSubject.next(user)),
       catchError(() => {
-        const anon: UserInfo = { displayName: null, email: null, roles: [], authenticated: false };
+        const anon: UserInfo = { displayName: null, email: null, roles: [], groups: [], authenticated: false };
         this.userSubject.next(anon);
         return of(anon);
       })
@@ -39,6 +39,29 @@ export class AuthService {
 
   hasAnyRole(...roles: string[]): boolean {
     return roles.some(r => this.hasRole(r));
+  }
+
+  hasGroup(group: string): boolean {
+    return this.userSubject.value?.groups?.includes(group) ?? false;
+  }
+
+  hasAnyGroup(...groups: string[]): boolean {
+    return groups.some(g => this.hasGroup(g));
+  }
+
+  /**
+   * Check if the user has any of the given roles OR any of the corresponding groups.
+   * Maps: APP_ADMIN ↔ GRP_ADMIN, APP_WRITE ↔ GRP_WRITE, APP_READ ↔ GRP_READ
+   */
+  hasAnyRoleOrGroup(...roles: string[]): boolean {
+    if (this.hasAnyRole(...roles)) return true;
+    const groupMap: Record<string, string> = {
+      'APP_ADMIN': 'GRP_ADMIN',
+      'APP_WRITE': 'GRP_WRITE',
+      'APP_READ': 'GRP_READ'
+    };
+    const groups = roles.map(r => groupMap[r]).filter(Boolean);
+    return groups.length > 0 && this.hasAnyGroup(...groups);
   }
 
   /** Navigate to Spring Security login endpoint (full-page redirect). */

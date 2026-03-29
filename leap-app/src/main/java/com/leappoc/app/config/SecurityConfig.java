@@ -47,10 +47,13 @@ public class SecurityConfig {
     @org.springframework.beans.factory.annotation.Value("${app.frontend-url:http://localhost:4200}")
     private String frontendUrl;
 
+    private final EntraGroupConfig groupConfig;
     private final ClientRegistrationRepository clientRegistrationRepository;
 
-    public SecurityConfig(ClientRegistrationRepository clientRegistrationRepository) {
+    public SecurityConfig(ClientRegistrationRepository clientRegistrationRepository,
+                          EntraGroupConfig groupConfig) {
         this.clientRegistrationRepository = clientRegistrationRepository;
+        this.groupConfig = groupConfig;
     }
 
     @Bean
@@ -203,6 +206,18 @@ public class SecurityConfig {
             // Convert APP_ADMIN -> ROLE_APP_ADMIN
             for (String role : roles) {
                 mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+            }
+
+            // Map Entra group Object IDs from "groups" claim -> GROUP_GRP_ADMIN etc.
+            List<String> groupIds = oidcUser.getClaimAsStringList("groups");
+            if (groupIds != null) {
+                for (String gid : groupIds) {
+                    String groupName = groupConfig.getGroupName(gid);
+                    if (groupName != null) {
+                        mappedAuthorities.add(new SimpleGrantedAuthority("GROUP_" + groupName));
+                        log.debug("Mapped group {} -> GROUP_{}", gid, groupName);
+                    }
+                }
             }
 
             // Return a new OidcUser with the mapped authorities

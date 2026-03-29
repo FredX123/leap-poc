@@ -3,7 +3,8 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 /**
- * Factory that creates a route guard requiring any of the given roles.
+ * Factory that creates a route guard requiring any of the given roles or
+ * their corresponding groups (e.g. APP_ADMIN role or GRP_ADMIN group).
  * Usage in routes: canActivate: [roleGuard('APP_READ', 'APP_WRITE')]
  */
 export function roleGuard(...requiredRoles: string[]): CanActivateFn {
@@ -16,11 +17,11 @@ export function roleGuard(...requiredRoles: string[]): CanActivateFn {
       return false;
     }
 
-    if (auth.hasAnyRole(...requiredRoles)) {
+    if (auth.hasAnyRoleOrGroup(...requiredRoles)) {
       return true;
     }
 
-    // Logged in but lacks required role → redirect to access-denied page
+    // Logged in but lacks required role/group → redirect to access-denied page
     return router.createUrlTree(['/access-denied']);
   };
 }

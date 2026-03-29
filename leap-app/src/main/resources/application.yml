@@ -42,3 +42,11 @@ logging:
 
 comment:
   max-thread-depth: 5
+
+# Entra ID group Object IDs → mapped to GROUP_* authorities in SecurityConfig.
+# Replace these GUIDs with the actual Object IDs from your Entra ID tenant.
+entra:
+  groups:
+    GRP_ADMIN: ${ENTRA_GROUP_ADMIN:}
+    GRP_WRITE: ${ENTRA_GROUP_WRITE:}
+    GRP_READ:  ${ENTRA_GROUP_READ:}
