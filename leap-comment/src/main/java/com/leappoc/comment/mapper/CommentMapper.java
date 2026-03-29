@@ -3,19 +3,44 @@ package com.leappoc.comment.mapper;
 import com.leappoc.comment.model.Comment;
 import com.leappoc.shared.dto.CommentDto;
 import com.leappoc.shared.dto.CommentThreadDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface CommentMapper {
+@Component
+public class CommentMapper {
 
-    @Mapping(target = "edited", expression = "java(comment.isEdited())")
-    @Mapping(target = "owner", ignore = true)
-    CommentDto toDto(Comment comment);
+    public CommentDto toDto(Comment comment) {
+        CommentDto dto = new CommentDto();
+        dto.setId(comment.getId());
+        dto.setUserId(comment.getUserId());
+        dto.setDisplayName(comment.getDisplayName());
+        dto.setEmail(comment.getEmail());
+        dto.setContent(comment.getContent());
+        dto.setParentId(comment.getParentId());
+        dto.setEntityType(comment.getEntityType());
+        dto.setEntityId(comment.getEntityId());
+        dto.setEventType(comment.getEventType());
+        dto.setMetadata(comment.getMetadata());
+        dto.setCreatedAt(comment.getCreatedAt());
+        dto.setUpdatedAt(comment.getUpdatedAt());
+        dto.setEdited(comment.isEdited());
+        return dto;
+    }
 
-    @Mapping(target = "edited", expression = "java(comment.isEdited())")
-    @Mapping(target = "owner", ignore = true)
-    @Mapping(target = "hasReplies", ignore = true)
-    @Mapping(target = "replies", ignore = true)
-    CommentThreadDto toThreadDto(Comment comment);
+    public CommentThreadDto toThreadDto(Comment comment) {
+        CommentThreadDto dto = new CommentThreadDto();
+        dto.setId(comment.getId());
+        dto.setUserId(comment.getUserId());
+        dto.setDisplayName(comment.getDisplayName());
+        dto.setEmail(comment.getEmail());
+        dto.setContent(comment.getContent());
+        dto.setParentId(comment.getParentId());
+        dto.setEntityType(comment.getEntityType());
+        dto.setEntityId(comment.getEntityId());
+        dto.setEventType(comment.getEventType());
+        dto.setMetadata(comment.getMetadata());
+        dto.setCreatedAt(comment.getCreatedAt());
+        dto.setUpdatedAt(comment.getUpdatedAt());
+        dto.setEdited(comment.isEdited());
+        return dto;
+    }
 }
