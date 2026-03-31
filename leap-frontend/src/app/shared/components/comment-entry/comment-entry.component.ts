@@ -88,6 +88,7 @@ export class CommentEntryComponent implements OnChanges {
   onReply(content: string): void {
     this.inlineError = null;
     this.replied.emit({ parentId: this.comment.id, content });
+    this.showReply = false;
   }
 
   startEdit(): void {

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "outDir": "./out-tsc/e2e",
+    "types": ["jasmine", "node"],
+    "resolveJsonModule": true
+  },
+  "include": ["e2e/**/*.ts"]
+}
