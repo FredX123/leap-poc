@@ -1,6 +1,6 @@
 import { WebDriver } from 'selenium-webdriver';
 import { HeaderPage } from '../pages/header.po';
-import { BASE_URL } from '../config/test-config';
+import { BASE_URL, humanDelay } from '../config/test-config';
 
 /** Navigate to home and clear cookies to start fresh as anonymous. */
 export async function resetToAnonymous(driver: WebDriver): Promise<void> {
@@ -27,6 +27,7 @@ export async function mockLogout(driver: WebDriver): Promise<void> {
 
 /** Navigate to a path relative to BASE_URL and wait for navbar. */
 export async function navigateTo(driver: WebDriver, path: string): Promise<void> {
+  await humanDelay(driver);
   await driver.get(BASE_URL + path);
   const header = new HeaderPage(driver);
   await header.waitForNavbar();

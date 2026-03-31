@@ -58,6 +58,7 @@ leap-frontend/
 | `E2E_BASE_URL` | `http://localhost:4200` | Angular dev-server URL |
 | `E2E_TIMEOUT` | `10000` | Explicit-wait timeout in milliseconds (before scaling) |
 | `E2E_WAIT_FACTOR` | `1` | Global multiplier for all wait/sleep durations. Set to `2` on slower machines to double all timeouts |
+| `E2E_ACTION_DELAY` | `500` | Delay in ms before each user action (click, type) to simulate human speed. Set to `0` for full speed |
 | `E2E_HEADLESS` | `false` | Run Chrome in headless mode (set to `true` for CI) |
 
 ### Mock Users
@@ -95,6 +96,12 @@ npm run e2e:headless
 
 # Run on a slower machine (double all wait times)
 set E2E_WAIT_FACTOR=2&& npm run e2e
+
+# Run at full speed with no human delays (CI)
+set E2E_ACTION_DELAY=0&& set E2E_HEADLESS=true&& npm run e2e
+
+# Run with longer human pauses (1 second between actions)
+set E2E_ACTION_DELAY=1000&& npm run e2e
 ```
 
 ### Execution Pipeline
@@ -291,6 +298,8 @@ This ensures each test starts from a known state regardless of the order or outc
 ### Handling Async Operations
 
 All wait durations are scaled by the `WAIT_FACTOR` environment variable so the same tests work on both fast and slow machines.
+
+Every user-visible action (click, type, select, navigate) is preceded by a `humanDelay()` call (default 500ms, configurable via `E2E_ACTION_DELAY`). This simulates the natural pause a human takes between interactions and makes test execution visually observable.
 
 For operations that trigger backend API calls (comment creation, editing, deletion):
 

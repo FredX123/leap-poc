@@ -1,5 +1,5 @@
 import { By, until, WebDriver } from 'selenium-webdriver';
-import { TIMEOUT } from '../config/test-config';
+import { TIMEOUT, humanDelay } from '../config/test-config';
 
 /**
  * Page object for the Welcome (home) page.
@@ -69,6 +69,7 @@ export class WelcomePage {
   async clickApiTestLink(index: number): Promise<void> {
     const links = await this.driver.findElements(By.css('.card .list-group-item a'));
     if (index < links.length) {
+      await humanDelay(this.driver);
       await links[index].click();
     }
   }
@@ -85,5 +86,13 @@ export class WelcomePage {
   async isToastVisible(): Promise<boolean> {
     const els = await this.driver.findElements(By.css('.container .alert-dismissible'));
     return els.length > 0;
+  }
+
+  /** Wait for the toast alert to disappear from the DOM. */
+  async waitForToastToDisappear(): Promise<void> {
+    await this.driver.wait(async () => {
+      const els = await this.driver.findElements(By.css('.container .alert-dismissible'));
+      return els.length === 0;
+    }, TIMEOUT);
   }
 }

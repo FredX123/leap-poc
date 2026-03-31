@@ -1,5 +1,5 @@
-import { Builder, WebDriver } from 'selenium-webdriver';
-import { Options } from 'selenium-webdriver/chrome';
+import { Builder, WebDriver, logging } from 'selenium-webdriver';
+import { Options, ServiceBuilder } from 'selenium-webdriver/chrome';
 import { HEADLESS } from '../config/test-config';
 
 let sharedDriver: WebDriver | null = null;
@@ -15,11 +15,18 @@ export async function getDriver(): Promise<WebDriver> {
       '--no-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
-      '--window-size=1366,768'
+      '--window-size=1366,768',
+      '--disable-features=MediaRouter',
+      '--log-level=3'
     );
+    options.excludeSwitches('enable-logging');
+
+    const service = new ServiceBuilder().addArguments('--log-level=OFF');
+
     sharedDriver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options)
+      .setChromeService(service)
       .build();
   }
   return sharedDriver;

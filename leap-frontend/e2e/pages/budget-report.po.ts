@@ -1,5 +1,5 @@
 import { By, until, WebDriver } from 'selenium-webdriver';
-import { TIMEOUT } from '../config/test-config';
+import { TIMEOUT, humanDelay } from '../config/test-config';
 
 /**
  * Page object for the Budget Report page.
@@ -48,6 +48,7 @@ export class BudgetReportPage {
   async clickEditOnRow(rowIndex: number): Promise<void> {
     const buttons = await this.driver.findElements(By.css('button.btn-outline-primary'));
     if (rowIndex < buttons.length) {
+      await humanDelay(this.driver);
       await buttons[rowIndex].click();
     }
   }
@@ -64,6 +65,7 @@ export class BudgetReportPage {
       until.elementLocated(By.css('td button.btn-secondary')), TIMEOUT
     );
     await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
+    await humanDelay(this.driver);
     await btn.click();
     // Wait for edit mode to actually exit (save button disappears)
     await this.driver.wait(async () => {
@@ -83,6 +85,7 @@ export class BudgetReportPage {
     const rows = await this.driver.findElements(By.css('table.table-striped tbody tr'));
     if (rowIndex < rows.length) {
       const btn = await rows[rowIndex].findElement(By.css('button.btn-outline-secondary'));
+      await humanDelay(this.driver);
       await btn.click();
     }
     await this.driver.wait(
@@ -102,6 +105,7 @@ export class BudgetReportPage {
       By.css('.panel-header button[aria-label="Close comments panel"]')
     );
     await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
+    await humanDelay(this.driver);
     await btn.click();
     await this.driver.wait(async () => {
       const els = await this.driver.findElements(By.css('.comment-panel.open'));
@@ -121,6 +125,7 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-input textarea')), TIMEOUT
     );
     await this.driver.wait(until.elementIsVisible(textarea), TIMEOUT);
+    await humanDelay(this.driver);
     await textarea.clear();
     await textarea.sendKeys(text);
   }
@@ -131,6 +136,7 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-input button.btn-primary')), TIMEOUT
     );
     await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
+    await humanDelay(this.driver);
     await btn.click();
   }
 
@@ -184,6 +190,7 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-entry button[aria-label="Reply to comment"]')),
       TIMEOUT
     );
+    await humanDelay(this.driver);
     await btn.click();
   }
 
@@ -201,12 +208,14 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-entry .comment-input textarea')), TIMEOUT
     );
     await this.driver.wait(until.elementIsVisible(textarea), TIMEOUT);
+    await humanDelay(this.driver);
     await textarea.clear();
     await textarea.sendKeys(text);
     const sendBtn = await this.driver.wait(
       until.elementLocated(By.css('.comment-panel .comment-entry .comment-input button.btn-primary')), TIMEOUT
     );
     await this.driver.wait(until.elementIsVisible(sendBtn), TIMEOUT);
+    await humanDelay(this.driver);
     await sendBtn.click();
   }
 
@@ -216,6 +225,7 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-entry button[aria-label="Edit comment"]')),
       TIMEOUT
     );
+    await humanDelay(this.driver);
     await btn.click();
   }
 
@@ -232,11 +242,13 @@ export class BudgetReportPage {
     const textarea = await this.driver.findElement(
       By.css('.comment-panel .comment-entry textarea[aria-label="Edit comment text"]')
     );
+    await humanDelay(this.driver);
     await textarea.clear();
     await textarea.sendKeys(newText);
     const saveBtn = await this.driver.findElement(
       By.css('.comment-panel .comment-entry button[aria-label="Save edit"]')
     );
+    await humanDelay(this.driver);
     await saveBtn.click();
   }
 
@@ -245,6 +257,7 @@ export class BudgetReportPage {
     const btn = await this.driver.findElement(
       By.css('.comment-panel .comment-entry button[aria-label="Cancel edit"]')
     );
+    await humanDelay(this.driver);
     await btn.click();
   }
 
@@ -254,6 +267,7 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-entry button[aria-label="Delete comment"]')),
       TIMEOUT
     );
+    await humanDelay(this.driver);
     await btn.click();
   }
 
@@ -270,6 +284,7 @@ export class BudgetReportPage {
     const btn = await this.driver.findElement(
       By.css('.comment-panel .delete-confirm button.btn-danger')
     );
+    await humanDelay(this.driver);
     await btn.click();
   }
 
@@ -278,6 +293,7 @@ export class BudgetReportPage {
     const btn = await this.driver.findElement(
       By.css('.comment-panel .delete-confirm button.btn-secondary')
     );
+    await humanDelay(this.driver);
     await btn.click();
   }
 

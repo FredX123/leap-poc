@@ -16,9 +16,22 @@ export const TIMEOUT = parseInt(process.env['E2E_TIMEOUT'] || '10000', 10) * WAI
 /** Run Chrome in headless mode (e.g. for CI). Set E2E_HEADLESS=true */
 export const HEADLESS = process.env['E2E_HEADLESS'] === 'true';
 
+/**
+ * Delay in ms before each user-visible action (click, type, select) to
+ * simulate human-like interaction speed.
+ * Set E2E_ACTION_DELAY=0 to run at full speed (e.g. for CI).
+ * Default: 500 ms (scaled by WAIT_FACTOR).
+ */
+export const ACTION_DELAY = parseInt(process.env['E2E_ACTION_DELAY'] || '500', 10) * WAIT_FACTOR;
+
 /** Scaled sleep — use instead of driver.sleep() so the duration respects WAIT_FACTOR. */
 export function pause(driver: WebDriver, ms: number): Promise<void> {
   return driver.sleep(ms * WAIT_FACTOR);
+}
+
+/** Brief human-like pause before an action. Call before clicks, typing, etc. */
+export function humanDelay(driver: WebDriver): Promise<void> {
+  return ACTION_DELAY > 0 ? driver.sleep(ACTION_DELAY) : Promise.resolve();
 }
 
 /** Mock user identifiers (must match MockAuthController). */

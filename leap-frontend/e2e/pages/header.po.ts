@@ -1,5 +1,5 @@
 import { By, until, WebDriver } from 'selenium-webdriver';
-import { TIMEOUT } from '../config/test-config';
+import { TIMEOUT, humanDelay } from '../config/test-config';
 
 /**
  * Page object for the shared header / navbar component.
@@ -36,6 +36,7 @@ export class HeaderPage {
     );
     const isSelected = await toggle.isSelected();
     if (!isSelected) {
+      await humanDelay(this.driver);
       await toggle.click();
     }
     // Wait for the mock user dropdown to appear (API call to /api/mock/users)
@@ -47,6 +48,7 @@ export class HeaderPage {
   /** Select a mock user from the dropdown by username value. */
   async selectMockUser(username: string): Promise<void> {
     const select = await this.driver.findElement(By.css('.mock-user-select'));
+    await humanDelay(this.driver);
     await select.findElement(By.css(`option[value="${username}"]`)).click();
   }
 
@@ -55,12 +57,14 @@ export class HeaderPage {
     const btn = await this.driver.wait(
       until.elementLocated(By.css('button.btn-outline-warning')), TIMEOUT
     );
+    await humanDelay(this.driver);
     await btn.click();
   }
 
   /** Click the brand link to navigate home. */
   async clickBrand(): Promise<void> {
     const brand = await this.driver.findElement(By.css('a.navbar-brand'));
+    await humanDelay(this.driver);
     await brand.click();
   }
 
@@ -111,6 +115,7 @@ export class HeaderPage {
     for (const link of links) {
       const linkText = await link.getText();
       if (linkText.includes(text)) {
+        await humanDelay(this.driver);
         await link.click();
         return;
       }

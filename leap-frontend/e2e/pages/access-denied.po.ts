@@ -1,5 +1,5 @@
 import { By, until, WebDriver } from 'selenium-webdriver';
-import { TIMEOUT } from '../config/test-config';
+import { TIMEOUT, humanDelay } from '../config/test-config';
 
 /**
  * Page object for the Access Denied page.
@@ -29,6 +29,7 @@ export class AccessDeniedPage {
   /** Click the "Back to Home" link. */
   async clickBackToHome(): Promise<void> {
     const link = await this.driver.findElement(By.css('a[href="/"]'));
+    await humanDelay(this.driver);
     await link.click();
   }
 }
