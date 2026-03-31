@@ -56,7 +56,8 @@ leap-frontend/
 | Variable | Default | Description |
 |---|---|---|
 | `E2E_BASE_URL` | `http://localhost:4200` | Angular dev-server URL |
-| `E2E_TIMEOUT` | `10000` | Explicit-wait timeout in milliseconds |
+| `E2E_TIMEOUT` | `10000` | Explicit-wait timeout in milliseconds (before scaling) |
+| `E2E_WAIT_FACTOR` | `1` | Global multiplier for all wait/sleep durations. Set to `2` on slower machines to double all timeouts |
 | `E2E_HEADLESS` | `false` | Run Chrome in headless mode (set to `true` for CI) |
 
 ### Mock Users
@@ -91,13 +92,16 @@ npm run e2e
 
 # Run headless (for CI)
 npm run e2e:headless
+
+# Run on a slower machine (double all wait times)
+set E2E_WAIT_FACTOR=2&& npm run e2e
 ```
 
 ### Execution Pipeline
 
 1. `run-e2e.js` invokes `npx tsc -p tsconfig.e2e.json` to compile TypeScript to `out-tsc/e2e/`
 2. Jasmine loads its configuration from `e2e/support/jasmine.json`
-3. Jasmine loads the setup helper (`jasmine-setup.js`) which sets a 60-second spec timeout
+3. Jasmine loads the setup helper (`jasmine-setup.js`) which sets a 60-second spec timeout (scaled by `WAIT_FACTOR`)
 4. All `*.e2e-spec.js` files under `out-tsc/e2e/specs/` are executed sequentially
 5. Each spec file creates a shared Chrome WebDriver in `beforeAll` and quits it in `afterAll`
 
@@ -286,10 +290,12 @@ This ensures each test starts from a known state regardless of the order or outc
 
 ### Handling Async Operations
 
+All wait durations are scaled by the `WAIT_FACTOR` environment variable so the same tests work on both fast and slow machines.
+
 For operations that trigger backend API calls (comment creation, editing, deletion):
 
-- `driver.sleep(2000)` provides a buffer for the server round-trip and UI re-render
-- Explicit waits (`driver.wait(until.elementLocated(...))`) handle element appearance/disappearance
+- `pause(driver, 2000)` — centralized helper that applies `WAIT_FACTOR` to the base duration
+- Explicit waits (`driver.wait(until.elementLocated(...), TIMEOUT)`) use the already-scaled `TIMEOUT` constant
 - Post-action waits ensure state transitions complete before assertions (e.g., waiting for edit mode indicators to disappear after clicking Cancel)
 
 ### Defensive Seeding

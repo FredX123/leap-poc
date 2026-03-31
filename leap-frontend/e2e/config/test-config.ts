@@ -1,11 +1,25 @@
+import { WebDriver } from 'selenium-webdriver';
+
 /** Base URL of the running Angular dev-server. */
 export const BASE_URL = process.env['E2E_BASE_URL'] || 'http://localhost:4200';
 
-/** Default explicit-wait timeout in milliseconds. */
-export const TIMEOUT = parseInt(process.env['E2E_TIMEOUT'] || '10000', 10);
+/**
+ * Global wait-time multiplier for slower machines.
+ * Set E2E_WAIT_FACTOR=2 to double all wait/sleep durations.
+ * Default: 1 (no scaling).
+ */
+export const WAIT_FACTOR = parseFloat(process.env['E2E_WAIT_FACTOR'] || '1');
+
+/** Default explicit-wait timeout in milliseconds (scaled by WAIT_FACTOR). */
+export const TIMEOUT = parseInt(process.env['E2E_TIMEOUT'] || '10000', 10) * WAIT_FACTOR;
 
 /** Run Chrome in headless mode (e.g. for CI). Set E2E_HEADLESS=true */
 export const HEADLESS = process.env['E2E_HEADLESS'] === 'true';
+
+/** Scaled sleep — use instead of driver.sleep() so the duration respects WAIT_FACTOR. */
+export function pause(driver: WebDriver, ms: number): Promise<void> {
+  return driver.sleep(ms * WAIT_FACTOR);
+}
 
 /** Mock user identifiers (must match MockAuthController). */
 export const MOCK_USERS = {

@@ -2,7 +2,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { getDriver, quitDriver } from '../helpers/driver-setup';
 import { resetToAnonymous, mockLoginAs, mockLogout, navigateTo } from '../helpers/mock-auth.helper';
 import { BudgetReportPage } from '../pages/budget-report.po';
-import { MOCK_USERS } from '../config/test-config';
+import { MOCK_USERS, pause } from '../config/test-config';
 
 describe('Comment Panel', () => {
   let driver: WebDriver;
@@ -55,7 +55,7 @@ describe('Comment Panel', () => {
       const initialCount = await budgetPage.getCommentEntryCount();
       await budgetPage.typeComment('E2E write-user comment');
       await budgetPage.submitComment();
-      await driver.sleep(2000);
+      await pause(driver, 2000);
       const newCount = await budgetPage.getCommentEntryCount();
       expect(newCount).toBeGreaterThan(initialCount);
     });
@@ -64,7 +64,7 @@ describe('Comment Panel', () => {
       await budgetPage.openCommentPanel(0);
       await budgetPage.typeComment('Author check comment');
       await budgetPage.submitComment();
-      await driver.sleep(2000);
+      await pause(driver, 2000);
       const author = await budgetPage.getFirstCommentAuthor();
       expect(author).toContain('Write1');
     });
@@ -78,7 +78,7 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Seed comment for reply test');
         await budgetPage.submitComment();
-        await driver.sleep(2000);
+        await pause(driver, 2000);
       }
       await budgetPage.clickReplyOnFirstComment();
       expect(await budgetPage.isReplyInputVisible()).toBe(true);
@@ -90,11 +90,11 @@ describe('Comment Panel', () => {
       if (countBefore === 0) {
         await budgetPage.typeComment('Seed comment for reply');
         await budgetPage.submitComment();
-        await driver.sleep(2000);
+        await pause(driver, 2000);
       }
       await budgetPage.clickReplyOnFirstComment();
       await budgetPage.typeAndSubmitReply('E2E reply comment');
-      await driver.sleep(2000);
+      await pause(driver, 2000);
       const repliesCount = await budgetPage.getRepliesContainerCount();
       expect(repliesCount).toBeGreaterThanOrEqual(1);
     });
@@ -107,7 +107,7 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Comment to edit');
         await budgetPage.submitComment();
-        await driver.sleep(2000);
+        await pause(driver, 2000);
       }
       await budgetPage.clickEditOnFirstComment();
       expect(await budgetPage.isCommentEditTextareaVisible()).toBe(true);
@@ -119,7 +119,7 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Comment to cancel-edit');
         await budgetPage.submitComment();
-        await driver.sleep(2000);
+        await pause(driver, 2000);
       }
       await budgetPage.clickEditOnFirstComment();
       expect(await budgetPage.isCommentEditTextareaVisible()).toBe(true);
@@ -133,11 +133,11 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Original comment text');
         await budgetPage.submitComment();
-        await driver.sleep(2000);
+        await pause(driver, 2000);
       }
       await budgetPage.clickEditOnFirstComment();
       await budgetPage.editCommentAndSave('Updated E2E text');
-      await driver.sleep(2000);
+      await pause(driver, 2000);
       // The edited comment may not be the absolute first entry, so check all comment texts
       const allTexts = await budgetPage.getAllCommentTexts();
       expect(allTexts.some(t => t.includes('Updated E2E text'))).toBe(true);
@@ -150,12 +150,12 @@ describe('Comment Panel', () => {
       await budgetPage.openCommentPanel(1);
       await budgetPage.typeComment('Comment to delete');
       await budgetPage.submitComment();
-      await driver.sleep(2000);
+      await pause(driver, 2000);
       const countBefore = await budgetPage.getCommentEntryCount();
 
       await budgetPage.clickDeleteOnFirstComment();
       // If no replies, it deletes immediately (no confirmation dialog)
-      await driver.sleep(2000);
+      await pause(driver, 2000);
       const countAfter = await budgetPage.getCommentEntryCount();
       expect(countAfter).toBeLessThan(countBefore);
     });
@@ -169,7 +169,7 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Badge test comment');
         await budgetPage.submitComment();
-        await driver.sleep(2000);
+        await pause(driver, 2000);
       }
       await budgetPage.closeCommentPanel();
 
