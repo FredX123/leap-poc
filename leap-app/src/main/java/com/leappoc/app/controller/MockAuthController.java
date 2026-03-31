@@ -5,6 +5,7 @@ import com.leappoc.shared.security.MockUserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,14 +20,18 @@ import java.util.*;
 /**
  * Provides mock authentication endpoints so the app can be tested
  * without a live Entra ID tenant (e.g. after free-trial expiry).
+ * Only active when the "mock" Spring profile is enabled.
  */
 @RestController
 @RequestMapping("/api/mock")
+@Profile("mock")
 public class MockAuthController {
 
-    private record MockUserDef(String displayName, String email,
-                                List<String> roles, List<String> groups,
-                                String description) {}
+    private record MockUserDef(String displayName,
+                               String email,
+                               List<String> roles,
+                               List<String> groups,
+                               String description) {}
 
     private static final LinkedHashMap<String, MockUserDef> MOCK_USERS = new LinkedHashMap<>();
 

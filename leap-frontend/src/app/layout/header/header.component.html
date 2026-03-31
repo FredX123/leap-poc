@@ -49,23 +49,10 @@
       <span *ngIf="auth.user?.mock" class="badge bg-info ms-1">Mock</span>
     </span>
 
-    <!-- Not authenticated: mock toggle + login options -->
+    <!-- Not authenticated: show mock selector OR Entra login based on profile -->
     <ng-container *ngIf="!auth.isAuthenticated">
-      <div class="form-check form-switch mb-0">
-        <input class="form-check-input" type="checkbox" id="mockToggle"
-               [(ngModel)]="mockMode" (ngModelChange)="onMockToggle()">
-        <label class="form-check-label text-light small" for="mockToggle">Mock Login</label>
-      </div>
-
-      <!-- Regular Entra ID login -->
-      <button *ngIf="!mockMode"
-              class="btn btn-outline-light btn-sm"
-              (click)="auth.login()">
-        <i class="bi bi-box-arrow-in-right me-1"></i>Log in
-      </button>
-
-      <!-- Mock user selector -->
-      <select *ngIf="mockMode && mockUsers.length"
+      <!-- Mock profile: show user selector directly -->
+      <select *ngIf="auth.isMockProfile && mockUsers.length"
               class="form-select form-select-sm mock-user-select"
               (change)="mockLogin($any($event.target).value); $any($event.target).value = ''">
         <option value="" selected disabled>Select mock user...</option>
@@ -73,6 +60,13 @@
           {{ u.displayName }} ({{ u.description }})
         </option>
       </select>
+
+      <!-- Entra ID profile: show regular login button -->
+      <button *ngIf="!auth.isMockProfile"
+              class="btn btn-outline-light btn-sm"
+              (click)="auth.login()">
+        <i class="bi bi-box-arrow-in-right me-1"></i>Log in
+      </button>
     </ng-container>
 
     <!-- Logout -->

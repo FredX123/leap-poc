@@ -9,31 +9,35 @@
       </p>
       <hr class="my-4" />
 
-      <!-- Not logged in -->
-      <div *ngIf="!auth.isAuthenticated">
-        <p class="mb-4">
-          This proof-of-concept demonstrates single sign-on via Microsoft Entra
-          ID with MFA, role-based access control, and the Backend-for-Frontend
-          (BFF) session pattern — zero tokens stored in the browser.
-        </p>
-      </div>
-
-      <!-- Logged in -->
-      <div *ngIf="auth.isAuthenticated">
-        <div class="alert alert-success text-start" role="alert">
-          <h5 class="alert-heading">
-            <i class="bi bi-check-circle me-1"></i>
-            Welcome, {{ auth.user?.displayName || auth.user?.email }}!
-          </h5>
-          <p class="mb-1">You are authenticated. Your assigned roles:</p>
-          <ul class="mb-0">
-            <li *ngFor="let role of auth.user?.roles">{{ role }}</li>
-          </ul>
+      <ng-container *ngIf="auth.user$ | async as user">
+        <!-- Not logged in -->
+        <div *ngIf="!user.authenticated">
+          <p class="mb-4">
+            This proof-of-concept demonstrates single sign-on via Microsoft Entra
+            ID with MFA, role-based access control, and the Backend-for-Frontend
+            (BFF) session pattern — zero tokens stored in the browser.
+          </p>
         </div>
-        <p class="text-muted">
-          Use the navigation bar above to access your authorized pages.
-        </p>
-      </div>
+
+        <!-- Logged in -->
+        <div *ngIf="user.authenticated">
+          <div class="alert alert-success text-start" role="alert">
+            <h5 class="alert-heading">
+              <i class="bi bi-check-circle me-1"></i>
+              Welcome, {{ user.displayName || user.email }}!
+              <span *ngIf="user.mock" class="badge bg-info ms-1">Mock</span>
+            </h5>
+            <p class="mb-1">You are authenticated. Your assigned roles and groups:</p>
+            <ul class="mb-0">
+              <li *ngFor="let role of user.roles">Role: {{ role }}</li>
+              <li *ngFor="let group of user.groups">Group: {{ group }}</li>
+            </ul>
+          </div>
+          <p class="text-muted">
+            Use the navigation bar above to access your authorized pages.
+          </p>
+        </div>
+      </ng-container>
     </div>
   </div>
 

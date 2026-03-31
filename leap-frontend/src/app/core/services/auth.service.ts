@@ -37,6 +37,10 @@ export class AuthService {
     return this.userSubject.value?.mock === true;
   }
 
+  get isMockProfile(): boolean {
+    return this.userSubject.value?.mockProfile === true;
+  }
+
   hasRole(role: string): boolean {
     return this.userSubject.value?.roles?.includes(role) ?? false;
   }

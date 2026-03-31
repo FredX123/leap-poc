@@ -88,6 +88,8 @@ export class CommentEntryComponent implements OnChanges {
   onReply(content: string): void {
     this.inlineError = null;
     this.replied.emit({ parentId: this.comment.id, content });
+    // Close the reply input after submission (will reopen if error occurs via replyErrorMap)
+    this.showReply = false;
   }
 
   startEdit(): void {
