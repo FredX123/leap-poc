@@ -50,6 +50,11 @@ export class BudgetReportPage {
     if (rowIndex < buttons.length) {
       await humanDelay(this.driver);
       await buttons[rowIndex].click();
+      //. Wait for edit mode to become active (save button appears)
+      await this.driver.wait(async () => {
+        const els = await this.driver.findElements(By.css('button.btn-success .bi-check-lg'));
+        return els.length > 0;
+      }, TIMEOUT);
     }
   }
 
@@ -91,6 +96,11 @@ export class BudgetReportPage {
     await this.driver.wait(
       until.elementLocated(By.css('.comment-panel.open')), TIMEOUT
     );
+    // Wait for the panel's comment thread to finish loading
+    await this.driver.wait(async () => {
+      const spinners = await this.driver.findElements(By.css('.comment-panel .spinner-border'));
+      return spinners.length === 0;
+    }, TIMEOUT);
   }
 
   async isCommentPanelOpen(): Promise<boolean> {
@@ -132,12 +142,18 @@ export class BudgetReportPage {
 
   /** Click the send button to submit a comment. */
   async submitComment(): Promise<void> {
+    const countBefore = await this.getCommentEntryCount();
     const btn = await this.driver.wait(
       until.elementLocated(By.css('.comment-panel .comment-input button.btn-primary')), TIMEOUT
     );
     await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
     await humanDelay(this.driver);
     await btn.click();
+    // Wait for comment count to increase (API response received)
+    await this.driver.wait(async () => {
+      const countAfter = await this.getCommentEntryCount();
+      return countAfter > countBefore;
+    }, TIMEOUT);
   }
 
   /** Returns the number of comment entries in the panel. */
@@ -190,8 +206,14 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-entry button[aria-label="Reply to comment"]')),
       TIMEOUT
     );
+    await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
     await humanDelay(this.driver);
     await btn.click();
+    // Wait for the reply input to appear
+    await this.driver.wait(
+      until.elementLocated(By.css('.comment-panel .comment-entry .comment-input textarea')), 
+      TIMEOUT
+    );
   }
 
   /** Returns true if the inline reply input is visible. */
@@ -204,6 +226,7 @@ export class BudgetReportPage {
 
   /** Type text into the inline reply input and submit. */
   async typeAndSubmitReply(text: string): Promise<void> {
+    const repliesCountBefore = await this.getRepliesContainerCount();
     const textarea = await this.driver.wait(
       until.elementLocated(By.css('.comment-panel .comment-entry .comment-input textarea')), TIMEOUT
     );
@@ -217,6 +240,14 @@ export class BudgetReportPage {
     await this.driver.wait(until.elementIsVisible(sendBtn), TIMEOUT);
     await humanDelay(this.driver);
     await sendBtn.click();
+    // Wait for the reply to appear (replies container count increases or reply input disappears)
+    await this.driver.wait(async () => {
+      const replyInputGone = (await this.driver.findElements(
+        By.css('.comment-panel .comment-entry .comment-input textarea')
+      )).length === 0;
+      const repliesCountAfter = await this.getRepliesContainerCount();
+      return replyInputGone || repliesCountAfter > repliesCountBefore;
+    }, TIMEOUT);
   }
 
   /** Click the "Edit" button on the first comment (only visible to comment owner). */
@@ -225,8 +256,14 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-entry button[aria-label="Edit comment"]')),
       TIMEOUT
     );
+    await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
     await humanDelay(this.driver);
     await btn.click();
+    // Wiat for edit textarea to appear
+    await this.driver.wait(
+      until.elementLocated(By.css('.comment-panel .comment-entry textarea[aria-label="Edit comment text"]')),
+      TIMEOUT
+    );
   }
 
   /** Returns true if the comment edit textarea is visible. */
@@ -239,26 +276,46 @@ export class BudgetReportPage {
 
   /** Edit the comment text and click Save. */
   async editCommentAndSave(newText: string): Promise<void> {
-    const textarea = await this.driver.findElement(
-      By.css('.comment-panel .comment-entry textarea[aria-label="Edit comment text"]')
+    const textarea = await this.driver.wait(
+      until.elementLocated(By.css('.comment-panel .comment-entry textarea[aria-label="Edit comment text"]')),
+      TIMEOUT
     );
+    await this.driver.wait(until.elementIsVisible(textarea), TIMEOUT);
     await humanDelay(this.driver);
     await textarea.clear();
     await textarea.sendKeys(newText);
-    const saveBtn = await this.driver.findElement(
-      By.css('.comment-panel .comment-entry button[aria-label="Save edit"]')
+    const saveBtn = await this.driver.wait(
+      until.elementLocated(By.css('.comment-panel .comment-entry button[aria-label="Save edit"]')),
+      TIMEOUT
     );
+    await this.driver.wait(until.elementIsVisible(saveBtn), TIMEOUT);
     await humanDelay(this.driver);
     await saveBtn.click();
+    // Wait for edit mode to close (textarea disappears)
+    await this.driver.wait(async () => {
+      const els = await this.driver.findElements(
+        By.css('.comment-panel .comment-entry textarea[aria-label="Edit comment text"]')
+      );
+      return els.length === 0;
+    }, TIMEOUT);
   }
 
   /** Cancel the comment edit. */
   async cancelCommentEdit(): Promise<void> {
-    const btn = await this.driver.findElement(
-      By.css('.comment-panel .comment-entry button[aria-label="Cancel edit"]')
+    const btn = await this.driver.wait(
+      until.elementLocated(By.css('.comment-panel .comment-entry button[aria-label="Cancel edit"]')),
+      TIMEOUT
     );
+    await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
     await humanDelay(this.driver);
     await btn.click();
+    // Wait for edit mode to close (textarea disappears)
+    await this.driver.wait(async () => {
+      const els = await this.driver.findElements(
+        By.css('.comment-panel .comment-entry textarea[aria-label="Edit comment text"]')
+      );
+      return els.length === 0;
+    }, TIMEOUT);
   }
 
   /** Click the "Delete" button on the first comment (owner or admin). */
@@ -267,8 +324,37 @@ export class BudgetReportPage {
       until.elementLocated(By.css('.comment-panel .comment-entry button[aria-label="Delete comment"]')),
       TIMEOUT
     );
+    await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
     await humanDelay(this.driver);
     await btn.click();
+  }
+
+  /**
+   * Delete the first comment, handling confirmation dialog if needed.
+   * Waits for comment count to decrease.
+   */
+  async deleteFirstComment(): Promise<void> {
+    const countBefore = await this.getCommentEntryCount();
+    await this.clickDeleteOnFirstComment();
+
+    // Check if confirmation dialog appears (comment has replies)
+    // Use a short wait to seee if dialog shows up
+    try {
+      await this.driver.wait(
+        until.elementLocated(By.css('.comment-panel .delete-confirm')),
+        1000  // Short timeout - dialog appears quickly if it will
+      );
+      // Dialog appeared - confirm deletion
+      await this.confirmDeleteComment();
+    } catch {
+      // No dialog - comment was deleted immediately
+    }
+
+    // Wait for comment count to decrease
+    await this.driver.wait(async () => {
+      const countAfter = await this.getCommentEntryCount();
+      return countAfter < countBefore;
+    }, TIMEOUT);
   }
 
   /** Returns true if the delete confirmation dialog is visible. */
@@ -281,18 +367,22 @@ export class BudgetReportPage {
 
   /** Click "Delete all" in the delete confirmation dialog. */
   async confirmDeleteComment(): Promise<void> {
-    const btn = await this.driver.findElement(
-      By.css('.comment-panel .delete-confirm button.btn-danger')
+    const btn = await this.driver.wait(
+      until.elementLocated(By.css('.comment-panel .delete-confirm button.btn-danger')),
+      TIMEOUT
     );
+    await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
     await humanDelay(this.driver);
     await btn.click();
   }
 
   /** Click "Cancel" in the delete confirmation dialog. */
   async cancelDeleteComment(): Promise<void> {
-    const btn = await this.driver.findElement(
-      By.css('.comment-panel .delete-confirm button.btn-secondary')
+    const btn = await this.driver.wait(
+      until.elementLocated(By.css('.comment-panel .delete-confirm button.btn-secondary')),
+      TIMEOUT
     );
+    await this.driver.wait(until.elementIsVisible(btn), TIMEOUT);
     await humanDelay(this.driver);
     await btn.click();
   }
@@ -317,11 +407,28 @@ export class BudgetReportPage {
   async getCommentCountBadge(rowIndex: number): Promise<number | null> {
     const rows = await this.driver.findElements(By.css('table.table-striped tbody tr'));
     if (rowIndex >= rows.length) return null;
+    // Badge is inside the comment button: button.btn-outline-secondary > span.badge.bg-primary
     const badges = await rows[rowIndex].findElements(
-      By.css('.badge.rounded-pill.bg-primary')
+      By.css('button.btn-outline-secondary > span.badge.bg-primary')
     );
     if (badges.length === 0) return null;
     const text = await badges[0].getText();
-    return parseInt(text, 10);
+    return Number.parseInt(text, 10);
+  }
+
+  /**
+   * Wait for comment count badge to appear on a row.
+   * Returns the badge count, or null if timeout.
+   */
+  async waitForCommentCountBadge(rowIndex: number): Promise<number | null> {
+    try {
+        await this.driver.wait(async () => {
+            const badge = await this.getCommentCountBadge(rowIndex);
+            return badge !== null && badge > 0;
+        }, TIMEOUT);
+        return await this.getCommentCountBadge(rowIndex);
+    } catch {
+        return null;
+    }
   }
 }

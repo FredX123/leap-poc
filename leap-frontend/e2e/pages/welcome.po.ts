@@ -69,8 +69,36 @@ export class WelcomePage {
   async clickApiTestLink(index: number): Promise<void> {
     const links = await this.driver.findElements(By.css('.card .list-group-item a'));
     if (index < links.length) {
+        const link = links[index];
       await humanDelay(this.driver);
-      await links[index].click();
+
+      // Scroll element into view and wait for it to be in viewport
+      await this.driver.executeScript('arguments[0].scrollIntoView({block: "center"})', link);
+      await this.driver.wait(until.elementIsVisible(link), TIMEOUT);
+
+      // Dismiss any visible toast alerts that might be blocking the clicks
+      const toasts = await this.driver.findElements(By.css('.alert-dismissible .btn-close'));
+      for (const clostBtn of toasts) {
+        try {
+          await clostBtn.click();
+          // Wait for toast to start fading
+          await this.driver.wait(async () => {
+            const remaining = await this.driver.findElements(By.css('.alert-dismissible'));
+            return remaining.length < toasts.length;
+          }, TIMEOUT).catch(() => { /* timeout is ok, toast may already be gone */ });
+        } catch { /* ignore if already gone */ }
+      }
+
+      // Try normal click first, fall back to JavaScript click if intercepted
+      try {
+        await link.click();
+      } catch (e: unknown) {
+        if (e instanceof Error && e.name === 'ElementClickInterceptedError') {
+          await this.driver.executeScript('arguments[0].click()', link);
+        } else {
+          throw e;
+        }
+      }
     }
   }
 

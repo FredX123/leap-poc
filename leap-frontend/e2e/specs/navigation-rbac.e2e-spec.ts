@@ -130,6 +130,19 @@ describe('Navigation & RBAC', () => {
     });
   });
 
+  // --- Read group user (GRP_READ) ---
+
+  describe('Read group user', () => {
+    beforeEach(async () => {
+      await mockLoginAs(driver, MOCK_USERS.READ_GROUP);
+    });
+
+    it('should see Budget Report nav link (group-based)', async () => {
+      const links = await header.getNavLinkTexts();
+      expect(links.some(t => t.includes('Budget Report'))).toBe(true);
+    });
+  });
+
   // --- Access Denied ---
 
   describe('Access Denied', () => {

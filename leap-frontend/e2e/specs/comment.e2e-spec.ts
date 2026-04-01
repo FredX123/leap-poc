@@ -1,8 +1,8 @@
 import { WebDriver } from 'selenium-webdriver';
 import { getDriver, quitDriver } from '../helpers/driver-setup';
-import { resetToAnonymous, mockLoginAs, mockLogout, navigateTo } from '../helpers/mock-auth.helper';
+import { resetToAnonymous, mockLoginAs, navigateTo } from '../helpers/mock-auth.helper';
 import { BudgetReportPage } from '../pages/budget-report.po';
-import { MOCK_USERS, pause } from '../config/test-config';
+import { MOCK_USERS } from '../config/test-config';
 
 describe('Comment Panel', () => {
   let driver: WebDriver;
@@ -55,7 +55,7 @@ describe('Comment Panel', () => {
       const initialCount = await budgetPage.getCommentEntryCount();
       await budgetPage.typeComment('E2E write-user comment');
       await budgetPage.submitComment();
-      await pause(driver, 2000);
+      // submitComment now waits for comment to appear
       const newCount = await budgetPage.getCommentEntryCount();
       expect(newCount).toBeGreaterThan(initialCount);
     });
@@ -64,7 +64,7 @@ describe('Comment Panel', () => {
       await budgetPage.openCommentPanel(0);
       await budgetPage.typeComment('Author check comment');
       await budgetPage.submitComment();
-      await pause(driver, 2000);
+      // submitComment now waits for comment to appear
       const author = await budgetPage.getFirstCommentAuthor();
       expect(author).toContain('Write1');
     });
@@ -78,7 +78,6 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Seed comment for reply test');
         await budgetPage.submitComment();
-        await pause(driver, 2000);
       }
       await budgetPage.clickReplyOnFirstComment();
       expect(await budgetPage.isReplyInputVisible()).toBe(true);
@@ -90,11 +89,10 @@ describe('Comment Panel', () => {
       if (countBefore === 0) {
         await budgetPage.typeComment('Seed comment for reply');
         await budgetPage.submitComment();
-        await pause(driver, 2000);
       }
       await budgetPage.clickReplyOnFirstComment();
       await budgetPage.typeAndSubmitReply('E2E reply comment');
-      await pause(driver, 2000);
+      // typeAdndSubmitReply now waits for the new reply to appear
       const repliesCount = await budgetPage.getRepliesContainerCount();
       expect(repliesCount).toBeGreaterThanOrEqual(1);
     });
@@ -107,7 +105,6 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Comment to edit');
         await budgetPage.submitComment();
-        await pause(driver, 2000);
       }
       await budgetPage.clickEditOnFirstComment();
       expect(await budgetPage.isCommentEditTextareaVisible()).toBe(true);
@@ -119,7 +116,6 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Comment to cancel-edit');
         await budgetPage.submitComment();
-        await pause(driver, 2000);
       }
       await budgetPage.clickEditOnFirstComment();
       expect(await budgetPage.isCommentEditTextareaVisible()).toBe(true);
@@ -133,12 +129,10 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Original comment text');
         await budgetPage.submitComment();
-        await pause(driver, 2000);
       }
       await budgetPage.clickEditOnFirstComment();
       await budgetPage.editCommentAndSave('Updated E2E text');
-      await pause(driver, 2000);
-      // The edited comment may not be the absolute first entry, so check all comment texts
+      // editCommentAndSave now waits for edit mode to close
       const allTexts = await budgetPage.getAllCommentTexts();
       expect(allTexts.some(t => t.includes('Updated E2E text'))).toBe(true);
     });
@@ -150,12 +144,10 @@ describe('Comment Panel', () => {
       await budgetPage.openCommentPanel(1);
       await budgetPage.typeComment('Comment to delete');
       await budgetPage.submitComment();
-      await pause(driver, 2000);
       const countBefore = await budgetPage.getCommentEntryCount();
 
-      await budgetPage.clickDeleteOnFirstComment();
-      // If no replies, it deletes immediately (no confirmation dialog)
-      await pause(driver, 2000);
+      // deleteFirstComment handles confirmation dialog and waits for count to decrease
+      await budgetPage.deleteFirstComment();
       const countAfter = await budgetPage.getCommentEntryCount();
       expect(countAfter).toBeLessThan(countBefore);
     });
@@ -169,7 +161,6 @@ describe('Comment Panel', () => {
       if (count === 0) {
         await budgetPage.typeComment('Badge test comment');
         await budgetPage.submitComment();
-        await pause(driver, 2000);
       }
       await budgetPage.closeCommentPanel();
 
@@ -178,7 +169,8 @@ describe('Comment Panel', () => {
       budgetPage = new BudgetReportPage(driver);
       await budgetPage.waitForPage();
 
-      const badge = await budgetPage.getCommentCountBadge(0);
+      // waitForCommentCountBadge handles the async loading
+      const badge = await budgetPage.waitForCommentCountBadge(0);
       expect(badge).not.toBeNull();
       expect(badge!).toBeGreaterThanOrEqual(1);
     });
@@ -229,6 +221,67 @@ describe('Comment Panel', () => {
       const count = await budgetPage.getCommentEntryCount();
       // We don't know the exact count, but the panel should render without errors
       expect(count).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  // =========================================================================
+  // Group-based write user (GRP_WRITE) can interact with comments
+  // =========================================================================
+
+  describe('Write group user (GRP_WRITE)', () => {
+    beforeEach(async () => {
+      await resetToAnonymous(driver);
+      await mockLoginAs(driver, MOCK_USERS.WRITE_GROUP);
+      await navigateTo(driver, '/budget-report');
+      budgetPage = new BudgetReportPage(driver);
+      await budgetPage.waitForPage();
+    });
+
+    it('should open comment panel and show comment input', async () => {
+      await budgetPage.openCommentPanel(0);
+      expect(await budgetPage.isCommentPanelOpen()).toBe(true);
+      expect(await budgetPage.isCommentInputVisible()).toBe(true);
+    });
+
+    it('should submit a comment as group-based write user', async () => {
+      await budgetPage.openCommentPanel(0);
+      const initialCount = await budgetPage.getCommentEntryCount();
+      await budgetPage.typeComment('E2E group-write comment');
+      await budgetPage.submitComment();
+      const newCount = await budgetPage.getCommentEntryCount();
+      expect(newCount).toBeGreaterThan(initialCount);
+    });
+  });
+
+  // =========================================================================
+  // Group-based read user (GRP_READ) has limited access
+  // =========================================================================
+
+  describe('Read group user (GRP_READ)', () => {
+    beforeEach(async () => {
+      await resetToAnonymous(driver);
+      await mockLoginAs(driver, MOCK_USERS.READ_GROUP);
+      await navigateTo(driver, '/budget-report');
+      budgetPage = new BudgetReportPage(driver);
+      await budgetPage.waitForPage();
+    });
+
+    it('should open comment panel', async () => {
+      await budgetPage.openCommentPanel(0);
+      expect(await budgetPage.isCommentPanelOpen()).toBe(true);
+    });
+
+    it('should NOT show comment input for group-based read user', async () => {
+      await budgetPage.openCommentPanel(0);
+      expect(await budgetPage.isCommentInputVisible()).toBe(false);
+    });
+
+    it('should NOT show reply buttons for group-based read user', async () => {
+      await budgetPage.openCommentPanel(0);
+      const replyButtons = await driver.findElements(
+        {css: '.comment-panel .comment-entry button[aria-label="Reply to comment"]'}
+      );
+      expect(replyButtons.length).toBe(0);
     });
   });
 

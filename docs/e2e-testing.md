@@ -189,11 +189,11 @@ await this.driver.wait(async () => {
 |---|---|---|
 | `mock-auth.e2e-spec.ts` | 13 | Mock authentication toggle, login, logout, user switching |
 | `welcome.e2e-spec.ts` | 9 | Welcome page content, reactivity, role/group display |
-| `navigation-rbac.e2e-spec.ts` | 16 | Navigation links per role, route guards, access-denied redirects |
-| `budget-report.e2e-spec.ts` | 8 | Budget table, edit mode, comment buttons per role |
+| `navigation-rbac.e2e-spec.ts` | 17 | Navigation links per role/group, route guards, access-denied redirects |
+| `budget-report.e2e-spec.ts` | 14 | Budget table, edit mode, comment buttons per role and group |
 | `api-auth.e2e-spec.ts` | 12 | API endpoint authorization per role (admin/write/read/anonymous) |
-| `comment.e2e-spec.ts` | 19 | Comment CRUD, replies, edit/cancel, delete, read-only restrictions |
-| **Total** | **77** | |
+| `comment.e2e-spec.ts` | 25 | Comment CRUD, replies, edit/cancel, delete, role & group restrictions |
+| **Total** | **90** | |
 
 ### 1. Mock Authentication (`mock-auth.e2e-spec.ts`)
 
@@ -225,15 +225,18 @@ Validates role-based navigation and route guards:
 - **Write role** — sees "Budget Report", does NOT see "User Management", can navigate to Budget Report
 - **Write group** — same as write role
 - **Read role** — sees "Budget Report", does NOT see "User Management", can navigate to Budget Report
+- **Read group** — sees "Budget Report" (group-based authorization)
 - **Access-denied redirects** — read user redirected from admin-only route; write user redirected from user-management; read user redirected from write-only route
 - **Back to Home** — access-denied page "Back to Home" link works
 
 ### 4. Budget Report (`budget-report.e2e-spec.ts`)
 
-Validates budget table interactions by role:
+Validates budget table interactions by role and group:
 
-- **Write user** — table displays with data rows, edit buttons visible, can enter and cancel edit mode, comment buttons visible
-- **Read user** — table displays with data rows, edit buttons NOT visible, comment buttons still visible
+- **Write role** — table displays with data rows, edit buttons visible, can enter and cancel edit mode, comment buttons visible
+- **Read role** — table displays with data rows, edit buttons NOT visible, comment buttons still visible
+- **Write group (GRP_WRITE)** — table displays, edit buttons visible, comment buttons visible
+- **Read group (GRP_READ)** — table displays, edit buttons NOT visible, comment buttons visible
 
 ### 5. API Authorization (`api-auth.e2e-spec.ts`)
 
@@ -266,6 +269,15 @@ Validates the full comment feature set:
 - Comment input textarea is NOT visible
 - Reply, edit, and delete buttons are NOT visible
 - Can still view existing comments
+
+**Write group user (GRP_WRITE):**
+- Can open the comment panel and see comment input
+- Can submit a comment as a group-based write user
+
+**Read group user (GRP_READ):**
+- Can open the comment panel
+- Comment input textarea is NOT visible
+- Reply buttons are NOT visible
 
 **Multi-row behavior:**
 - Comment panel opens correctly on different table rows

@@ -77,4 +77,54 @@ describe('Budget Report', () => {
       expect(await budgetPage.areCommentButtonsVisible()).toBe(true);
     });
   });
+
+  // --- Write group user (GRP_WRITE) ---
+
+  describe('Write group user (GRP_WRITE)', () => {
+    beforeEach(async () => {
+      await resetToAnonymous(driver);
+      await mockLoginAs(driver, MOCK_USERS.WRITE_GROUP);
+      await navigateTo(driver, '/budget-report');
+      budgetPage = new BudgetReportPage(driver);
+      await budgetPage.waitForPage();
+    });
+
+    it('should display budget table with data rows', async () => {
+      expect(await budgetPage.isTablePresent()).toBe(true);
+      expect(await budgetPage.getRowCount()).toBeGreaterThan(0);
+    });
+
+    it('should show edit buttons for group-based write user', async () => {
+      expect(await budgetPage.areEditButtonsVisible()).toBe(true);
+    });
+
+    it('should show comment buttons on all rows', async () => {
+      expect(await budgetPage.areCommentButtonsVisible()).toBe(true);
+    });
+  });
+
+  // --- Read group user (GRP_READ) ---
+
+  describe('Read group user (GRP_READ)', () => {
+    beforeEach(async () => {
+      await resetToAnonymous(driver);
+      await mockLoginAs(driver, MOCK_USERS.READ_GROUP);
+      await navigateTo(driver, '/budget-report');
+      budgetPage = new BudgetReportPage(driver);
+      await budgetPage.waitForPage();
+    });
+
+    it('should display budget table with data rows', async () => {
+      expect(await budgetPage.isTablePresent()).toBe(true);
+      expect(await budgetPage.getRowCount()).toBeGreaterThan(0);
+    });
+
+    it('should NOT show edit buttons for group-based read user', async () => {
+      expect(await budgetPage.areEditButtonsVisible()).toBe(false);
+    });
+
+    it('should show comment buttons on all rows', async () => {
+      expect(await budgetPage.areCommentButtonsVisible()).toBe(true);
+    });
+  });
 });

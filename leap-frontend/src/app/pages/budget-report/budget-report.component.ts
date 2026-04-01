@@ -44,7 +44,7 @@ export class BudgetReportComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.canWrite = this.auth.hasRole('APP_WRITE');
+    this.canWrite = this.auth.hasAnyRoleOrGroup('APP_WRITE');
     this.loadData();
   }
 
