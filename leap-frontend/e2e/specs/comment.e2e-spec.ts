@@ -2,7 +2,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { getDriver, quitDriver } from '../helpers/driver-setup';
 import { resetToAnonymous, mockLoginAs, navigateTo } from '../helpers/mock-auth.helper';
 import { BudgetReportPage } from '../pages/budget-report.po';
-import { MOCK_USERS } from '../config/test-config';
+import { MOCK_USERS, TIMEOUT } from '../config/test-config';
 
 describe('Comment Panel', () => {
   let driver: WebDriver;
@@ -66,7 +66,7 @@ describe('Comment Panel', () => {
       await budgetPage.submitComment();
       // submitComment now waits for comment to appear
       const author = await budgetPage.getFirstCommentAuthor();
-      expect(author).toContain('Write1');
+      expect(author).toContain('POC Writer 1');
     });
 
     // --- Reply to comment ---
@@ -132,9 +132,12 @@ describe('Comment Panel', () => {
       }
       await budgetPage.clickEditOnFirstComment();
       await budgetPage.editCommentAndSave('Updated E2E text');
-      // editCommentAndSave now waits for edit mode to close
-      const allTexts = await budgetPage.getAllCommentTexts();
-      expect(allTexts.some(t => t.includes('Updated E2E text'))).toBe(true);
+      // editCommentAndSave waits for edit mode to close, but the content
+      // update arrives asynchronously from the API — poll until it appears
+      await driver.wait(async () => {
+        const allTexts = await budgetPage.getAllCommentTexts();
+        return allTexts.some(t => t.includes('Updated E2E text'));
+      }, TIMEOUT);
     });
 
     // --- Delete own comment ---
