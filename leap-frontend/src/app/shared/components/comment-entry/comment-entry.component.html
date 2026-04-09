@@ -23,7 +23,7 @@
       <div class="flex-grow-1 min-width-0">
         <!-- Header: name + timestamp + badges -->
         <div class="d-flex align-items-center gap-2 flex-wrap">
-          <strong class="small">{{ comment.displayName || 'Unknown' }}</strong>
+          <strong class="small" [appAuthorTooltip]="comment.userId">{{ comment.displayName || 'Unknown' }}</strong>
           <small class="text-muted">{{ comment.createdAt | date:'short' }}</small>
           <span *ngIf="comment.isEdited" class="badge bg-secondary badge-sm">Edited</span>
         </div>

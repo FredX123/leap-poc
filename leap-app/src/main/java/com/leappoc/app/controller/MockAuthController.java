@@ -31,17 +31,17 @@ public class MockAuthController {
     private static final LinkedHashMap<String, MockUserDef> MOCK_USERS = new LinkedHashMap<>();
 
     static {
-        MOCK_USERS.put("leap-poc-admin1", new MockUserDef("POC Admin 1", "admin1@leappoc.mock",
+        MOCK_USERS.put("2ce33691-a662-434b-8676-55a3fc6799ef", new MockUserDef("POC Admin 1", "admin1@leappoc.mock",
                 List.of("APP_ADMIN"), List.of(), "Role: APP_ADMIN"));
-        MOCK_USERS.put("leap-poc-admin2", new MockUserDef("POC Admin 2", "admin2@leappoc.mock",
+        MOCK_USERS.put("deaa7af4-ef97-4ebe-8cf3-10bb52bcdc3b", new MockUserDef("POC Admin 2", "admin2@leappoc.mock",
                 List.of(), List.of("GRP_ADMIN"), "Group: GRP_ADMIN"));
-        MOCK_USERS.put("leap-poc-write1", new MockUserDef("POC Writer 1", "write1@leappoc.mock",
+        MOCK_USERS.put("2f2c9530-a002-4b59-8776-7ee1cd56e5a5", new MockUserDef("POC Writer 1", "write1@leappoc.mock",
                 List.of("APP_WRITE"), List.of(), "Role: APP_WRITE"));
-        MOCK_USERS.put("leap-poc-write2", new MockUserDef("POC Writer 2", "write2@leappoc.mock",
+        MOCK_USERS.put("de62386a-6618-40b9-94c6-4d04260942bc", new MockUserDef("POC Writer 2", "write2@leappoc.mock",
                 List.of(), List.of("GRP_WRITE"), "Group: GRP_WRITE"));
-        MOCK_USERS.put("leap-poc-read1", new MockUserDef("POC Reader 1", "read1@leappoc.mock",
+        MOCK_USERS.put("122386cf-65df-445e-99cf-b79501cf7ddb", new MockUserDef("POC Reader 1", "read1@leappoc.mock",
                 List.of("APP_READ"), List.of(), "Role: APP_READ"));
-        MOCK_USERS.put("leap-poc-read2", new MockUserDef("POC Reader 2", "read2@leappoc.mock",
+        MOCK_USERS.put("72991c97-a5f6-46be-b58b-8fa5ecfc3a94", new MockUserDef("POC Reader 2", "read2@leappoc.mock",
                 List.of(), List.of("GRP_READ"), "Group: GRP_READ"));
     }
 

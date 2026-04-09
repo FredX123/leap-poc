@@ -3,6 +3,13 @@ server:
 
 app:
   frontend-url: http://localhost:4200
+  # App-only (client credentials) access to Microsoft Graph for user lookup.
+  # Uses the same Entra app registration — ensure it has Application permission User.Read.All
+  # with admin consent granted.
+  entra:
+    tenant-id: ${ENTRA_TENANT_ID}
+    client-id: ${ENTRA_CLIENT_ID}
+    client-secret: ${ENTRA_CLIENT_SECRET}
 
 spring:
   datasource:
@@ -50,3 +57,4 @@ entra:
     GRP_ADMIN: ${ENTRA_GROUP_ADMIN:}
     GRP_WRITE: ${ENTRA_GROUP_WRITE:}
     GRP_READ:  ${ENTRA_GROUP_READ:}
+

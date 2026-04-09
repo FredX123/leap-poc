@@ -6,11 +6,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommentThreadDto } from '../../models/comment.model';
 import { CommentInputComponent } from '../comment-input/comment-input.component';
+import { AuthorTooltipDirective } from '../../directives/author-tooltip.directive';
 
 @Component({
   selector: 'app-comment-entry',
   standalone: true,
-  imports: [CommonModule, FormsModule, CommentInputComponent],
+  imports: [CommonModule, FormsModule, CommentInputComponent, AuthorTooltipDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './comment-entry.component.html',
   styleUrl: './comment-entry.component.scss'
