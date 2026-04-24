@@ -1,0 +1,64 @@
+<div class="container-fluid mt-4">
+  <h2><i class="bi bi-graph-up-arrow me-2"></i>OSFI LCR Metric Report</h2>
+  <hr>
+
+  <!-- Search Form -->
+  <form class="row g-3 mb-4" (ngSubmit)="onViewAnalytics()">
+    <div class="col-auto">
+      <label for="startDate" class="form-label">Start Date</label>
+      <input type="date" id="startDate" class="form-control"
+             [(ngModel)]="startDate" name="startDate" required>
+    </div>
+    <div class="col-auto">
+      <label for="endDate" class="form-label">End Date</label>
+      <input type="date" id="endDate" class="form-control"
+             [(ngModel)]="endDate" name="endDate" required>
+    </div>
+    <div class="col-auto">
+      <label for="segment" class="form-label">Segment</label>
+      <select id="segment" class="form-select"
+              [(ngModel)]="segment" name="segment" required>
+        <option *ngFor="let seg of segments" [value]="seg">{{ seg }}</option>
+      </select>
+    </div>
+    <div class="col-auto d-flex align-items-end">
+      <button type="submit" class="btn btn-primary"
+              [disabled]="!startDate || !endDate || !segment || loading">
+        <i class="bi bi-bar-chart-line me-1"></i>View Analytics
+      </button>
+    </div>
+  </form>
+
+  <!-- Alert -->
+  <div *ngIf="message"
+       class="alert"
+       [class.alert-success]="message.type === 'success'"
+       [class.alert-danger]="message.type === 'danger'"
+       role="alert">
+    {{ message.text }}
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- AG Grid -->
+  <div *ngIf="!loading && rowData.length > 0" class="lcr-grid-container">
+    <ag-grid-angular
+      class="ag-theme-alpine"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [domLayout]="'autoHeight'"
+      [suppressHorizontalScroll]="false"
+      [animateRows]="true">
+    </ag-grid-angular>
+  </div>
+
+  <div *ngIf="!loading && rowData.length === 0 && !message" class="text-muted mt-3">
+    Select a segment and date range, then click <strong>View Analytics</strong> to load the OSFI LCR Metric report.
+  </div>
+</div>

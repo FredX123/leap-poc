@@ -41,6 +41,18 @@ export const routes: Routes = [
     canActivate: [roleGuard('APP_READ')]
   },
   {
+    path: 'osfi-lcr-report',
+    loadComponent: () =>
+      import('./pages/osfi-lcr-report/osfi-lcr-report.component').then(m => m.OsfiLcrReportComponent),
+    canActivate: [roleGuard('APP_READ', 'APP_WRITE')]
+  },
+  {
+    path: 'osfi-lcr-metric-report',
+    loadComponent: () =>
+      import('./pages/osfi-lcr-metric-report/osfi-lcr-metric-report.component').then(m => m.OsfiLcrMetricReportComponent),
+    canActivate: [roleGuard('APP_READ', 'APP_WRITE')]
+  },
+  {
     path: 'access-denied',
     loadComponent: () =>
       import('./pages/access-denied/access-denied.component').then(m => m.AccessDeniedComponent)

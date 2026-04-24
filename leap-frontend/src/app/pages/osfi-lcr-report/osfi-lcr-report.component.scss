@@ -1,0 +1,14 @@
+.lcr-grid-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+:host ::ng-deep .ag-theme-alpine {
+  --ag-header-height: 56px;
+  --ag-header-foreground-color: #333;
+  --ag-row-hover-color: #f0f8ff;
+}
+
+:host ::ng-deep .text-danger {
+  color: #dc3545 !important;
+}
