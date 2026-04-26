@@ -11,33 +11,18 @@ export const routes: Routes = [
     canActivate: [roleGuard('APP_ADMIN')]
   },
   {
-    path: 'budget-report',
-    loadComponent: () =>
-      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
-    canActivate: [roleGuard('APP_READ', 'APP_WRITE')]
-  },
-  {
-    path: 'budget-report',
-    loadComponent: () =>
-      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
-    canActivate: [roleGuard('APP_READ', 'APP_WRITE')]
-  },
-  {
     path: 'admin-only',
-    loadComponent: () =>
-      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
+    component: WelcomeComponent,
     canActivate: [roleGuard('APP_ADMIN')]
   },
   {
     path: 'write-only',
-    loadComponent: () =>
-      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
+    component: WelcomeComponent,
     canActivate: [roleGuard('APP_WRITE')]
   },
   {
     path: 'read-only',
-    loadComponent: () =>
-      import('./pages/budget-report/budget-report.component').then(m => m.BudgetReportComponent),
+    component: WelcomeComponent,
     canActivate: [roleGuard('APP_READ')]
   },
   {

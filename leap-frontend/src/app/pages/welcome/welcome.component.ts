@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BudgetService } from '../../core/services/budget.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -16,9 +15,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class WelcomeComponent {
   
   apiUrls: Record<string, string> = {
-    'APP_ADMIN': '/api/budget/admin-only',
-    'APP_WRITE': '/api/budget/write-only',
-    'APP_READ': '/api/budget/read-only'
+    'APP_ADMIN': '/api/report/admin-only',
+    'APP_WRITE': '/api/report/write-only',
+    'APP_READ': '/api/report/read-only'
   };
 
   message: { text: string; type: 'success' | 'danger' } | null = null;
@@ -28,14 +27,14 @@ export class WelcomeComponent {
   constructor(
     private cd: ChangeDetectorRef,
     public auth: AuthService,
-    private budgetService: BudgetService
+    private http: HttpClient
   ) {}
 
 
   testAuth(role: string): void {
     const url = this.apiUrls[role];
 
-    this.budgetService.testEndpoint(url).pipe(
+    this.http.get(url, { responseType: 'text' }).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: () => this.showMessage(`Successfully accessed ${url} as ${role}.`, 'success'),

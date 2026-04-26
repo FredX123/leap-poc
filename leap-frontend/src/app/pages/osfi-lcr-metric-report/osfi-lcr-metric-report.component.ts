@@ -22,7 +22,7 @@ export class OsfiLcrMetricReportComponent {
   startDate = '';
   endDate = '';
   segment = 'Enterprise';
-  segments = ['Enterprise', 'CAD Retail', 'US Retail', 'Wholesale'];
+  segments = ['Enterprise', 'CA Retail', 'US Retail', 'Wholesale'];
   loading = false;
   message: { text: string; type: 'success' | 'danger' } | null = null;
 

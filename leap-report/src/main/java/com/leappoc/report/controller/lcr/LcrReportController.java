@@ -36,4 +36,21 @@ public class LcrReportController {
                 request.getSegment(), request.getStartDate(), request.getEndDate());
         return ResponseEntity.ok(result);
     }
+
+    // --- Auth test endpoints (for RBAC verification on welcome page) ---
+
+    @GetMapping("/admin-only")
+    @PreAuthorize("hasRole('" + RoleConstants.APP_ADMIN + "')"
+            + " or hasAuthority('" + RoleConstants.GROUP_GRP_ADMIN + "')")
+    public void adminOnly() {}
+
+    @GetMapping("/write-only")
+    @PreAuthorize("hasRole('" + RoleConstants.APP_WRITE + "')"
+            + " or hasAuthority('" + RoleConstants.GROUP_GRP_WRITE + "')")
+    public void writeOnly() {}
+
+    @GetMapping("/read-only")
+    @PreAuthorize("hasRole('" + RoleConstants.APP_READ + "')"
+            + " or hasAuthority('" + RoleConstants.GROUP_GRP_READ + "')")
+    public void readOnly() {}
 }

@@ -16,6 +16,7 @@ import { MockUserOption } from '../../shared/models/user-info.model';
 export class HeaderComponent implements OnInit {
   mockMode = false;
   mockUsers: MockUserOption[] = [];
+  navCollapsed = true;
 
   constructor(public auth: AuthService, private cdr: ChangeDetectorRef, private router: Router) {}
 

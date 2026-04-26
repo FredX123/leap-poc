@@ -4,7 +4,6 @@ import { resetToAnonymous, mockLoginAs, navigateTo } from '../helpers/mock-auth.
 import { HeaderPage } from '../pages/header.po';
 import { UserManagementPage } from '../pages/user-management.po';
 import { AccessDeniedPage } from '../pages/access-denied.po';
-import { BudgetReportPage } from '../pages/budget-report.po';
 import { MOCK_USERS } from '../config/test-config';
 
 describe('Navigation & RBAC', () => {
@@ -74,21 +73,14 @@ describe('Navigation & RBAC', () => {
       await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
     });
 
-    it('should see Budget Report nav link', async () => {
+    it('should see OSFI LCR nav link', async () => {
       const links = await header.getNavLinkTexts();
-      expect(links.some(t => t.includes('Budget Report'))).toBe(true);
+      expect(links.some(t => t.includes('OSFI LCR'))).toBe(true);
     });
 
     it('should NOT see User Management nav link', async () => {
       const links = await header.getNavLinkTexts();
       expect(links.some(t => t.includes('User Management'))).toBe(false);
-    });
-
-    it('should navigate to Budget Report page', async () => {
-      await header.clickNavLink('Budget Report');
-      const page = new BudgetReportPage(driver);
-      await page.waitForPage();
-      expect(await page.isTablePresent()).toBe(true);
     });
   });
 
@@ -99,9 +91,9 @@ describe('Navigation & RBAC', () => {
       await mockLoginAs(driver, MOCK_USERS.WRITE_GROUP);
     });
 
-    it('should see Budget Report nav link (group-based)', async () => {
+    it('should see OSFI LCR nav link (group-based)', async () => {
       const links = await header.getNavLinkTexts();
-      expect(links.some(t => t.includes('Budget Report'))).toBe(true);
+      expect(links.some(t => t.includes('OSFI LCR'))).toBe(true);
     });
   });
 
@@ -112,21 +104,14 @@ describe('Navigation & RBAC', () => {
       await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
     });
 
-    it('should see Budget Report nav link', async () => {
+    it('should see OSFI LCR nav link', async () => {
       const links = await header.getNavLinkTexts();
-      expect(links.some(t => t.includes('Budget Report'))).toBe(true);
+      expect(links.some(t => t.includes('OSFI LCR'))).toBe(true);
     });
 
     it('should NOT see User Management nav link', async () => {
       const links = await header.getNavLinkTexts();
       expect(links.some(t => t.includes('User Management'))).toBe(false);
-    });
-
-    it('should navigate to Budget Report page', async () => {
-      await header.clickNavLink('Budget Report');
-      const page = new BudgetReportPage(driver);
-      await page.waitForPage();
-      expect(await page.isTablePresent()).toBe(true);
     });
   });
 
@@ -137,9 +122,9 @@ describe('Navigation & RBAC', () => {
       await mockLoginAs(driver, MOCK_USERS.READ_GROUP);
     });
 
-    it('should see Budget Report nav link (group-based)', async () => {
+    it('should see OSFI LCR nav link (group-based)', async () => {
       const links = await header.getNavLinkTexts();
-      expect(links.some(t => t.includes('Budget Report'))).toBe(true);
+      expect(links.some(t => t.includes('OSFI LCR'))).toBe(true);
     });
   });
 
