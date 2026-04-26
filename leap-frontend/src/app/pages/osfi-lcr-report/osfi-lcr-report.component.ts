@@ -28,6 +28,7 @@ export class OsfiLcrReportComponent {
   segments: LcrSegmentHeader[] = [];
   dates: string[] = [];
   treeRows: LcrTreeRow[] = [];
+  activeMenu: { rowCode: string; segKey: string } | null = null;
 
   private destroyRef = inject(DestroyRef);
 
@@ -112,7 +113,35 @@ export class OsfiLcrReportComponent {
   }
 
   get colsPerSegment(): number {
-    return this.dates.length + 1;
+    return this.dates.length + 2; // dates + variance + action
+  }
+
+  toggleMenu(row: LcrTreeRow, segKey: string, event: MouseEvent): void {
+    event.stopPropagation();
+    if (this.activeMenu?.rowCode === row.code && this.activeMenu?.segKey === segKey) {
+      this.activeMenu = null;
+    } else {
+      this.activeMenu = { rowCode: row.code, segKey };
+    }
+    this.cd.markForCheck();
+  }
+
+  isMenuOpen(row: LcrTreeRow, segKey: string): boolean {
+    return this.activeMenu?.rowCode === row.code && this.activeMenu?.segKey === segKey;
+  }
+
+  onMenuAction(action: string, row: LcrTreeRow, segKey: string): void {
+    this.activeMenu = null;
+    // TODO: implement action handling
+    console.log(`Action: ${action}, Row: ${row.name}, Segment: ${segKey}`);
+    this.cd.markForCheck();
+  }
+
+  closeMenu(): void {
+    if (this.activeMenu) {
+      this.activeMenu = null;
+      this.cd.markForCheck();
+    }
   }
 
   private buildTree(data: OsfiLcrReportItem[]): void {
@@ -160,7 +189,7 @@ export class OsfiLcrReportComponent {
             level: (i + 1) as 1 | 2 | 3,
             name: levels[i].desc,
             code: compositeKey,
-            expanded: true, expandable: true,
+            expanded: i === 0, expandable: true,
             parentCode: parentCompositeKey,
             grandparentCode: null,
             amounts: {}, variancePct: {}
@@ -222,7 +251,7 @@ export class OsfiLcrReportComponent {
       if (seg.date_data.length >= 2) {
         const first = seg.date_data[0].n_amount_rpt_ccy;
         const last = seg.date_data[seg.date_data.length - 1].n_amount_rpt_ccy;
-        row.variancePct[sk] = first !== 0 ? ((last - first) / first) * 100 : 0;
+        row.variancePct[sk] = first !== 0 ? ((last - first) / Math.abs(first)) * 100 : 0;
       }
     }
   }
@@ -241,7 +270,7 @@ export class OsfiLcrReportComponent {
       if (this.dates.length >= 2) {
         const first = parent.amounts[sk][this.dates[0]] ?? 0;
         const last = parent.amounts[sk][this.dates[this.dates.length - 1]] ?? 0;
-        parent.variancePct[sk] = first !== 0 ? ((last - first) / first) * 100 : 0;
+        parent.variancePct[sk] = first !== 0 ? ((last - first) / Math.abs(first)) * 100 : 0;
       }
     }
   }

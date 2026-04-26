@@ -41,7 +41,7 @@
   </div>
 
   <!-- LCR Tree Table -->
-  <div *ngIf="!loading && treeRows.length > 0" class="lcr-table-container">
+  <div *ngIf="!loading && treeRows.length > 0" class="lcr-table-container" (click)="closeMenu()">
     <table class="table table-sm table-bordered lcr-table">
       <thead class="table-dark">
         <!-- Header row 1: name + segment groups -->
@@ -63,6 +63,7 @@
               {{ formatShortDate(date) }}
             </th>
             <th class="text-center date-header">Variance</th>
+            <th class="text-center action-header"></th>
           </ng-container>
         </tr>
       </thead>
@@ -94,6 +95,20 @@
                 <i class="bi" [ngClass]="varianceArrow(row.variancePct[segKey(seg.segmentName)])"></i>
                 {{ formatVariance(row.variancePct[segKey(seg.segmentName)]) }}
               </span>
+            </td>
+            <td class="text-center action-cell">
+              <div class="action-menu-wrapper">
+                <i class="bi bi-three-dots-vertical action-icon"
+                   (click)="toggleMenu(row, segKey(seg.segmentName), $event)"></i>
+                <div class="action-dropdown" *ngIf="isMenuOpen(row, segKey(seg.segmentName))">
+                  <button class="dropdown-item" (click)="onMenuAction('comments', row, segKey(seg.segmentName))">
+                    <i class="bi bi-chat-left-text me-2"></i>Comments
+                  </button>
+                  <button class="dropdown-item" (click)="onMenuAction('adjustments', row, segKey(seg.segmentName))">
+                    <i class="bi bi-sliders me-2"></i>Adjustments
+                  </button>
+                </div>
+              </div>
             </td>
           </ng-container>
         </tr>

@@ -48,7 +48,7 @@
   </div>
 
   <!-- LCR Metric Tree Table -->
-  <div *ngIf="!loading && treeRows.length > 0" class="lcr-table-container">
+  <div *ngIf="!loading && treeRows.length > 0" class="lcr-table-container" (click)="closeMenu()">
     <table class="table table-sm table-bordered lcr-table">
       <thead class="table-dark">
         <!-- Header row 1: name + 2 column groups (weighted + unweighted) -->
@@ -61,7 +61,7 @@
             {{ segmentName }} (Weighted)
           </th>
           <th [attr.colspan]="colsPerGroup" class="text-center segment-header">
-            {{ segmentName }}
+            {{ segmentName }} (Unweighted)
           </th>
         </tr>
         <!-- Header row 2: date columns + variance per group -->
@@ -71,11 +71,13 @@
             {{ formatShortDate(date) }}
           </th>
           <th class="text-center date-header">Variance</th>
+          <th class="text-center action-header"></th>
           <!-- Unweighted dates + variance -->
           <th *ngFor="let date of dates" class="text-center date-header">
             {{ formatShortDate(date) }}
           </th>
           <th class="text-center date-header">Variance</th>
+          <th class="text-center action-header"></th>
         </tr>
       </thead>
       <tbody>
@@ -107,6 +109,20 @@
               {{ formatVariance(row.weightedVariancePct) }}
             </span>
           </td>
+          <td class="text-center action-cell">
+            <div class="action-menu-wrapper">
+              <i class="bi bi-three-dots-vertical action-icon"
+                 (click)="toggleMenu(row, 'weighted', $event)"></i>
+              <div class="action-dropdown" *ngIf="isMenuOpen(row, 'weighted')">
+                <button class="dropdown-item" (click)="onMenuAction('comments', row, 'weighted')">
+                  <i class="bi bi-chat-left-text me-2"></i>Comments
+                </button>
+                <button class="dropdown-item" (click)="onMenuAction('adjustments', row, 'weighted')">
+                  <i class="bi bi-sliders me-2"></i>Adjustments
+                </button>
+              </div>
+            </div>
+          </td>
           <!-- Unweighted amount cells -->
           <td *ngFor="let date of dates" class="text-end amount-cell">
             {{ formatAmount(row.unweightedAmounts[date]) }}
@@ -117,6 +133,20 @@
               <i class="bi" [ngClass]="varianceArrow(row.unweightedVariancePct)"></i>
               {{ formatVariance(row.unweightedVariancePct) }}
             </span>
+          </td>
+          <td class="text-center action-cell">
+            <div class="action-menu-wrapper">
+              <i class="bi bi-three-dots-vertical action-icon"
+                 (click)="toggleMenu(row, 'unweighted', $event)"></i>
+              <div class="action-dropdown" *ngIf="isMenuOpen(row, 'unweighted')">
+                <button class="dropdown-item" (click)="onMenuAction('comments', row, 'unweighted')">
+                  <i class="bi bi-chat-left-text me-2"></i>Comments
+                </button>
+                <button class="dropdown-item" (click)="onMenuAction('adjustments', row, 'unweighted')">
+                  <i class="bi bi-sliders me-2"></i>Adjustments
+                </button>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>

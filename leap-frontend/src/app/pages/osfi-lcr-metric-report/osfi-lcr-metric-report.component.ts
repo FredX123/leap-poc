@@ -29,6 +29,7 @@ export class OsfiLcrMetricReportComponent {
   dates: string[] = [];
   segmentName = '';
   treeRows: LcrMetricTreeRow[] = [];
+  activeMenu: { rowCode: string; group: string } | null = null;
 
   private destroyRef = inject(DestroyRef);
 
@@ -114,7 +115,35 @@ export class OsfiLcrMetricReportComponent {
   }
 
   get colsPerGroup(): number {
-    return this.dates.length + 1;
+    return this.dates.length + 2; // dates + variance + action
+  }
+
+  toggleMenu(row: LcrMetricTreeRow, group: string, event: MouseEvent): void {
+    event.stopPropagation();
+    if (this.activeMenu?.rowCode === row.code && this.activeMenu?.group === group) {
+      this.activeMenu = null;
+    } else {
+      this.activeMenu = { rowCode: row.code, group };
+    }
+    this.cd.markForCheck();
+  }
+
+  isMenuOpen(row: LcrMetricTreeRow, group: string): boolean {
+    return this.activeMenu?.rowCode === row.code && this.activeMenu?.group === group;
+  }
+
+  onMenuAction(action: string, row: LcrMetricTreeRow, group: string): void {
+    this.activeMenu = null;
+    // TODO: implement action handling
+    console.log(`Action: ${action}, Row: ${row.name}, Group: ${group}`);
+    this.cd.markForCheck();
+  }
+
+  closeMenu(): void {
+    if (this.activeMenu) {
+      this.activeMenu = null;
+      this.cd.markForCheck();
+    }
   }
 
   private buildTree(data: OsfiLcrMetricReportItem[]): void {
@@ -129,7 +158,8 @@ export class OsfiLcrMetricReportComponent {
     data = this.mergeItems(data);
 
     const firstItem = data[0];
-    const segData = firstItem.segment_data[0];
+    const segData = firstItem.segment_data.find(s => s.v_segment_name === this.segment)
+      || firstItem.segment_data[0];
     if (!segData) { this.treeRows = []; this.dates = []; return; }
 
     this.segmentName = segData.v_segment_name;
@@ -156,7 +186,7 @@ export class OsfiLcrMetricReportComponent {
             level: i + 1,
             name: levels[i].desc,
             code: levels[i].code,
-            expanded: true,
+            expanded: i === 0,
             expandable: true,
             parentCode,
             grandparentCode: null,
@@ -186,7 +216,8 @@ export class OsfiLcrMetricReportComponent {
         unweightedAmounts: {},
         unweightedVariancePct: 0
       };
-      const seg = item.segment_data[0];
+      const seg = item.segment_data.find(s => s.v_segment_name === this.segment)
+        || item.segment_data[0];
       if (seg) {
         for (const dd of seg.date_data) {
           leafRow.weightedAmounts[dd.d_calander_date] = dd.n_rw_amount_rpt_ccy;
@@ -195,10 +226,10 @@ export class OsfiLcrMetricReportComponent {
         if (seg.date_data.length >= 2) {
           const firstW = seg.date_data[0].n_rw_amount_rpt_ccy;
           const lastW = seg.date_data[seg.date_data.length - 1].n_rw_amount_rpt_ccy;
-          leafRow.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / firstW) * 100 : 0;
+          leafRow.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / Math.abs(firstW)) * 100 : 0;
           const firstU = seg.date_data[0].n_amount_rpt_ccy;
           const lastU = seg.date_data[seg.date_data.length - 1].n_amount_rpt_ccy;
-          leafRow.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / firstU) * 100 : 0;
+          leafRow.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / Math.abs(firstU)) * 100 : 0;
         }
       }
       rows.push(leafRow);
@@ -252,10 +283,10 @@ export class OsfiLcrMetricReportComponent {
         if (this.dates.length >= 2) {
           const firstW = row.weightedAmounts[this.dates[0]] ?? 0;
           const lastW = row.weightedAmounts[this.dates[this.dates.length - 1]] ?? 0;
-          row.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / firstW) * 100 : 0;
+          row.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / Math.abs(firstW)) * 100 : 0;
           const firstU = row.unweightedAmounts[this.dates[0]] ?? 0;
           const lastU = row.unweightedAmounts[this.dates[this.dates.length - 1]] ?? 0;
-          row.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / firstU) * 100 : 0;
+          row.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / Math.abs(firstU)) * 100 : 0;
         }
         row.expandable = false;
         row.expanded = false;
@@ -355,10 +386,10 @@ export class OsfiLcrMetricReportComponent {
     if (this.dates.length >= 2) {
       const firstW = parent.weightedAmounts[this.dates[0]] ?? 0;
       const lastW = parent.weightedAmounts[this.dates[this.dates.length - 1]] ?? 0;
-      parent.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / firstW) * 100 : 0;
+      parent.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / Math.abs(firstW)) * 100 : 0;
       const firstU = parent.unweightedAmounts[this.dates[0]] ?? 0;
       const lastU = parent.unweightedAmounts[this.dates[this.dates.length - 1]] ?? 0;
-      parent.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / firstU) * 100 : 0;
+      parent.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / Math.abs(firstU)) * 100 : 0;
     }
   }
 }
