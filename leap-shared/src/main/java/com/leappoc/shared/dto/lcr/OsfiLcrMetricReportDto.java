@@ -1,8 +1,14 @@
 package com.leappoc.shared.dto.lcr;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OsfiLcrMetricReportDto {
 
@@ -12,17 +18,8 @@ public class OsfiLcrMetricReportDto {
     @JsonProperty("v_para_code")
     private String paraCode;
 
-    @JsonProperty("v_report_line_level_code_01")
-    private String reportLineLevelCode01;
-
-    @JsonProperty("v_report_line_level_desc_01")
-    private String reportLineLevelDesc01;
-
-    @JsonProperty("v_report_line_level_code_02")
-    private String reportLineLevelCode02;
-
-    @JsonProperty("v_report_line_level_desc_02")
-    private String reportLineLevelDesc02;
+    @JsonIgnore
+    private List<ReportLineLevelDto> levels = new ArrayList<>();
 
     @JsonProperty("v_report_line_code")
     private String reportLineCode;
@@ -41,17 +38,8 @@ public class OsfiLcrMetricReportDto {
     public String getParaCode() { return paraCode; }
     public void setParaCode(String paraCode) { this.paraCode = paraCode; }
 
-    public String getReportLineLevelCode01() { return reportLineLevelCode01; }
-    public void setReportLineLevelCode01(String reportLineLevelCode01) { this.reportLineLevelCode01 = reportLineLevelCode01; }
-
-    public String getReportLineLevelDesc01() { return reportLineLevelDesc01; }
-    public void setReportLineLevelDesc01(String reportLineLevelDesc01) { this.reportLineLevelDesc01 = reportLineLevelDesc01; }
-
-    public String getReportLineLevelCode02() { return reportLineLevelCode02; }
-    public void setReportLineLevelCode02(String reportLineLevelCode02) { this.reportLineLevelCode02 = reportLineLevelCode02; }
-
-    public String getReportLineLevelDesc02() { return reportLineLevelDesc02; }
-    public void setReportLineLevelDesc02(String reportLineLevelDesc02) { this.reportLineLevelDesc02 = reportLineLevelDesc02; }
+    public List<ReportLineLevelDto> getLevels() { return levels; }
+    public void setLevels(List<ReportLineLevelDto> levels) { this.levels = levels; }
 
     public String getReportLineCode() { return reportLineCode; }
     public void setReportLineCode(String reportLineCode) { this.reportLineCode = reportLineCode; }
@@ -61,4 +49,34 @@ public class OsfiLcrMetricReportDto {
 
     public List<OsfiLcrMetricSegmentDataDto> getSegmentData() { return segmentData; }
     public void setSegmentData(List<OsfiLcrMetricSegmentDataDto> segmentData) { this.segmentData = segmentData; }
+
+    @JsonAnyGetter
+    public Map<String, String> getLevelFields() {
+        Map<String, String> fields = new LinkedHashMap<>();
+        for (int i = 0; i < levels.size(); i++) {
+            String suffix = String.format("%02d", i + 1);
+            fields.put("v_report_line_level_code_" + suffix, levels.get(i).getLevelCode());
+            fields.put("v_report_line_level_desc_" + suffix, levels.get(i).getLevelDesc());
+        }
+        return fields;
+    }
+
+    @JsonAnySetter
+    public void setDynamicField(String key, Object value) {
+        if (key.startsWith("v_report_line_level_code_")) {
+            int idx = Integer.parseInt(key.substring("v_report_line_level_code_".length())) - 1;
+            ensureLevelSize(idx + 1);
+            levels.get(idx).setLevelCode(String.valueOf(value));
+        } else if (key.startsWith("v_report_line_level_desc_")) {
+            int idx = Integer.parseInt(key.substring("v_report_line_level_desc_".length())) - 1;
+            ensureLevelSize(idx + 1);
+            levels.get(idx).setLevelDesc(String.valueOf(value));
+        }
+    }
+
+    private void ensureLevelSize(int size) {
+        while (levels.size() < size) {
+            levels.add(new ReportLineLevelDto());
+        }
+    }
 }

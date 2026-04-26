@@ -1,24 +1,23 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AgGridAngular } from 'ag-grid-angular';
-import { AllCommunityModule, ColDef, ColGroupDef, ModuleRegistry, ValueFormatterParams } from 'ag-grid-community';
 import { LcrReportService } from '../../core/services/lcr-report.service';
-import { OsfiLcrMetricReportItem } from '../../shared/models/lcr-report.model';
-import { LcrEnterpriseHeaderComponent } from '../../shared/components/lcr-enterprise-header/lcr-enterprise-header.component';
-
-ModuleRegistry.registerModules([AllCommunityModule]);
+import {
+  OsfiLcrMetricReportItem,
+  LcrMetricTreeRow,
+  extractLevels
+} from '../../shared/models/lcr-report.model';
 
 @Component({
   selector: 'app-osfi-lcr-metric-report',
   standalone: true,
-  imports: [CommonModule, FormsModule, AgGridAngular],
+  imports: [CommonModule, FormsModule],
   templateUrl: './osfi-lcr-metric-report.component.html',
   styleUrl: './osfi-lcr-metric-report.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OsfiLcrMetricReportComponent implements OnInit {
+export class OsfiLcrMetricReportComponent {
 
   startDate = '';
   endDate = '';
@@ -27,13 +26,9 @@ export class OsfiLcrMetricReportComponent implements OnInit {
   loading = false;
   message: { text: string; type: 'success' | 'danger' } | null = null;
 
-  rowData: any[] = [];
-  columnDefs: (ColDef | ColGroupDef)[] = [];
-  defaultColDef: ColDef = {
-    sortable: true,
-    resizable: true,
-    minWidth: 100
-  };
+  dates: string[] = [];
+  segmentName = '';
+  treeRows: LcrMetricTreeRow[] = [];
 
   private destroyRef = inject(DestroyRef);
 
@@ -41,8 +36,6 @@ export class OsfiLcrMetricReportComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private lcrService: LcrReportService
   ) {}
-
-  ngOnInit(): void {}
 
   onViewAnalytics(): void {
     if (!this.startDate || !this.endDate || !this.segment) return;
@@ -57,7 +50,7 @@ export class OsfiLcrMetricReportComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: data => {
-          this.buildGrid(data);
+          this.buildTree(data);
           this.loading = false;
           this.cd.markForCheck();
         },
@@ -69,148 +62,303 @@ export class OsfiLcrMetricReportComponent implements OnInit {
       });
   }
 
-  private buildGrid(data: OsfiLcrMetricReportItem[]): void {
-    if (!data || data.length === 0) {
-      this.rowData = [];
-      this.columnDefs = [];
-      return;
-    }
-
-    // For metric report, we show a single segment with both weighted and unweighted
-    const firstItem = data[0];
-    const segData = firstItem.segment_data[0];
-    if (!segData) { this.rowData = []; this.columnDefs = []; return; }
-
-    const dates = segData.date_data.map(d => d.d_calander_date);
-    const segName = segData.v_segment_name;
-
-    // Build column definitions
-    const nameCol: ColDef = {
-      headerName: '',
-      field: 'name',
-      pinned: 'left',
-      width: 500,
-      headerComponent: LcrEnterpriseHeaderComponent,
-      cellClass: 'fw-normal'
-    };
-
-    // Weighted (rw_amount) column group
-    const weightedChildren: ColDef[] = [];
-    dates.forEach(date => {
-      weightedChildren.push({
-        headerName: this.formatShortDate(date),
-        field: `weighted.${date}`,
-        width: 100,
-        type: 'numericColumn',
-        valueFormatter: (params: ValueFormatterParams) => this.billionFormatter(params.value)
-      });
-    });
-    if (dates.length >= 2) {
-      weightedChildren.push({
-        headerName: 'Variance',
-        field: 'weighted.variance',
-        width: 100,
-        type: 'numericColumn',
-        valueFormatter: (params: ValueFormatterParams) => this.billionFormatter(params.value),
-        cellClass: (params) => params.value != null && params.value < 0 ? 'text-danger' : ''
-      });
-      weightedChildren.push({
-        headerName: '% Change',
-        field: 'weighted.pctChange',
-        width: 100,
-        type: 'numericColumn',
-        valueFormatter: (params: ValueFormatterParams) =>
-          params.value != null ? params.value.toFixed(2) + '%' : '',
-        cellClass: (params) => params.value != null && params.value < 0 ? 'text-danger' : ''
-      });
-    }
-
-    const weightedGroup: ColGroupDef = {
-      headerName: `${segName} (Weighted)`,
-      children: weightedChildren
-    };
-
-    // Unweighted (amount) column group
-    const unweightedChildren: ColDef[] = [];
-    dates.forEach(date => {
-      unweightedChildren.push({
-        headerName: this.formatShortDate(date),
-        field: `unweighted.${date}`,
-        width: 100,
-        type: 'numericColumn',
-        valueFormatter: (params: ValueFormatterParams) => this.billionFormatter(params.value)
-      });
-    });
-    if (dates.length >= 2) {
-      unweightedChildren.push({
-        headerName: 'Variance',
-        field: 'unweighted.variance',
-        width: 100,
-        type: 'numericColumn',
-        valueFormatter: (params: ValueFormatterParams) => this.billionFormatter(params.value),
-        cellClass: (params) => params.value != null && params.value < 0 ? 'text-danger' : ''
-      });
-      unweightedChildren.push({
-        headerName: '% Change',
-        field: 'unweighted.pctChange',
-        width: 100,
-        type: 'numericColumn',
-        valueFormatter: (params: ValueFormatterParams) =>
-          params.value != null ? params.value.toFixed(2) + '%' : '',
-        cellClass: (params) => params.value != null && params.value < 0 ? 'text-danger' : ''
-      });
-    }
-
-    const unweightedGroup: ColGroupDef = {
-      headerName: segName,
-      children: unweightedChildren
-    };
-
-    this.columnDefs = [nameCol, weightedGroup, unweightedGroup];
-
-    // Build row data
-    this.rowData = data.map(item => {
-      const row: any = {
-        name: item.v_report_line_name,
-        reportLineCode: item.v_report_line_code,
-        level01Desc: item.v_report_line_level_desc_01,
-        level02Desc: item.v_report_line_level_desc_02
-      };
-
-      const seg = item.segment_data[0];
-      if (seg) {
-        // Weighted values
-        seg.date_data.forEach(dd => {
-          row[`weighted.${dd.d_calander_date}`] = dd.n_rw_amount_rpt_ccy;
-          row[`unweighted.${dd.d_calander_date}`] = dd.n_amount_rpt_ccy;
-        });
-
-        if (seg.date_data.length >= 2) {
-          const firstW = seg.date_data[0].n_rw_amount_rpt_ccy;
-          const lastW = seg.date_data[seg.date_data.length - 1].n_rw_amount_rpt_ccy;
-          row['weighted.variance'] = lastW - firstW;
-          row['weighted.pctChange'] = firstW !== 0 ? ((lastW - firstW) / Math.abs(firstW)) * 100 : 0;
-
-          const firstU = seg.date_data[0].n_amount_rpt_ccy;
-          const lastU = seg.date_data[seg.date_data.length - 1].n_amount_rpt_ccy;
-          row['unweighted.variance'] = lastU - firstU;
-          row['unweighted.pctChange'] = firstU !== 0 ? ((lastU - firstU) / Math.abs(firstU)) * 100 : 0;
-        }
-      }
-
-      return row;
-    });
+  get visibleRows(): LcrMetricTreeRow[] {
+    return this.treeRows.filter(row => this.isRowVisible(row));
   }
 
-  private formatShortDate(dateStr: string): string {
+  toggleRow(row: LcrMetricTreeRow): void {
+    if (row.expandable) {
+      row.expanded = !row.expanded;
+      this.cd.markForCheck();
+    }
+  }
+
+  isRowVisible(row: LcrMetricTreeRow): boolean {
+    if (row.level === 1) return true;
+    // Walk up the parent chain — all ancestors must be expanded
+    let current = row;
+    while (current.parentCode != null) {
+      const parent = this.treeRows.find(r => r.code === current.parentCode && r.level < current.level);
+      if (!parent) return false;
+      if (!parent.expanded) return false;
+      current = parent;
+    }
+    return true;
+  }
+
+  formatAmount(value: number | undefined): string {
+    if (value == null) return '';
+    const billions = value / 1_000_000_000;
+    return billions.toFixed(1);
+  }
+
+  formatVariance(pct: number | undefined): string {
+    if (pct == null || isNaN(pct)) return '';
+    return Math.abs(pct).toFixed(1) + '%';
+  }
+
+  varianceClass(pct: number | undefined): string {
+    if (pct == null || isNaN(pct) || pct === 0) return '';
+    return pct < 0 ? 'text-danger' : 'text-success';
+  }
+
+  varianceArrow(pct: number | undefined): string {
+    if (pct == null || isNaN(pct) || pct === 0) return '';
+    return pct < 0 ? 'bi-arrow-down' : 'bi-arrow-up';
+  }
+
+  formatShortDate(dateStr: string): string {
     const d = new Date(dateStr + 'T00:00:00');
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return `${months[d.getMonth()]}-${String(d.getDate()).padStart(2, '0')}`;
   }
 
-  private billionFormatter(value: number | null | undefined): string {
-    if (value == null) return '';
-    const billions = value / 1_000_000_000;
-    return billions.toFixed(2);
+  get colsPerGroup(): number {
+    return this.dates.length + 1;
+  }
+
+  private buildTree(data: OsfiLcrMetricReportItem[]): void {
+    if (!data || data.length === 0) {
+      this.treeRows = [];
+      this.dates = [];
+      this.segmentName = '';
+      return;
+    }
+
+    // Merge items with same name + same level code hierarchy
+    data = this.mergeItems(data);
+
+    const firstItem = data[0];
+    const segData = firstItem.segment_data[0];
+    if (!segData) { this.treeRows = []; this.dates = []; return; }
+
+    this.segmentName = segData.v_segment_name;
+    this.dates = segData.date_data.map(d => d.d_calander_date);
+
+    // Build a generic N-level tree using all available level codes
+    const rows: LcrMetricTreeRow[] = [];
+    // Track which group nodes have been created: compositeKey -> row
+    const groupNodes = new Map<string, LcrMetricTreeRow>();
+
+    for (const item of data) {
+      // Collect the hierarchy levels present on this item
+      const levels = extractLevels(item).map(l => ({
+        code: l.v_level_code,
+        desc: (l.v_level_desc || '').trim()
+      }));
+
+      // Ensure each group node in the path exists
+      let parentCode: string | null = null;
+      for (let i = 0; i < levels.length; i++) {
+        const compositeKey = levels.slice(0, i + 1).map(l => l.code).join('|');
+        if (!groupNodes.has(compositeKey)) {
+          const groupRow: LcrMetricTreeRow = {
+            level: i + 1,
+            name: levels[i].desc,
+            code: levels[i].code,
+            expanded: true,
+            expandable: true,
+            parentCode,
+            grandparentCode: null,
+            weightedAmounts: {},
+            weightedVariancePct: 0,
+            unweightedAmounts: {},
+            unweightedVariancePct: 0
+          };
+          groupNodes.set(compositeKey, groupRow);
+          rows.push(groupRow);
+        }
+        parentCode = levels[i].code;
+      }
+
+      // Add leaf row
+      const leafLevel = levels.length + 1;
+      const leafRow: LcrMetricTreeRow = {
+        level: leafLevel,
+        name: item.v_report_line_name,
+        code: item.v_report_line_code,
+        expanded: false,
+        expandable: false,
+        parentCode,
+        grandparentCode: null,
+        weightedAmounts: {},
+        weightedVariancePct: 0,
+        unweightedAmounts: {},
+        unweightedVariancePct: 0
+      };
+      const seg = item.segment_data[0];
+      if (seg) {
+        for (const dd of seg.date_data) {
+          leafRow.weightedAmounts[dd.d_calander_date] = dd.n_rw_amount_rpt_ccy;
+          leafRow.unweightedAmounts[dd.d_calander_date] = dd.n_amount_rpt_ccy;
+        }
+        if (seg.date_data.length >= 2) {
+          const firstW = seg.date_data[0].n_rw_amount_rpt_ccy;
+          const lastW = seg.date_data[seg.date_data.length - 1].n_rw_amount_rpt_ccy;
+          leafRow.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / firstW) * 100 : 0;
+          const firstU = seg.date_data[0].n_amount_rpt_ccy;
+          const lastU = seg.date_data[seg.date_data.length - 1].n_amount_rpt_ccy;
+          leafRow.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / firstU) * 100 : 0;
+        }
+      }
+      rows.push(leafRow);
+    }
+
+    // Collapse groups where all children have the same name as the parent
+    this.collapseRedundantGroups(rows);
+
+    // Sort rows into tree order: depth-first by insertion order (already correct)
+    // Re-order so children appear right after their parent
+    const ordered = this.orderTreeRows(rows);
+
+    // Aggregate from bottom up: find max level and aggregate down
+    const maxLevel = Math.max(...ordered.map(r => r.level));
+    for (let lvl = maxLevel - 1; lvl >= 1; lvl--) {
+      for (const row of ordered) {
+        if (row.level === lvl && row.expandable) {
+          const children = ordered.filter(r => r.parentCode === row.code && r.level === lvl + 1);
+          this.aggregateMetricAmounts(row, children);
+        }
+      }
+    }
+
+    this.treeRows = ordered;
+  }
+
+  private collapseRedundantGroups(rows: LcrMetricTreeRow[]): void {
+    // For each expandable group, if ALL its direct children have the exact same name,
+    // remove the children and make the group a leaf (non-expandable) with summed amounts.
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const row of rows) {
+        if (!row.expandable) continue;
+        const children = rows.filter(r => r.parentCode === row.code && r.level === row.level + 1);
+        if (children.length === 0) continue;
+        const allSameName = children.every(c => c.name === row.name);
+        if (!allSameName) continue;
+
+        // Sum all descendant leaf amounts into this node
+        const leaves = this.collectLeaves(row, rows);
+        for (const date of this.dates) {
+          let sumW = 0, sumU = 0;
+          for (const leaf of leaves) {
+            sumW += leaf.weightedAmounts[date] ?? 0;
+            sumU += leaf.unweightedAmounts[date] ?? 0;
+          }
+          row.weightedAmounts[date] = sumW;
+          row.unweightedAmounts[date] = sumU;
+        }
+        if (this.dates.length >= 2) {
+          const firstW = row.weightedAmounts[this.dates[0]] ?? 0;
+          const lastW = row.weightedAmounts[this.dates[this.dates.length - 1]] ?? 0;
+          row.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / firstW) * 100 : 0;
+          const firstU = row.unweightedAmounts[this.dates[0]] ?? 0;
+          const lastU = row.unweightedAmounts[this.dates[this.dates.length - 1]] ?? 0;
+          row.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / firstU) * 100 : 0;
+        }
+        row.expandable = false;
+        row.expanded = false;
+
+        // Remove all descendants
+        const descendants = this.collectDescendants(row, rows);
+        for (const desc of descendants) {
+          const idx = rows.indexOf(desc);
+          if (idx !== -1) rows.splice(idx, 1);
+        }
+        changed = true;
+        break; // restart since array mutated
+      }
+    }
+  }
+
+  private collectLeaves(parent: LcrMetricTreeRow, rows: LcrMetricTreeRow[]): LcrMetricTreeRow[] {
+    const result: LcrMetricTreeRow[] = [];
+    const children = rows.filter(r => r.parentCode === parent.code && r.level === parent.level + 1);
+    for (const child of children) {
+      if (!child.expandable) {
+        result.push(child);
+      } else {
+        result.push(...this.collectLeaves(child, rows));
+      }
+    }
+    return result;
+  }
+
+  private collectDescendants(parent: LcrMetricTreeRow, rows: LcrMetricTreeRow[]): LcrMetricTreeRow[] {
+    const result: LcrMetricTreeRow[] = [];
+    const children = rows.filter(r => r.parentCode === parent.code && r.level === parent.level + 1);
+    for (const child of children) {
+      result.push(child);
+      result.push(...this.collectDescendants(child, rows));
+    }
+    return result;
+  }
+
+  private orderTreeRows(rows: LcrMetricTreeRow[]): LcrMetricTreeRow[] {
+    const result: LcrMetricTreeRow[] = [];
+    const roots = rows.filter(r => r.level === 1);
+    const addWithChildren = (parent: LcrMetricTreeRow): void => {
+      result.push(parent);
+      const children = rows.filter(r => r.parentCode === parent.code && r.level === parent.level + 1);
+      for (const child of children) {
+        addWithChildren(child);
+      }
+    };
+    for (const root of roots) {
+      addWithChildren(root);
+    }
+    return result;
+  }
+
+  private mergeItems(data: OsfiLcrMetricReportItem[]): OsfiLcrMetricReportItem[] {
+    const mergeMap = new Map<string, OsfiLcrMetricReportItem>();
+
+    for (const item of data) {
+      const key = [
+        item.v_report_line_name,
+        ...extractLevels(item).map(l => l.v_level_code)
+      ].join('|');
+
+      if (!mergeMap.has(key)) {
+        mergeMap.set(key, JSON.parse(JSON.stringify(item)));
+      } else {
+        const existing = mergeMap.get(key)!;
+        for (let si = 0; si < existing.segment_data.length; si++) {
+          const existSeg = existing.segment_data[si];
+          const newSeg = item.segment_data[si];
+          if (!newSeg) continue;
+          for (let di = 0; di < existSeg.date_data.length; di++) {
+            const existDate = existSeg.date_data[di];
+            const newDate = newSeg.date_data[di];
+            if (!newDate) continue;
+            existDate.n_amount_rpt_ccy += newDate.n_amount_rpt_ccy;
+            existDate.n_rw_amount_rpt_ccy += newDate.n_rw_amount_rpt_ccy;
+          }
+        }
+      }
+    }
+
+    return Array.from(mergeMap.values());
+  }
+
+  private aggregateMetricAmounts(parent: LcrMetricTreeRow, children: LcrMetricTreeRow[]): void {
+    for (const date of this.dates) {
+      let sumW = 0, sumU = 0;
+      for (const child of children) {
+        sumW += child.weightedAmounts[date] ?? 0;
+        sumU += child.unweightedAmounts[date] ?? 0;
+      }
+      parent.weightedAmounts[date] = sumW;
+      parent.unweightedAmounts[date] = sumU;
+    }
+    if (this.dates.length >= 2) {
+      const firstW = parent.weightedAmounts[this.dates[0]] ?? 0;
+      const lastW = parent.weightedAmounts[this.dates[this.dates.length - 1]] ?? 0;
+      parent.weightedVariancePct = firstW !== 0 ? ((lastW - firstW) / firstW) * 100 : 0;
+      const firstU = parent.unweightedAmounts[this.dates[0]] ?? 0;
+      const lastU = parent.unweightedAmounts[this.dates[this.dates.length - 1]] ?? 0;
+      parent.unweightedVariancePct = firstU !== 0 ? ((lastU - firstU) / firstU) * 100 : 0;
+    }
   }
 }

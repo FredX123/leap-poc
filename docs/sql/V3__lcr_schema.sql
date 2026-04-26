@@ -13,14 +13,27 @@ CREATE TABLE LCR_REPORT_LINE (
     id                              BIGINT          IDENTITY(1,1) NOT NULL,
     v_report_code                   NVARCHAR(50)    NOT NULL,       -- 'OSFI_LCR' or 'OSFI_LCR_METRIC'
     v_para_code                     NVARCHAR(50)    NOT NULL,       -- e.g. '43(a)', '43(b)'
-    v_report_line_level_code_01     NVARCHAR(10)    NOT NULL,       -- e.g. '10'
-    v_report_line_level_desc_01     NVARCHAR(255)   NOT NULL,       -- e.g. '1. Stock of high quality liquid assets (HQLA)'
-    v_report_line_level_code_02     NVARCHAR(10)    NOT NULL,       -- e.g. '110'
-    v_report_line_level_desc_02     NVARCHAR(255)   NOT NULL,       -- e.g. '1.1. Level 1 assets'
     v_report_line_code              NVARCHAR(10)    NOT NULL,       -- e.g. '11001'
     v_report_line_name              NVARCHAR(500)   NOT NULL,       -- e.g. 'Coins and banknotes'
     CONSTRAINT PK_LCR_REPORT_LINE PRIMARY KEY (id),
     CONSTRAINT UQ_LCR_REPORT_LINE UNIQUE (v_report_code, v_report_line_code)
+);
+GO
+
+-- ===================== LCR REPORT LINE LEVEL (child — dynamic depth) =====================
+-- Each row represents one level in the hierarchy for a report line.
+-- n_level_order determines the depth (1 = top, 2 = next, …).
+
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LCR_REPORT_LINE_LEVEL')
+CREATE TABLE LCR_REPORT_LINE_LEVEL (
+    id                  BIGINT          IDENTITY(1,1) NOT NULL,
+    report_line_id      BIGINT          NOT NULL,
+    n_level_order       INT             NOT NULL,       -- 1, 2, 3, …
+    v_level_code        NVARCHAR(10)    NOT NULL,       -- e.g. '10', '110'
+    v_level_desc        NVARCHAR(255)   NOT NULL,       -- e.g. 'High Quality Liquid Asset'
+    CONSTRAINT PK_LCR_REPORT_LINE_LEVEL PRIMARY KEY (id),
+    CONSTRAINT FK_LCR_LINE_LEVEL_LINE FOREIGN KEY (report_line_id) REFERENCES LCR_REPORT_LINE(id),
+    CONSTRAINT UQ_LCR_LINE_LEVEL UNIQUE (report_line_id, n_level_order)
 );
 GO
 
@@ -62,6 +75,10 @@ GO
 
 CREATE NONCLUSTERED INDEX IX_LCR_REPORT_LINE_CODE
     ON LCR_REPORT_LINE (v_report_code);
+GO
+
+CREATE NONCLUSTERED INDEX IX_LCR_REPORT_LINE_LEVEL_LINE
+    ON LCR_REPORT_LINE_LEVEL (report_line_id);
 GO
 
 CREATE NONCLUSTERED INDEX IX_LCR_REPORT_DATA_DATE

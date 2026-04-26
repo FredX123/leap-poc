@@ -1,6 +1,7 @@
 package com.leappoc.report.mapper;
 
 import com.leappoc.report.model.lcr.LcrReportData;
+import com.leappoc.report.model.lcr.LcrReportLineLevel;
 import com.leappoc.shared.dto.lcr.*;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,11 @@ public class LcrReportMapper {
             LcrReportData first = lineData.get(0);
 
             OsfiLcrReportDto dto = new OsfiLcrReportDto();
-            mapReportLineFields(dto, first);
+            dto.setReportCode(first.getReportLine().getReportCode());
+            dto.setParaCode(first.getReportLine().getParaCode());
+            dto.setLevels(toLevelDtos(first.getReportLine().getLevels()));
+            dto.setReportLineCode(first.getReportLine().getReportLineCode());
+            dto.setReportLineName(first.getReportLine().getReportLineName());
 
             List<OsfiLcrSegmentDataDto> segmentDtos = new ArrayList<>();
             for (Map.Entry<String, List<LcrReportData>> segEntry : groupBySegment(lineData).entrySet()) {
@@ -44,7 +49,11 @@ public class LcrReportMapper {
             LcrReportData first = lineData.get(0);
 
             OsfiLcrMetricReportDto dto = new OsfiLcrMetricReportDto();
-            mapReportLineFields(dto, first);
+            dto.setReportCode(first.getReportLine().getReportCode());
+            dto.setParaCode(first.getReportLine().getParaCode());
+            dto.setLevels(toLevelDtos(first.getReportLine().getLevels()));
+            dto.setReportLineCode(first.getReportLine().getReportLineCode());
+            dto.setReportLineName(first.getReportLine().getReportLineName());
 
             List<OsfiLcrMetricSegmentDataDto> segmentDtos = new ArrayList<>();
             for (Map.Entry<String, List<LcrReportData>> segEntry : groupBySegment(lineData).entrySet()) {
@@ -82,26 +91,10 @@ public class LcrReportMapper {
                         Collectors.toList()));
     }
 
-    private void mapReportLineFields(OsfiLcrReportDto dto, LcrReportData data) {
-        dto.setReportCode(data.getReportLine().getReportCode());
-        dto.setParaCode(data.getReportLine().getParaCode());
-        dto.setReportLineLevelCode01(data.getReportLine().getReportLineLevelCode01());
-        dto.setReportLineLevelDesc01(data.getReportLine().getReportLineLevelDesc01());
-        dto.setReportLineLevelCode02(data.getReportLine().getReportLineLevelCode02());
-        dto.setReportLineLevelDesc02(data.getReportLine().getReportLineLevelDesc02());
-        dto.setReportLineCode(data.getReportLine().getReportLineCode());
-        dto.setReportLineName(data.getReportLine().getReportLineName());
-    }
-
-    private void mapReportLineFields(OsfiLcrMetricReportDto dto, LcrReportData data) {
-        dto.setReportCode(data.getReportLine().getReportCode());
-        dto.setParaCode(data.getReportLine().getParaCode());
-        dto.setReportLineLevelCode01(data.getReportLine().getReportLineLevelCode01());
-        dto.setReportLineLevelDesc01(data.getReportLine().getReportLineLevelDesc01());
-        dto.setReportLineLevelCode02(data.getReportLine().getReportLineLevelCode02());
-        dto.setReportLineLevelDesc02(data.getReportLine().getReportLineLevelDesc02());
-        dto.setReportLineCode(data.getReportLine().getReportLineCode());
-        dto.setReportLineName(data.getReportLine().getReportLineName());
+    private List<ReportLineLevelDto> toLevelDtos(List<LcrReportLineLevel> levels) {
+        return levels.stream()
+                .map(l -> new ReportLineLevelDto(l.getLevelCode(), l.getLevelDesc()))
+                .collect(Collectors.toList());
     }
 
     private OsfiLcrDateDataDto toLcrDateData(LcrReportData d) {

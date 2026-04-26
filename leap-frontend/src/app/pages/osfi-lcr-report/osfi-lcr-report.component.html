@@ -7,12 +7,14 @@
     <div class="col-auto">
       <label for="startDate" class="form-label">Start Date</label>
       <input type="date" id="startDate" class="form-control"
-             [(ngModel)]="startDate" name="startDate" required>
+             [(ngModel)]="startDate" name="startDate" required
+             #startDateEl (click)="startDateEl.showPicker()">
     </div>
     <div class="col-auto">
       <label for="endDate" class="form-label">End Date</label>
       <input type="date" id="endDate" class="form-control"
-             [(ngModel)]="endDate" name="endDate" required>
+             [(ngModel)]="endDate" name="endDate" required
+             #endDateEl (click)="endDateEl.showPicker()">
     </div>
     <div class="col-auto d-flex align-items-end">
       <button type="submit" class="btn btn-primary"
@@ -38,20 +40,68 @@
     </div>
   </div>
 
-  <!-- AG Grid -->
-  <div *ngIf="!loading && rowData.length > 0" class="lcr-grid-container">
-    <ag-grid-angular
-      class="ag-theme-alpine"
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      [defaultColDef]="defaultColDef"
-      [domLayout]="'autoHeight'"
-      [suppressHorizontalScroll]="false"
-      [animateRows]="true">
-    </ag-grid-angular>
+  <!-- LCR Tree Table -->
+  <div *ngIf="!loading && treeRows.length > 0" class="lcr-table-container">
+    <table class="table table-sm table-bordered lcr-table">
+      <thead class="table-dark">
+        <!-- Header row 1: name + segment groups -->
+        <tr>
+          <th rowspan="2" class="name-header">
+            <div class="header-title">Enterprise LCR</div>
+            <div class="header-subtitle">(Amount in Billions CAD)</div>
+          </th>
+          <ng-container *ngFor="let seg of segments">
+            <th [attr.colspan]="colsPerSegment" class="text-center segment-header">
+              {{ seg.segmentName }}
+            </th>
+          </ng-container>
+        </tr>
+        <!-- Header row 2: date columns + variance per segment -->
+        <tr>
+          <ng-container *ngFor="let seg of segments">
+            <th *ngFor="let date of dates" class="text-center date-header">
+              {{ formatShortDate(date) }}
+            </th>
+            <th class="text-center date-header">Variance</th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of visibleRows"
+            [ngClass]="{
+              'level-1-row': row.level === 1,
+              'level-2-row': row.level === 2,
+              'level-3-row': row.level >= 3
+            }">
+          <!-- Name cell with tree indentation -->
+          <td class="name-cell" (click)="toggleRow(row)"
+              [class.clickable]="row.expandable">
+            <span class="tree-indent" [style.paddingLeft.px]="(row.level - 1) * 20">
+              <span *ngIf="row.expandable" class="toggle-icon">
+                <i class="bi" [ngClass]="row.expanded ? 'bi-dash-square' : 'bi-plus-square'"></i>
+              </span>
+              <span [class.fw-bold]="row.expandable">{{ row.name }}</span>
+            </span>
+          </td>
+          <!-- Amount cells per segment -->
+          <ng-container *ngFor="let seg of segments">
+            <td *ngFor="let date of dates" class="text-end amount-cell">
+              {{ formatAmount(row.amounts[segKey(seg.segmentName)][date]) }}
+            </td>
+            <td class="text-end variance-cell"
+                [ngClass]="varianceClass(row.variancePct[segKey(seg.segmentName)])">
+              <span *ngIf="row.variancePct[segKey(seg.segmentName)] != null">
+                <i class="bi" [ngClass]="varianceArrow(row.variancePct[segKey(seg.segmentName)])"></i>
+                {{ formatVariance(row.variancePct[segKey(seg.segmentName)]) }}
+              </span>
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <div *ngIf="!loading && rowData.length === 0 && !message" class="text-muted mt-3">
+  <div *ngIf="!loading && treeRows.length === 0 && !message" class="text-muted mt-3">
     Enter a date range and click <strong>View Analytics</strong> to load the OSFI LCR report.
   </div>
 </div>

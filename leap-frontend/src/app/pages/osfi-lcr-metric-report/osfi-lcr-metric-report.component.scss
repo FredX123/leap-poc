@@ -1,14 +1,101 @@
-.lcr-grid-container {
+.lcr-table-container {
   width: 100%;
   overflow-x: auto;
 }
 
-:host ::ng-deep .ag-theme-alpine {
-  --ag-header-height: 56px;
-  --ag-header-foreground-color: #333;
-  --ag-row-hover-color: #f0f8ff;
+.lcr-table {
+  font-size: 13px;
+  white-space: nowrap;
+
+  .name-header {
+    min-width: 300px;
+    vertical-align: middle;
+
+    .header-title {
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .header-subtitle {
+      font-size: 11px;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+  }
+
+  .segment-header {
+    font-size: 13px;
+    border-left: 2px solid #495057;
+  }
+
+  .date-header {
+    font-size: 12px;
+    min-width: 80px;
+  }
+
+  .name-cell {
+    min-width: 300px;
+    max-width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.clickable {
+      cursor: pointer;
+      &:hover {
+        background-color: #f0f8ff;
+      }
+    }
+
+    .tree-indent {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .toggle-icon {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      color: #0d6efd;
+    }
+  }
+
+  .amount-cell {
+    min-width: 80px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .variance-cell {
+    min-width: 90px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
 }
 
-:host ::ng-deep .text-danger {
+.level-1-row {
+  background-color: #e8f0fe !important;
+  font-weight: 700;
+}
+
+.level-2-row {
+  background-color: #f3f6fa !important;
+  font-weight: 600;
+}
+
+.level-3-row {
+  background-color: #f8f9fc !important;
+  font-weight: 500;
+}
+
+.leaf-row {
+  font-weight: 400;
+}
+
+.text-danger {
   color: #dc3545 !important;
+}
+
+.text-success {
+  color: #198754 !important;
 }
