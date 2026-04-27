@@ -7,22 +7,27 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommentService } from '../../../core/services/comment.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { CommentThreadDto, CreateCommentRequest } from '../../models/comment.model';
+import { CommentThreadDto, CreateCommentRequest, COMMENT_CATEGORIES, CommentCategory } from '../../models/comment.model';
+import { FormsModule } from '@angular/forms';
 import { CommentEntryComponent } from '../comment-entry/comment-entry.component';
 import { CommentInputComponent } from '../comment-input/comment-input.component';
 
 @Component({
   selector: 'app-comment-thread-panel',
   standalone: true,
-  imports: [CommonModule, CommentEntryComponent, CommentInputComponent],
+  imports: [CommonModule, CommentEntryComponent, CommentInputComponent, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './comment-thread-panel.component.html',
   styleUrl: './comment-thread-panel.component.scss'
 })
 export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
-  @Input() entityType = '';
-  @Input() entityId = 0;
+  @Input() reportType = '';
+  @Input() lineKey = '';
+  @Input() segmentName: string | null = null;
   @Input() isOpen = false;
+
+  categories: CommentCategory[] = COMMENT_CATEGORIES;
+  selectedCategoryCode = 'NONE';
   @Output() closed = new EventEmitter<void>();
   @Output() commentCountChanged = new EventEmitter<number>();
 
@@ -63,7 +68,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isOpen'] && this.isOpen && this.entityType && this.entityId) {
+    if (changes['isOpen'] && this.isOpen && this.reportType && this.lineKey) {
       this.replyErrorMap = {};
       this.loadThread();
     }
@@ -162,10 +167,12 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
   /** 6.7: Optimistic UI — append placeholder then confirm with server */
   onNewComment(content: string): void {
     const request: CreateCommentRequest = {
-      entityType: this.entityType,
-      entityId: this.entityId,
+      reportType: this.reportType,
+      lineKey: this.lineKey,
+      segmentName: this.segmentName,
       content,
-      parentId: null
+      parentId: null,
+      categoryCode: this.selectedCategoryCode
     };
 
     // Optimistic: append a temporary entry
@@ -195,10 +202,12 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
     this.replyErrorMap = rest;
 
     const request: CreateCommentRequest = {
-      entityType: this.entityType,
-      entityId: this.entityId,
+      reportType: this.reportType,
+      lineKey: this.lineKey,
+      segmentName: this.segmentName,
       content: event.content,
-      parentId: event.parentId
+      parentId: event.parentId,
+      categoryCode: 'NONE'
     };
     this.commentService.create(request).pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -246,7 +255,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
     this.loading = true;
     this.error = null;
     this.retryable = false;
-    this.commentService.getThread(this.entityType, this.entityId).pipe(
+    this.commentService.getThread(this.reportType, this.lineKey, this.segmentName).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: thread => {
@@ -297,10 +306,11 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       email: '',
       content,
       parentId,
-      entityType: this.entityType,
-      entityId: this.entityId,
+      reportType: this.reportType,
+      lineKey: this.lineKey,
+      segmentName: this.segmentName,
+      categoryCode: this.selectedCategoryCode,
       eventType: 'COMMENT',
-      metadata: null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       isEdited: false,

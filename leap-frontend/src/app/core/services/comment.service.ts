@@ -10,10 +10,13 @@ export class CommentService {
 
   constructor(private http: HttpClient) {}
 
-  getThread(entityType: string, entityId: number): Observable<CommentThreadDto[]> {
-    const params = new HttpParams()
-      .set('entityType', entityType)
-      .set('entityId', entityId);
+  getThread(reportType: string, lineKey: string, segmentName: string | null): Observable<CommentThreadDto[]> {
+    let params = new HttpParams()
+      .set('reportType', reportType)
+      .set('lineKey', lineKey);
+    if (segmentName) {
+      params = params.set('segmentName', segmentName);
+    }
     return this.http.get<CommentThreadDto[]>(this.baseUrl, { params });
   }
 
@@ -29,10 +32,10 @@ export class CommentService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  getCounts(entityType: string, entityIds: number[]): Observable<Record<string, number>> {
-    let params = new HttpParams().set('entityType', entityType);
-    for (const id of entityIds) {
-      params = params.append('entityIds', id);
+  getCounts(reportType: string, segmentName: string | null): Observable<Record<string, number>> {
+    let params = new HttpParams().set('reportType', reportType);
+    if (segmentName) {
+      params = params.set('segmentName', segmentName);
     }
     return this.http.get<Record<string, number>>(`${this.baseUrl}/counts`, { params });
   }

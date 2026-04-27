@@ -1,7 +1,6 @@
 package com.leappoc.shared.enums;
 
 public enum CommentEntityType {
-    BUDGET_REPORT,
-    ADJUSTMENT,
-    USER
+    OSFI_LCR_REPORT,
+    OSFI_LCR_METRIC_REPORT
 }

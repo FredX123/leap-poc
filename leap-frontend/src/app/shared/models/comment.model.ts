@@ -5,10 +5,11 @@ export interface CommentDto {
   email: string;
   content: string;
   parentId: number | null;
-  entityType: string;
-  entityId: number;
+  reportType: string;
+  lineKey: string;
+  segmentName: string | null;
+  categoryCode: string;
   eventType: string;
-  metadata: string | null;
   createdAt: string;
   updatedAt: string;
   isEdited: boolean;
@@ -22,10 +23,11 @@ export interface CommentThreadDto {
   email: string;
   content: string;
   parentId: number | null;
-  entityType: string;
-  entityId: number;
+  reportType: string;
+  lineKey: string;
+  segmentName: string | null;
+  categoryCode: string;
   eventType: string;
-  metadata: string | null;
   createdAt: string;
   updatedAt: string;
   isEdited: boolean;
@@ -35,8 +37,29 @@ export interface CommentThreadDto {
 }
 
 export interface CreateCommentRequest {
-  entityType: string;
-  entityId: number;
+  reportType: string;
+  lineKey: string;
+  segmentName: string | null;
   content: string;
   parentId: number | null;
+  categoryCode: string;
 }
+
+export interface CommentCategory {
+  code: string;
+  label: string;
+}
+
+export const COMMENT_CATEGORIES: CommentCategory[] = [
+  { code: 'NONE', label: '— No driver —' },
+  { code: 'MAT',  label: 'Maturity rollover' },
+  { code: 'SSN',  label: 'Seasonality' },
+  { code: 'WIN',  label: 'Client win / inflow' },
+  { code: 'LOSS', label: 'Client loss / outflow' },
+  { code: 'RATE', label: 'Rate repricing' },
+  { code: 'CORP', label: 'Corporate action' },
+  { code: 'FIX',  label: 'Data correction' },
+  { code: 'OP',   label: 'Operational balance shift' },
+  { code: 'REG',  label: 'Regulatory change' },
+  { code: 'OTH',  label: 'Other (see notes)' },
+];

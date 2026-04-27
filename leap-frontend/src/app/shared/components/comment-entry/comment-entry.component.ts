@@ -45,7 +45,7 @@ export class CommentEntryComponent implements OnChanges {
   }
 
   get isSystemEvent(): boolean {
-    return this.comment.eventType === 'ADJUSTMENT' || this.comment.eventType === 'STATUS_CHANGE';
+    return false; // Only COMMENT and REPLY event types now
   }
 
   get initials(): string {
@@ -64,17 +64,6 @@ export class CommentEntryComponent implements OnChanges {
       if (r.replies?.length) count += this.countAllReplies(r.replies);
     }
     return count;
-  }
-
-  parseMetadata(): string {
-    if (!this.comment.metadata) return '';
-    try {
-      const meta = JSON.parse(this.comment.metadata);
-      return `${meta.field}: ${meta.old_value} → ${meta.new_value}` +
-        (meta.reason ? ` (${meta.reason})` : '');
-    } catch {
-      return this.comment.metadata;
-    }
   }
 
   toggleReply(): void {

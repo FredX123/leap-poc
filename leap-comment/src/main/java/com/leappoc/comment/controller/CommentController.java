@@ -32,12 +32,13 @@ public class CommentController {
             + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '"
             + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public ResponseEntity<List<CommentThreadDto>> getThread(
-            @RequestParam String entityType,
-            @RequestParam Long entityId,
+            @RequestParam String reportType,
+            @RequestParam String lineKey,
+            @RequestParam(required = false) String segmentName,
             Authentication authentication) {
 
         String currentUserId = extractUserId(authentication);
-        List<CommentThreadDto> thread = commentService.getThread(entityType, entityId, currentUserId);
+        List<CommentThreadDto> thread = commentService.getThread(reportType, lineKey, segmentName, currentUserId);
         return ResponseEntity.ok(thread);
     }
 
@@ -91,11 +92,11 @@ public class CommentController {
             + RoleConstants.APP_WRITE + "', '" + RoleConstants.APP_ADMIN + "')"
             + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '"
             + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
-    public ResponseEntity<Map<Long, Long>> getCounts(
-            @RequestParam String entityType,
-            @RequestParam List<Long> entityIds) {
+    public ResponseEntity<Map<String, Long>> getCounts(
+            @RequestParam String reportType,
+            @RequestParam(required = false) String segmentName) {
 
-        Map<Long, Long> counts = commentService.getCounts(entityType, entityIds);
+        Map<String, Long> counts = commentService.getCounts(reportType, segmentName);
         return ResponseEntity.ok(counts);
     }
 

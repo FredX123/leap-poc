@@ -11,10 +11,11 @@ public class CommentDto {
     private String email;
     private String content;
     private Long parentId;
-    private String entityType;
-    private Long entityId;
+    private String reportType;
+    private String lineKey;
+    private String segmentName;
+    private String categoryCode;
     private String eventType;
-    private String metadata;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -46,17 +47,20 @@ public class CommentDto {
     public Long getParentId() { return parentId; }
     public void setParentId(Long parentId) { this.parentId = parentId; }
 
-    public String getEntityType() { return entityType; }
-    public void setEntityType(String entityType) { this.entityType = entityType; }
+    public String getReportType() { return reportType; }
+    public void setReportType(String reportType) { this.reportType = reportType; }
 
-    public Long getEntityId() { return entityId; }
-    public void setEntityId(Long entityId) { this.entityId = entityId; }
+    public String getLineKey() { return lineKey; }
+    public void setLineKey(String lineKey) { this.lineKey = lineKey; }
+
+    public String getSegmentName() { return segmentName; }
+    public void setSegmentName(String segmentName) { this.segmentName = segmentName; }
+
+    public String getCategoryCode() { return categoryCode; }
+    public void setCategoryCode(String categoryCode) { this.categoryCode = categoryCode; }
 
     public String getEventType() { return eventType; }
     public void setEventType(String eventType) { this.eventType = eventType; }
-
-    public String getMetadata() { return metadata; }
-    public void setMetadata(String metadata) { this.metadata = metadata; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

@@ -20,29 +20,35 @@ public class Comment {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "content", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "content", columnDefinition = "NVARCHAR(MAX)", nullable = false)
     private String content;
 
     @Column(name = "parent_id")
     private Long parentId;
 
-    @Column(name = "entity_type", nullable = false, length = 50)
-    private String entityType;
+    @Column(name = "v_report_type", nullable = false, length = 50)
+    private String reportType;
 
-    @Column(name = "entity_id", nullable = false)
-    private Long entityId;
+    @Column(name = "v_line_key", nullable = false, length = 200)
+    private String lineKey;
+
+    @Column(name = "v_segment_name", length = 100)
+    private String segmentName;
+
+    @Column(name = "v_category_code", nullable = false, length = 10)
+    private String categoryCode = "NONE";
 
     @Column(name = "event_type", nullable = false, length = 50)
-    private String eventType;
-
-    @Column(name = "metadata", columnDefinition = "NVARCHAR(MAX)")
-    private String metadata;
+    private String eventType = "COMMENT";
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     public Comment() {}
 
@@ -57,8 +63,6 @@ public class Comment {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    // --- Convenience methods ---
 
     public boolean isEdited() {
         return createdAt != null && updatedAt != null && updatedAt.isAfter(createdAt);
@@ -84,21 +88,27 @@ public class Comment {
     public Long getParentId() { return parentId; }
     public void setParentId(Long parentId) { this.parentId = parentId; }
 
-    public String getEntityType() { return entityType; }
-    public void setEntityType(String entityType) { this.entityType = entityType; }
+    public String getReportType() { return reportType; }
+    public void setReportType(String reportType) { this.reportType = reportType; }
 
-    public Long getEntityId() { return entityId; }
-    public void setEntityId(Long entityId) { this.entityId = entityId; }
+    public String getLineKey() { return lineKey; }
+    public void setLineKey(String lineKey) { this.lineKey = lineKey; }
+
+    public String getSegmentName() { return segmentName; }
+    public void setSegmentName(String segmentName) { this.segmentName = segmentName; }
+
+    public String getCategoryCode() { return categoryCode; }
+    public void setCategoryCode(String categoryCode) { this.categoryCode = categoryCode; }
 
     public String getEventType() { return eventType; }
     public void setEventType(String eventType) { this.eventType = eventType; }
-
-    public String getMetadata() { return metadata; }
-    public void setMetadata(String metadata) { this.metadata = metadata; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public LocalDateTime getDeletedAt() { return deletedAt; }
+    public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
 }

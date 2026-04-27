@@ -71,13 +71,15 @@
             {{ formatShortDate(date) }}
           </th>
           <th class="text-center date-header">Variance</th>
-          <th class="text-center action-header"></th>
+          <th class="text-center action-header"><i class="bi bi-chat-left-text"></i></th>
+          <th class="text-center action-header"><i class="bi bi-sliders"></i></th>
           <!-- Unweighted dates + variance -->
           <th *ngFor="let date of dates" class="text-center date-header">
             {{ formatShortDate(date) }}
           </th>
           <th class="text-center date-header">Variance</th>
-          <th class="text-center action-header"></th>
+          <th class="text-center action-header"><i class="bi bi-chat-left-text"></i></th>
+          <th class="text-center action-header"><i class="bi bi-sliders"></i></th>
         </tr>
       </thead>
       <tbody>
@@ -110,18 +112,15 @@
             </span>
           </td>
           <td class="text-center action-cell">
-            <div class="action-menu-wrapper">
-              <i class="bi bi-three-dots-vertical action-icon"
-                 (click)="toggleMenu(row, 'weighted', $event)"></i>
-              <div class="action-dropdown" *ngIf="isMenuOpen(row, 'weighted')">
-                <button class="dropdown-item" (click)="onMenuAction('comments', row, 'weighted')">
-                  <i class="bi bi-chat-left-text me-2"></i>Comments
-                </button>
-                <button class="dropdown-item" (click)="onMenuAction('adjustments', row, 'weighted')">
-                  <i class="bi bi-sliders me-2"></i>Adjustments
-                </button>
-              </div>
-            </div>
+            <span class="icon-wrapper" (click)="onCommentClick(row, $event)">
+              <i class="bi bi-chat-left-text action-icon" title="Comments"></i>
+              <span class="red-dot" *ngIf="hasCommentsForRow(row)"></span>
+            </span>
+          </td>
+          <td class="text-center action-cell">
+            <span class="icon-wrapper">
+              <i class="bi bi-sliders action-icon" title="Adjustments"></i>
+            </span>
           </td>
           <!-- Unweighted amount cells -->
           <td *ngFor="let date of dates" class="text-end amount-cell">
@@ -135,18 +134,15 @@
             </span>
           </td>
           <td class="text-center action-cell">
-            <div class="action-menu-wrapper">
-              <i class="bi bi-three-dots-vertical action-icon"
-                 (click)="toggleMenu(row, 'unweighted', $event)"></i>
-              <div class="action-dropdown" *ngIf="isMenuOpen(row, 'unweighted')">
-                <button class="dropdown-item" (click)="onMenuAction('comments', row, 'unweighted')">
-                  <i class="bi bi-chat-left-text me-2"></i>Comments
-                </button>
-                <button class="dropdown-item" (click)="onMenuAction('adjustments', row, 'unweighted')">
-                  <i class="bi bi-sliders me-2"></i>Adjustments
-                </button>
-              </div>
-            </div>
+            <span class="icon-wrapper" (click)="onCommentClick(row, $event)">
+              <i class="bi bi-chat-left-text action-icon" title="Comments"></i>
+              <span class="red-dot" *ngIf="hasCommentsForRow(row)"></span>
+            </span>
+          </td>
+          <td class="text-center action-cell">
+            <span class="icon-wrapper">
+              <i class="bi bi-sliders action-icon" title="Adjustments"></i>
+            </span>
           </td>
         </tr>
       </tbody>
@@ -157,3 +153,11 @@
     Select a segment and date range, then click <strong>View Analytics</strong> to load the OSFI LCR Metric report.
   </div>
 </div>
+
+<app-comment-thread-panel
+  [reportType]="commentReportType"
+  [lineKey]="commentLineKey"
+  [segmentName]="commentSegmentName"
+  [isOpen]="commentPanelOpen"
+  (closed)="closeCommentPanel()">
+</app-comment-thread-panel>

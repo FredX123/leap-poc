@@ -11,13 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    @Value( "${comment.max-thread-depth:5}")
+    @Value("${comment.max-thread-depth:5}")
     private int maxThreadDepth;
 
     private final CommentRepository repository;
@@ -30,13 +31,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentThreadDto> getThread(String entityType, Long entityId, String currentUserId) {
-        validateEntityType(entityType);
+    public List<CommentThreadDto> getThread(String reportType, String lineKey, String segmentName, String currentUserId) {
+        validateReportType(reportType);
 
-        List<Comment> comments = repository
-                .findByEntityTypeAndEntityIdOrderByCreatedAtAsc(entityType, entityId);
+        List<Comment> comments = (segmentName != null)
+                ? repository.findThread(reportType, lineKey, segmentName)
+                : repository.findThreadNoSegment(reportType, lineKey);
 
-        // Map entities → DTOs and index by ID
         Map<Long, CommentThreadDto> dtoMap = new LinkedHashMap<>();
         for (Comment c : comments) {
             CommentThreadDto dto = mapper.toThreadDto(c);
@@ -44,7 +45,6 @@ public class CommentServiceImpl implements CommentService {
             dtoMap.put(c.getId(), dto);
         }
 
-        // Assemble adjacency tree
         List<CommentThreadDto> roots = new ArrayList<>();
         for (Comment c : comments) {
             CommentThreadDto dto = dtoMap.get(c.getId());
@@ -55,7 +55,6 @@ public class CommentServiceImpl implements CommentService {
             }
         }
 
-        // Set hasReplies flag on each node
         for (CommentThreadDto dto : dtoMap.values()) {
             dto.setHasReplies(!dto.getReplies().isEmpty());
         }
@@ -67,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentDto createComment(CreateCommentRequest request,
                                     String userId, String displayName, String email) {
-        validateEntityType(request.getEntityType());
+        validateReportType(request.getReportType());
 
         String eventType = CommentEventType.COMMENT.name();
 
@@ -75,13 +74,15 @@ public class CommentServiceImpl implements CommentService {
             Comment parent = repository.findById(request.getParentId())
                     .orElseThrow(() -> new ResourceNotFoundException("Parent comment", request.getParentId()));
 
-            // Replies must belong to the same entity
-            if (!parent.getEntityType().equals(request.getEntityType())
-                    || !parent.getEntityId().equals(request.getEntityId())) {
+            if (parent.getDeletedAt() != null) {
+                throw new ResourceNotFoundException("Parent comment", request.getParentId());
+            }
+
+            if (!parent.getReportType().equals(request.getReportType())
+                    || !parent.getLineKey().equals(request.getLineKey())) {
                 throw new CrossEntityReplyException();
             }
 
-            // Enforce max thread depth
             int depth = calculateDepth(parent);
             if (depth >= maxThreadDepth) {
                 throw new CommentDepthExceededException(maxThreadDepth);
@@ -96,8 +97,10 @@ public class CommentServiceImpl implements CommentService {
         comment.setEmail(email);
         comment.setContent(request.getContent());
         comment.setParentId(request.getParentId());
-        comment.setEntityType(request.getEntityType());
-        comment.setEntityId(request.getEntityId());
+        comment.setReportType(request.getReportType());
+        comment.setLineKey(request.getLineKey());
+        comment.setSegmentName(request.getSegmentName());
+        comment.setCategoryCode(request.getCategoryCode() != null ? request.getCategoryCode() : "NONE");
         comment.setEventType(eventType);
 
         Comment saved = repository.save(comment);
@@ -127,34 +130,40 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(Long id, String currentUserId, boolean isAdmin) {
-        Comment comment = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment", id));
+        Comment comment = findActiveComment(id);
 
         if (!isAdmin && !comment.getUserId().equals(currentUserId)) {
             throw new UnauthorizedOperationException("You can only delete your own comments");
         }
 
-        // Recursively delete all descendants, then delete the comment itself
-        deleteRecursively(id);
+        softDeleteRecursively(id);
     }
 
-    private void deleteRecursively(Long commentId) {
+    private void softDeleteRecursively(Long commentId) {
         List<Comment> children = repository.findByParentId(commentId);
         for (Comment child : children) {
-            deleteRecursively(child.getId());
+            if (child.getDeletedAt() == null) {
+                softDeleteRecursively(child.getId());
+            }
         }
-        repository.deleteById(commentId);
+        Comment comment = repository.findById(commentId).orElse(null);
+        if (comment != null && comment.getDeletedAt() == null) {
+            comment.setDeletedAt(LocalDateTime.now());
+            repository.save(comment);
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Map<Long, Long> getCounts(String entityType, List<Long> entityIds) {
-        validateEntityType(entityType);
-        if (entityIds == null || entityIds.isEmpty()) return Collections.emptyMap();
+    public Map<String, Long> getCounts(String reportType, String segmentName) {
+        validateReportType(reportType);
 
-        List<Object[]> rows = repository.countByEntityTypeAndEntityIds(entityType, entityIds);
+        List<Object[]> rows = (segmentName != null)
+                ? repository.countByReportTypeAndSegment(reportType, segmentName)
+                : repository.countByReportTypeNoSegment(reportType);
+
         return rows.stream().collect(Collectors.toMap(
-                r -> (Long) r[0],
+                r -> (String) r[0],
                 r -> (Long) r[1]
         ));
     }
@@ -162,8 +171,12 @@ public class CommentServiceImpl implements CommentService {
     // --------------- private helpers ---------------
 
     private Comment findActiveComment(Long id) {
-        return repository.findById(id)
+        Comment comment = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", id));
+        if (comment.getDeletedAt() != null) {
+            throw new ResourceNotFoundException("Comment", id);
+        }
+        return comment;
     }
 
     private int calculateDepth(Comment comment) {
@@ -178,11 +191,11 @@ public class CommentServiceImpl implements CommentService {
         return depth;
     }
 
-    private void validateEntityType(String entityType) {
+    private void validateReportType(String reportType) {
         try {
-            CommentEntityType.valueOf(entityType);
+            CommentEntityType.valueOf(reportType);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid entity type: " + entityType);
+            throw new IllegalArgumentException("Invalid report type: " + reportType);
         }
     }
 }

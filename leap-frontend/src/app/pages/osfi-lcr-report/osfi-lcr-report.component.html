@@ -63,7 +63,8 @@
               {{ formatShortDate(date) }}
             </th>
             <th class="text-center date-header">Variance</th>
-            <th class="text-center action-header"></th>
+            <th class="text-center action-header"><i class="bi bi-chat-left-text"></i></th>
+            <th class="text-center action-header"><i class="bi bi-sliders"></i></th>
           </ng-container>
         </tr>
       </thead>
@@ -97,18 +98,15 @@
               </span>
             </td>
             <td class="text-center action-cell">
-              <div class="action-menu-wrapper">
-                <i class="bi bi-three-dots-vertical action-icon"
-                   (click)="toggleMenu(row, segKey(seg.segmentName), $event)"></i>
-                <div class="action-dropdown" *ngIf="isMenuOpen(row, segKey(seg.segmentName))">
-                  <button class="dropdown-item" (click)="onMenuAction('comments', row, segKey(seg.segmentName))">
-                    <i class="bi bi-chat-left-text me-2"></i>Comments
-                  </button>
-                  <button class="dropdown-item" (click)="onMenuAction('adjustments', row, segKey(seg.segmentName))">
-                    <i class="bi bi-sliders me-2"></i>Adjustments
-                  </button>
-                </div>
-              </div>
+              <span class="icon-wrapper" (click)="onCommentClick(row, seg.segmentName, $event)">
+                <i class="bi bi-chat-left-text action-icon" title="Comments"></i>
+                <span class="red-dot" *ngIf="hasCommentsForRow(row, seg.segmentName)"></span>
+              </span>
+            </td>
+            <td class="text-center action-cell">
+              <span class="icon-wrapper">
+                <i class="bi bi-sliders action-icon" title="Adjustments"></i>
+              </span>
             </td>
           </ng-container>
         </tr>
@@ -120,3 +118,11 @@
     Enter a date range and click <strong>View Analytics</strong> to load the OSFI LCR report.
   </div>
 </div>
+
+<app-comment-thread-panel
+  [reportType]="commentReportType"
+  [lineKey]="commentLineKey"
+  [segmentName]="commentSegmentName"
+  [isOpen]="commentPanelOpen"
+  (closed)="closeCommentPanel()">
+</app-comment-thread-panel>

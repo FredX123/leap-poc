@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LcrReportService } from '../../core/services/lcr-report.service';
+import { CommentService } from '../../core/services/comment.service';
+import { CommentThreadPanelComponent } from '../../shared/components/comment-thread-panel/comment-thread-panel.component';
 import {
   OsfiLcrReportItem,
   LcrSegmentHeader,
@@ -13,7 +15,7 @@ import {
 @Component({
   selector: 'app-osfi-lcr-report',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CommentThreadPanelComponent],
   templateUrl: './osfi-lcr-report.component.html',
   styleUrl: './osfi-lcr-report.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -30,11 +32,21 @@ export class OsfiLcrReportComponent {
   treeRows: LcrTreeRow[] = [];
   activeMenu: { rowCode: string; segKey: string } | null = null;
 
+  // Comment panel state
+  commentPanelOpen = false;
+  commentReportType = 'OSFI_LCR_REPORT';
+  commentLineKey = '';
+  commentSegmentName: string | null = null;
+
+  /** lineKey -> true for rows that have comments (leaf or bubbled-up parent) per segment */
+  commentFlags: Record<string, Set<string>> = {};  // segmentName -> Set of lineCodes with comments
+
   private destroyRef = inject(DestroyRef);
 
   constructor(
     private cd: ChangeDetectorRef,
-    private lcrService: LcrReportService
+    private lcrService: LcrReportService,
+    private commentService: CommentService
   ) {}
 
   onViewAnalytics(): void {
@@ -49,6 +61,7 @@ export class OsfiLcrReportComponent {
           this.buildTree(data);
           this.loading = false;
           this.cd.markForCheck();
+          this.loadCommentCounts();
         },
         error: () => {
           this.message = { text: 'Failed to load OSFI LCR report.', type: 'danger' };
@@ -113,7 +126,7 @@ export class OsfiLcrReportComponent {
   }
 
   get colsPerSegment(): number {
-    return this.dates.length + 2; // dates + variance + action
+    return this.dates.length + 3; // dates + variance + comment + adjustment
   }
 
   toggleMenu(row: LcrTreeRow, segKey: string, event: MouseEvent): void {
@@ -130,17 +143,66 @@ export class OsfiLcrReportComponent {
     return this.activeMenu?.rowCode === row.code && this.activeMenu?.segKey === segKey;
   }
 
-  onMenuAction(action: string, row: LcrTreeRow, segKey: string): void {
-    this.activeMenu = null;
-    // TODO: implement action handling
-    console.log(`Action: ${action}, Row: ${row.name}, Segment: ${segKey}`);
+  onCommentClick(row: LcrTreeRow, segmentName: string, event: MouseEvent): void {
+    event.stopPropagation();
+    this.commentLineKey = row.code;
+    this.commentSegmentName = segmentName;
+    this.commentPanelOpen = true;
     this.cd.markForCheck();
+  }
+
+  hasCommentsForRow(row: LcrTreeRow, segmentName: string): boolean {
+    return this.commentFlags[segmentName]?.has(row.code) ?? false;
+  }
+
+  onMenuAction(action: string, row: LcrTreeRow, segKey: string, segmentName?: string): void {
+    this.activeMenu = null;
+    if (action === 'comments') {
+      this.commentLineKey = row.code;
+      this.commentSegmentName = segmentName || null;
+      this.commentPanelOpen = true;
+    }
+    this.cd.markForCheck();
+  }
+
+  closeCommentPanel(): void {
+    this.commentPanelOpen = false;
+    this.cd.markForCheck();
+    // Refresh counts after panel close in case comments were added/deleted
+    this.loadCommentCounts();
   }
 
   closeMenu(): void {
     if (this.activeMenu) {
       this.activeMenu = null;
       this.cd.markForCheck();
+    }
+  }
+
+  private loadCommentCounts(): void {
+    if (this.segments.length === 0) return;
+
+    for (const seg of this.segments) {
+      this.commentService.getCounts(this.commentReportType, seg.segmentName)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(counts => {
+          const leafKeysWithComments = new Set<string>(
+            Object.keys(counts).filter(k => counts[k] > 0)
+          );
+          // Bubble up: if any child has comments, mark the parent too
+          const allCodes = new Set<string>();
+          for (const lineKey of leafKeysWithComments) {
+            allCodes.add(lineKey);
+            // Walk up the tree to mark all ancestors
+            let row = this.treeRows.find(r => r.code === lineKey);
+            while (row?.parentCode) {
+              allCodes.add(row.parentCode);
+              row = this.treeRows.find(r => r.code === row!.parentCode);
+            }
+          }
+          this.commentFlags[seg.segmentName] = allCodes;
+          this.cd.markForCheck();
+        });
     }
   }
 
