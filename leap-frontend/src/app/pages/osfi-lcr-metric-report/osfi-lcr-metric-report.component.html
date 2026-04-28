@@ -112,9 +112,9 @@
             </span>
           </td>
           <td class="text-center action-cell">
-            <span class="icon-wrapper" (click)="onCommentClick(row, $event)">
+            <span class="icon-wrapper" (click)="onCommentClick(row, 'W', $event)">
               <i class="bi bi-chat-left-text action-icon" title="Comments"></i>
-              <span class="red-dot" *ngIf="hasCommentsForRow(row)"></span>
+              <span class="red-dot" *ngIf="hasCommentsForRow(row, 'W')"></span>
             </span>
           </td>
           <td class="text-center action-cell">
@@ -134,9 +134,9 @@
             </span>
           </td>
           <td class="text-center action-cell">
-            <span class="icon-wrapper" (click)="onCommentClick(row, $event)">
+            <span class="icon-wrapper" (click)="onCommentClick(row, 'U', $event)">
               <i class="bi bi-chat-left-text action-icon" title="Comments"></i>
-              <span class="red-dot" *ngIf="hasCommentsForRow(row)"></span>
+              <span class="red-dot" *ngIf="hasCommentsForRow(row, 'U')"></span>
             </span>
           </td>
           <td class="text-center action-cell">

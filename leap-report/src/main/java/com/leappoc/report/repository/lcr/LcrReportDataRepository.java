@@ -12,7 +12,6 @@ public interface LcrReportDataRepository extends JpaRepository<LcrReportData, Lo
 
     @Query("SELECT d FROM LcrReportData d " +
            "JOIN FETCH d.reportLine rl " +
-           "LEFT JOIN FETCH rl.levels " +
            "JOIN FETCH d.segment s " +
            "WHERE rl.reportCode = :reportCode " +
            "AND d.calendarDate BETWEEN :startDate AND :endDate " +
@@ -24,7 +23,6 @@ public interface LcrReportDataRepository extends JpaRepository<LcrReportData, Lo
 
     @Query("SELECT d FROM LcrReportData d " +
            "JOIN FETCH d.reportLine rl " +
-           "LEFT JOIN FETCH rl.levels " +
            "JOIN FETCH d.segment s " +
            "WHERE rl.reportCode = :reportCode " +
            "AND s.segmentName = :segmentName " +

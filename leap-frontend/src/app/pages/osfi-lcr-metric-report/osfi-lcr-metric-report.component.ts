@@ -39,8 +39,9 @@ export class OsfiLcrMetricReportComponent {
   commentLineKey = '';
   commentSegmentName: string | null = null;
 
-  /** Set of row codes that have comments (leaf or bubbled-up) */
-  commentRowCodes = new Set<string>();
+  /** Row codes with comments, tracked separately per group */
+  weightedCommentCodes = new Set<string>();
+  unweightedCommentCodes = new Set<string>();
 
   private destroyRef = inject(DestroyRef);
 
@@ -145,22 +146,24 @@ export class OsfiLcrMetricReportComponent {
     return this.activeMenu?.rowCode === row.code && this.activeMenu?.group === group;
   }
 
-  onCommentClick(row: LcrMetricTreeRow, event: MouseEvent): void {
+  onCommentClick(row: LcrMetricTreeRow, group: 'W' | 'U', event: MouseEvent): void {
     event.stopPropagation();
-    this.commentLineKey = row.code;
+    this.commentLineKey = row.code + '|' + group;
     this.commentSegmentName = this.segmentName || null;
     this.commentPanelOpen = true;
     this.cd.markForCheck();
   }
 
-  hasCommentsForRow(row: LcrMetricTreeRow): boolean {
-    return this.commentRowCodes.has(row.code);
+  hasCommentsForRow(row: LcrMetricTreeRow, group: 'W' | 'U'): boolean {
+    return group === 'W'
+      ? this.weightedCommentCodes.has(row.code)
+      : this.unweightedCommentCodes.has(row.code);
   }
 
-  onMenuAction(action: string, row: LcrMetricTreeRow, group: string): void {
+  onMenuAction(action: string, row: LcrMetricTreeRow, group: 'W' | 'U'): void {
     this.activeMenu = null;
     if (action === 'comments') {
-      this.commentLineKey = row.code;
+      this.commentLineKey = row.code + '|' + group;
       this.commentSegmentName = this.segmentName || null;
       this.commentPanelOpen = true;
     }
@@ -186,19 +189,34 @@ export class OsfiLcrMetricReportComponent {
     this.commentService.getCounts(this.commentReportType, this.segmentName)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(counts => {
-        const leafKeysWithComments = new Set<string>(
-          Object.keys(counts).filter(k => counts[k] > 0)
-        );
-        const allCodes = new Set<string>();
-        for (const lineKey of leafKeysWithComments) {
-          allCodes.add(lineKey);
-          let row = this.treeRows.find(r => r.code === lineKey);
+        const wCodes = new Set<string>();
+        const uCodes = new Set<string>();
+
+        const bubbleUp = (baseCode: string, targetSet: Set<string>) => {
+          targetSet.add(baseCode);
+          let row = this.treeRows.find(r => r.code === baseCode);
           while (row?.parentCode) {
-            allCodes.add(row.parentCode);
+            targetSet.add(row.parentCode);
             row = this.treeRows.find(r => r.code === row!.parentCode);
           }
+        };
+
+        for (const [lineKey, count] of Object.entries(counts)) {
+          if (count <= 0) continue;
+
+          if (lineKey.endsWith('|W')) {
+            bubbleUp(lineKey.slice(0, -2), wCodes);
+          } else if (lineKey.endsWith('|U')) {
+            bubbleUp(lineKey.slice(0, -2), uCodes);
+          } else {
+            // Legacy key without group suffix — show on both
+            bubbleUp(lineKey, wCodes);
+            bubbleUp(lineKey, uCodes);
+          }
         }
-        this.commentRowCodes = allCodes;
+
+        this.weightedCommentCodes = wCodes;
+        this.unweightedCommentCodes = uCodes;
         this.cd.markForCheck();
       });
   }

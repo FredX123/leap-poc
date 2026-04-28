@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 public class LcrReportMapper {
 
     public List<OsfiLcrReportDto> toLcrReport(List<LcrReportData> dataList) {
-        Map<String, List<LcrReportData>> byLineCode = groupByLineCode(dataList);
+        Map<Long, List<LcrReportData>> byLineId = groupByLineId(dataList);
         List<OsfiLcrReportDto> result = new ArrayList<>();
 
-        for (List<LcrReportData> lineData : byLineCode.values()) {
+        for (List<LcrReportData> lineData : byLineId.values()) {
             LcrReportData first = lineData.get(0);
 
             OsfiLcrReportDto dto = new OsfiLcrReportDto();
@@ -42,10 +42,10 @@ public class LcrReportMapper {
     }
 
     public List<OsfiLcrMetricReportDto> toLcrMetricReport(List<LcrReportData> dataList) {
-        Map<String, List<LcrReportData>> byLineCode = groupByLineCode(dataList);
+        Map<Long, List<LcrReportData>> byLineId = groupByLineId(dataList);
         List<OsfiLcrMetricReportDto> result = new ArrayList<>();
 
-        for (List<LcrReportData> lineData : byLineCode.values()) {
+        for (List<LcrReportData> lineData : byLineId.values()) {
             LcrReportData first = lineData.get(0);
 
             OsfiLcrMetricReportDto dto = new OsfiLcrMetricReportDto();
@@ -75,10 +75,10 @@ public class LcrReportMapper {
     // Helpers
     // ------------------------------------------------------------------
 
-    private Map<String, List<LcrReportData>> groupByLineCode(List<LcrReportData> dataList) {
+    private Map<Long, List<LcrReportData>> groupByLineId(List<LcrReportData> dataList) {
         return dataList.stream()
                 .collect(Collectors.groupingBy(
-                        d -> d.getReportLine().getReportLineCode(),
+                        d -> d.getReportLine().getId(),
                         LinkedHashMap::new,
                         Collectors.toList()));
     }

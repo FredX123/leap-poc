@@ -1,6 +1,8 @@
 package com.leappoc.report.model.lcr;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class LcrReportLine {
 
     @OneToMany(mappedBy = "reportLine", fetch = FetchType.LAZY)
     @OrderBy("levelOrder ASC")
+    @BatchSize(size = 50)
     private List<LcrReportLineLevel> levels = new ArrayList<>();
 
     public LcrReportLine() {}
