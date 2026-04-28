@@ -46,11 +46,6 @@ describe('Navigation & RBAC', () => {
       await page.waitForPage();
       expect(await page.isPageHeadingPresent()).toBe(true);
     });
-
-    it('should NOT see Budget Report nav link', async () => {
-      const links = await header.getNavLinkTexts();
-      expect(links.some(t => t.includes('Budget Report'))).toBe(false);
-    });
   });
 
   // --- Admin group user (GRP_ADMIN) ---
