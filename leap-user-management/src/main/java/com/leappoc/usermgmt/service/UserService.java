@@ -45,48 +45,25 @@ public class UserService {
 
         String email = principal.getEmail();
 
-        List<String> roles = getRoles(principal);
-
         List<String> groups = principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(a -> a.startsWith("GROUP_"))
                 .map(a -> a.substring(6))
                 .toList();
 
-        return new UserInfoDto(displayName, email, roles, groups, true);
+        return new UserInfoDto(displayName, email, List.of(), groups, true);
     }
 
     private UserInfoDto buildMockUserInfo(MockUserPrincipal mock,
                                            Collection<? extends GrantedAuthority> authorities) {
-        List<String> roles = authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .filter(a -> a.startsWith("ROLE_"))
-                .map(a -> a.substring(5))
-                .toList();
-
         List<String> groups = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(a -> a.startsWith("GROUP_"))
                 .map(a -> a.substring(6))
                 .toList();
 
-        UserInfoDto dto = new UserInfoDto(mock.getDisplayName(), mock.getEmail(), roles, groups, true);
+        UserInfoDto dto = new UserInfoDto(mock.getDisplayName(), mock.getEmail(), List.of(), groups, true);
         dto.setMock(true);
         return dto;
-    }
-
-    private static List<String> getRoles(OidcUser principal) {
-        List<String> rolesFromAuthorities = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .filter(a -> a.startsWith("ROLE_"))
-                .map(a -> a.substring(5))
-                .toList();
-
-        List<String> rolesFromClaim = principal.getClaimAsStringList("roles");
-        if (rolesFromClaim == null) rolesFromClaim = List.of();
-
-        return !rolesFromAuthorities.isEmpty()
-                ? rolesFromAuthorities
-                : rolesFromClaim;
     }
 }

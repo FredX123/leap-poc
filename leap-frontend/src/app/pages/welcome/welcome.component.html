@@ -27,9 +27,8 @@
               Welcome, {{ user.displayName || user.email }}!
               <span *ngIf="user.mock" class="badge bg-info ms-1">Mock</span>
             </h5>
-            <p class="mb-1">You are authenticated. Your assigned roles and groups:</p>
+            <p class="mb-1">You are authenticated. Your assigned groups:</p>
             <ul class="mb-0">
-              <li *ngFor="let role of user.roles">{{ role }}</li>
               <li *ngFor="let group of user.groups">{{ group }}</li>
             </ul>
           </div>

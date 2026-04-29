@@ -63,8 +63,8 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
     private commentService: CommentService,
     private auth: AuthService
   ) {
-    this.canWrite = this.auth.hasAnyRoleOrGroup('APP_WRITE', 'APP_ADMIN');
-    this.isAdmin = this.auth.hasAnyRoleOrGroup('APP_ADMIN');
+    this.canWrite = this.auth.hasAnyGroup('GRP_WRITE', 'GRP_ADMIN');
+    this.isAdmin = this.auth.hasAnyGroup('GRP_ADMIN');
   }
 
   ngOnChanges(changes: SimpleChanges): void {

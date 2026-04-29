@@ -20,8 +20,7 @@ public class LcrReportController {
     }
 
     @PostMapping("/osfi-lcr")
-    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_READ + "', '" + RoleConstants.APP_WRITE + "')"
-            + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '" + RoleConstants.GROUP_GRP_WRITE + "')")
+    @PreAuthorize("hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '" + RoleConstants.GROUP_GRP_WRITE + "')")
     public ResponseEntity<List<OsfiLcrReportDto>> getOsfiLcrReport(@RequestBody LcrDateRequest request) {
         List<OsfiLcrReportDto> result = lcrReportService.getOsfiLcrReport(
                 request.getStartDate(), request.getEndDate());
@@ -29,8 +28,7 @@ public class LcrReportController {
     }
 
     @PostMapping("/osfi-lcr-metric")
-    @PreAuthorize("hasAnyRole('" + RoleConstants.APP_READ + "', '" + RoleConstants.APP_WRITE + "')"
-            + " or hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '" + RoleConstants.GROUP_GRP_WRITE + "')")
+    @PreAuthorize("hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '" + RoleConstants.GROUP_GRP_WRITE + "')")
     public ResponseEntity<List<OsfiLcrMetricReportDto>> getOsfiLcrMetricReport(@RequestBody LcrMetricRequest request) {
         List<OsfiLcrMetricReportDto> result = lcrReportService.getOsfiLcrMetricReport(
                 request.getSegment(), request.getStartDate(), request.getEndDate());
@@ -40,17 +38,14 @@ public class LcrReportController {
     // --- Auth test endpoints (for RBAC verification on welcome page) ---
 
     @GetMapping("/admin-only")
-    @PreAuthorize("hasRole('" + RoleConstants.APP_ADMIN + "')"
-            + " or hasAuthority('" + RoleConstants.GROUP_GRP_ADMIN + "')")
+    @PreAuthorize("hasAuthority('" + RoleConstants.GROUP_GRP_ADMIN + "')")
     public void adminOnly() {}
 
     @GetMapping("/write-only")
-    @PreAuthorize("hasRole('" + RoleConstants.APP_WRITE + "')"
-            + " or hasAuthority('" + RoleConstants.GROUP_GRP_WRITE + "')")
+    @PreAuthorize("hasAuthority('" + RoleConstants.GROUP_GRP_WRITE + "')")
     public void writeOnly() {}
 
     @GetMapping("/read-only")
-    @PreAuthorize("hasRole('" + RoleConstants.APP_READ + "')"
-            + " or hasAuthority('" + RoleConstants.GROUP_GRP_READ + "')")
+    @PreAuthorize("hasAuthority('" + RoleConstants.GROUP_GRP_READ + "')")
     public void readOnly() {}
 }

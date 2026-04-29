@@ -197,16 +197,7 @@ public class SecurityConfig {
                          oidcUser.getPreferredUsername(), amr);
             }
 
-            // Read Entra app roles from claim "roles"
-            List<String> roles = oidcUser.getClaimAsStringList("roles");
-            if (roles == null) roles = List.of();
-
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>(oidcUser.getAuthorities());
-
-            // Convert APP_ADMIN -> ROLE_APP_ADMIN
-            for (String role : roles) {
-                mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-            }
 
             // Map Entra group Object IDs from "groups" claim -> GROUP_GRP_ADMIN etc.
             List<String> groupIds = oidcUser.getClaimAsStringList("groups");

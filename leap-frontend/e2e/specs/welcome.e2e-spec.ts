@@ -45,24 +45,16 @@ describe('Welcome Page', () => {
   // --- After mock login ---
 
   it('should show welcome alert with user name after login', async () => {
-    await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
+    await mockLoginAs(driver, MOCK_USERS.ADMIN);
     await welcome.waitForWelcomeAlert();
 
     const heading = await welcome.getWelcomeHeadingText();
-    expect(heading).toContain('Welcome, POC Admin 1!');
+    expect(heading).toContain('Welcome, POC Admin!');
     expect(await welcome.isAnonymousContentVisible()).toBe(false);
   });
 
-  it('should display roles in the welcome alert for role-based user', async () => {
-    await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
-    await welcome.waitForWelcomeAlert();
-
-    const rolesAndGroups = await welcome.getDisplayedRolesAndGroups();
-    expect(rolesAndGroups).toContain('APP_ADMIN');
-  });
-
-  it('should display groups in the welcome alert for group-based user', async () => {
-    await mockLoginAs(driver, MOCK_USERS.ADMIN_GROUP);
+  it('should display groups in the welcome alert', async () => {
+    await mockLoginAs(driver, MOCK_USERS.ADMIN);
     await welcome.waitForWelcomeAlert();
 
     const rolesAndGroups = await welcome.getDisplayedRolesAndGroups();
@@ -70,7 +62,7 @@ describe('Welcome Page', () => {
   });
 
   it('should show Mock badge in welcome heading', async () => {
-    await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+    await mockLoginAs(driver, MOCK_USERS.WRITE);
     await welcome.waitForWelcomeAlert();
 
     const heading = await welcome.getWelcomeHeadingText();
@@ -81,10 +73,10 @@ describe('Welcome Page', () => {
 
   it('should update welcome reactively when switching to a different user', async () => {
     // Login as admin
-    await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
+    await mockLoginAs(driver, MOCK_USERS.ADMIN);
     await welcome.waitForWelcomeAlert();
     let heading = await welcome.getWelcomeHeadingText();
-    expect(heading).toContain('POC Admin 1');
+    expect(heading).toContain('POC Admin');
 
     // Logout
     await mockLogout(driver);
@@ -92,16 +84,16 @@ describe('Welcome Page', () => {
     expect(await welcome.isAnonymousContentVisible()).toBe(true);
 
     // Login as reader
-    await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
+    await mockLoginAs(driver, MOCK_USERS.READ);
     await welcome.waitForWelcomeAlert();
     heading = await welcome.getWelcomeHeadingText();
-    expect(heading).toContain('POC Reader 1');
+    expect(heading).toContain('POC Reader');
   });
 
   // --- After logout ---
 
   it('should remove welcome alert and show anonymous content after logout', async () => {
-    await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+    await mockLoginAs(driver, MOCK_USERS.WRITE);
     await welcome.waitForWelcomeAlert();
 
     await mockLogout(driver);

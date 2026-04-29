@@ -43,24 +43,16 @@ describe('OSFI LCR Metric Report', () => {
       expect(url).not.toContain('/osfi-lcr-metric-report');
     });
 
-    it('should allow read-role user to access the page', async () => {
-      await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
+    it('should allow read user to access the page', async () => {
+      await mockLoginAs(driver, MOCK_USERS.READ);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       await page.waitForPage();
       const heading = await page.getPageHeadingText();
       expect(heading).toContain('OSFI LCR Metric Report');
     });
 
-    it('should allow write-role user to access the page', async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
-      await navigateTo(driver, '/osfi-lcr-metric-report');
-      await page.waitForPage();
-      const heading = await page.getPageHeadingText();
-      expect(heading).toContain('OSFI LCR Metric Report');
-    });
-
-    it('should allow write-group user to access the page', async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_GROUP);
+    it('should allow write user to access the page', async () => {
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       await page.waitForPage();
       const heading = await page.getPageHeadingText();
@@ -68,7 +60,7 @@ describe('OSFI LCR Metric Report', () => {
     });
 
     it('should redirect admin-only user to access-denied', async () => {
-      await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.ADMIN);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       const denied = new AccessDeniedPage(driver);
       await denied.waitForPage();
@@ -80,7 +72,7 @@ describe('OSFI LCR Metric Report', () => {
 
   describe('Initial State', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       await page.waitForPage();
     });
@@ -119,7 +111,7 @@ describe('OSFI LCR Metric Report', () => {
 
   describe('Navigation', () => {
     it('should navigate to LCR Metric report via nav link', async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await header.clickNavLink('OSFI LCR Metric');
       await page.waitForPage();
       const heading = await page.getPageHeadingText();
@@ -131,7 +123,7 @@ describe('OSFI LCR Metric Report', () => {
 
   describe('Data Loading', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       await page.waitForPage();
     });
@@ -219,7 +211,7 @@ describe('OSFI LCR Metric Report', () => {
 
   describe('Segment Selection', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       await page.waitForPage();
     });
@@ -262,7 +254,7 @@ describe('OSFI LCR Metric Report', () => {
 
   describe('Tree Hierarchy', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       await page.waitForPage();
       await page.setStartDate(START_DATE);
@@ -307,7 +299,7 @@ describe('OSFI LCR Metric Report', () => {
 
   describe('Comment Panel (Write user)', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       await page.waitForPage();
       await page.setStartDate(START_DATE);
@@ -373,7 +365,7 @@ describe('OSFI LCR Metric Report', () => {
 
   describe('Comment Panel (Read user)', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.READ);
       await navigateTo(driver, '/osfi-lcr-metric-report');
       await page.waitForPage();
       await page.setStartDate(START_DATE);

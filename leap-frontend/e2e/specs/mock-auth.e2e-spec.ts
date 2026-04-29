@@ -49,46 +49,30 @@ describe('Mock Authentication', () => {
 
   // --- Mock login ---
 
-  it('should login as admin role user and show authenticated state', async () => {
-    await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
+  it('should login as admin user and show authenticated state', async () => {
+    await mockLoginAs(driver, MOCK_USERS.ADMIN);
 
-    expect(await header.getDisplayedUserName()).toBe('POC Admin 1');
+    expect(await header.getDisplayedUserName()).toBe('POC Admin');
     expect(await header.isMockBadgeVisible()).toBe(true);
     expect(await header.isLogoutButtonVisible()).toBe(true);
     expect(await header.isMockToggleVisible()).toBe(false);
     expect(await header.isLoginButtonVisible()).toBe(false);
   });
 
-  it('should login as admin group user', async () => {
-    await mockLoginAs(driver, MOCK_USERS.ADMIN_GROUP);
-    expect(await header.getDisplayedUserName()).toBe('POC Admin 2');
-    expect(await header.isMockBadgeVisible()).toBe(true);
+  it('should login as write user', async () => {
+    await mockLoginAs(driver, MOCK_USERS.WRITE);
+    expect(await header.getDisplayedUserName()).toBe('POC Writer');
   });
 
-  it('should login as write role user', async () => {
-    await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
-    expect(await header.getDisplayedUserName()).toBe('POC Writer 1');
-  });
-
-  it('should login as write group user', async () => {
-    await mockLoginAs(driver, MOCK_USERS.WRITE_GROUP);
-    expect(await header.getDisplayedUserName()).toBe('POC Writer 2');
-  });
-
-  it('should login as read role user', async () => {
-    await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
-    expect(await header.getDisplayedUserName()).toBe('POC Reader 1');
-  });
-
-  it('should login as read group user', async () => {
-    await mockLoginAs(driver, MOCK_USERS.READ_GROUP);
-    expect(await header.getDisplayedUserName()).toBe('POC Reader 2');
+  it('should login as read user', async () => {
+    await mockLoginAs(driver, MOCK_USERS.READ);
+    expect(await header.getDisplayedUserName()).toBe('POC Reader');
   });
 
   // --- Mock logout ---
 
   it('should logout and return to anonymous state', async () => {
-    await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
+    await mockLoginAs(driver, MOCK_USERS.ADMIN);
     expect(await header.isLogoutButtonVisible()).toBe(true);
 
     await mockLogout(driver);
@@ -103,14 +87,14 @@ describe('Mock Authentication', () => {
 
   it('should switch from one mock user to another after logout', async () => {
     // Login as admin
-    await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
-    expect(await header.getDisplayedUserName()).toBe('POC Admin 1');
+    await mockLoginAs(driver, MOCK_USERS.ADMIN);
+    expect(await header.getDisplayedUserName()).toBe('POC Admin');
 
     // Logout
     await mockLogout(driver);
 
     // Login as reader
-    await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
-    expect(await header.getDisplayedUserName()).toBe('POC Reader 1');
+    await mockLoginAs(driver, MOCK_USERS.READ);
+    expect(await header.getDisplayedUserName()).toBe('POC Reader');
   });
 });

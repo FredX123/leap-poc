@@ -49,9 +49,9 @@ describe('API Authorization Tests', () => {
 
   // --- Admin user ---
 
-  describe('Admin role user (APP_ADMIN)', () => {
+  describe('Admin user (GRP_ADMIN)', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.ADMIN);
       await welcome.waitForPage();
     });
 
@@ -61,14 +61,14 @@ describe('API Authorization Tests', () => {
       expect(msg).toContain('Successfully accessed');
     });
 
-    it('should fail on write-only API (lacks APP_WRITE)', async () => {
+    it('should fail on write-only API (lacks GRP_WRITE)', async () => {
       await welcome.waitForToastToDisappear();
       await welcome.clickApiTestLink(1);
       const msg = await welcome.waitForToastMessage();
       expect(msg).toContain('Access denied');
     });
 
-    it('should fail on read-only API (lacks APP_READ)', async () => {
+    it('should fail on read-only API (lacks GRP_READ)', async () => {
       await welcome.waitForToastToDisappear();
       await welcome.clickApiTestLink(2);
       const msg = await welcome.waitForToastMessage();
@@ -78,9 +78,9 @@ describe('API Authorization Tests', () => {
 
   // --- Write user ---
 
-  describe('Write role user (APP_WRITE)', () => {
+  describe('Write user (GRP_WRITE)', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await welcome.waitForPage();
     });
 
@@ -97,7 +97,7 @@ describe('API Authorization Tests', () => {
       expect(msg).toContain('Successfully accessed');
     });
 
-    it('should fail on read-only API (lacks APP_READ)', async () => {
+    it('should fail on read-only API (lacks GRP_READ)', async () => {
       await welcome.waitForToastToDisappear();
       await welcome.clickApiTestLink(2);
       const msg = await welcome.waitForToastMessage();
@@ -107,9 +107,9 @@ describe('API Authorization Tests', () => {
 
   // --- Read user ---
 
-  describe('Read role user (APP_READ)', () => {
+  describe('Read user (GRP_READ)', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.READ);
       await welcome.waitForPage();
     });
 

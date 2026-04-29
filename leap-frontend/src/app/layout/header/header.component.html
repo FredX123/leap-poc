@@ -13,7 +13,7 @@
   <!-- Role-based menus (only when authenticated) -->
   <div class="navbar-collapse" [class.collapse]="navCollapsed" *ngIf="auth.isAuthenticated" id="navbarNav">
     <ul class="navbar-nav me-auto">
-      <li class="nav-item" *ngIf="auth.hasAnyRoleOrGroup('APP_ADMIN')">
+      <li class="nav-item" *ngIf="auth.hasAnyGroup('GRP_ADMIN')">
         <a
           class="nav-link"
           routerLink="/user-management"
@@ -22,7 +22,7 @@
           <i class="bi bi-people me-1"></i>User Management
         </a>
       </li>
-      <li class="nav-item" *ngIf="auth.hasAnyRoleOrGroup('APP_READ', 'APP_WRITE')">
+      <li class="nav-item" *ngIf="auth.hasAnyGroup('GRP_READ', 'GRP_WRITE')">
         <a
           class="nav-link"
           routerLink="/osfi-lcr-report"
@@ -31,7 +31,7 @@
           <i class="bi bi-graph-up me-1"></i>OSFI LCR
         </a>
       </li>
-      <li class="nav-item" *ngIf="auth.hasAnyRoleOrGroup('APP_READ', 'APP_WRITE')">
+      <li class="nav-item" *ngIf="auth.hasAnyGroup('GRP_READ', 'GRP_WRITE')">
         <a
           class="nav-link"
           routerLink="/osfi-lcr-metric-report"

@@ -23,11 +23,11 @@ describe('Navigation & RBAC', () => {
     header = new HeaderPage(driver);
   });
 
-  // --- Admin role user (APP_ADMIN) ---
+  // --- Admin user (GRP_ADMIN) ---
 
-  describe('Admin role user', () => {
+  describe('Admin user', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.ADMIN_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.ADMIN);
     });
 
     it('should see User Management nav link', async () => {
@@ -48,24 +48,11 @@ describe('Navigation & RBAC', () => {
     });
   });
 
-  // --- Admin group user (GRP_ADMIN) ---
+  // --- Write user (GRP_WRITE) ---
 
-  describe('Admin group user', () => {
+  describe('Write user', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.ADMIN_GROUP);
-    });
-
-    it('should see User Management nav link (group-based)', async () => {
-      const links = await header.getNavLinkTexts();
-      expect(links.some(t => t.includes('User Management'))).toBe(true);
-    });
-  });
-
-  // --- Write role user (APP_WRITE) ---
-
-  describe('Write role user', () => {
-    beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
     });
 
     it('should see OSFI LCR nav link', async () => {
@@ -79,24 +66,11 @@ describe('Navigation & RBAC', () => {
     });
   });
 
-  // --- Write group user (GRP_WRITE) ---
+  // --- Read user (GRP_READ) ---
 
-  describe('Write group user', () => {
+  describe('Read user', () => {
     beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_GROUP);
-    });
-
-    it('should see OSFI LCR nav link (group-based)', async () => {
-      const links = await header.getNavLinkTexts();
-      expect(links.some(t => t.includes('OSFI LCR'))).toBe(true);
-    });
-  });
-
-  // --- Read role user (APP_READ) ---
-
-  describe('Read role user', () => {
-    beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.READ);
     });
 
     it('should see OSFI LCR nav link', async () => {
@@ -107,19 +81,6 @@ describe('Navigation & RBAC', () => {
     it('should NOT see User Management nav link', async () => {
       const links = await header.getNavLinkTexts();
       expect(links.some(t => t.includes('User Management'))).toBe(false);
-    });
-  });
-
-  // --- Read group user (GRP_READ) ---
-
-  describe('Read group user', () => {
-    beforeEach(async () => {
-      await mockLoginAs(driver, MOCK_USERS.READ_GROUP);
-    });
-
-    it('should see OSFI LCR nav link (group-based)', async () => {
-      const links = await header.getNavLinkTexts();
-      expect(links.some(t => t.includes('OSFI LCR'))).toBe(true);
     });
   });
 
@@ -127,7 +88,7 @@ describe('Navigation & RBAC', () => {
 
   describe('Access Denied', () => {
     it('should redirect read user to access-denied when navigating to /admin-only', async () => {
-      await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.READ);
       await navigateTo(driver, '/admin-only');
       const page = new AccessDeniedPage(driver);
       await page.waitForPage();
@@ -135,7 +96,7 @@ describe('Navigation & RBAC', () => {
     });
 
     it('should redirect write user to access-denied when navigating to /user-management', async () => {
-      await mockLoginAs(driver, MOCK_USERS.WRITE_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.WRITE);
       await navigateTo(driver, '/user-management');
       const page = new AccessDeniedPage(driver);
       await page.waitForPage();
@@ -143,7 +104,7 @@ describe('Navigation & RBAC', () => {
     });
 
     it('should redirect read user to access-denied when navigating to /write-only', async () => {
-      await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.READ);
       await navigateTo(driver, '/write-only');
       const page = new AccessDeniedPage(driver);
       await page.waitForPage();
@@ -151,7 +112,7 @@ describe('Navigation & RBAC', () => {
     });
 
     it('should allow navigating back to home from access-denied page', async () => {
-      await mockLoginAs(driver, MOCK_USERS.READ_ROLE);
+      await mockLoginAs(driver, MOCK_USERS.READ);
       await navigateTo(driver, '/admin-only');
       const page = new AccessDeniedPage(driver);
       await page.waitForPage();

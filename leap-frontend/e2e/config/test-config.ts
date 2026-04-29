@@ -36,10 +36,7 @@ export function humanDelay(driver: WebDriver): Promise<void> {
 
 /** Mock user identifiers (must match MockAuthController). */
 export const MOCK_USERS = {
-  ADMIN_ROLE:  '2ce33691-a662-434b-8676-55a3fc6799ef',   // Role: APP_ADMIN  (POC Admin 1)
-  ADMIN_GROUP: 'deaa7af4-ef97-4ebe-8cf3-10bb52bcdc3b',   // Group: GRP_ADMIN (POC Admin 2)
-  WRITE_ROLE:  '2f2c9530-a002-4b59-8776-7ee1cd56e5a5',   // Role: APP_WRITE  (POC Writer 1)
-  WRITE_GROUP: 'de62386a-6618-40b9-94c6-4d04260942bc',   // Group: GRP_WRITE (POC Writer 2)
-  READ_ROLE:   '122386cf-65df-445e-99cf-b79501cf7ddb',    // Role: APP_READ   (POC Reader 1)
-  READ_GROUP:  '72991c97-a5f6-46be-b58b-8fa5ecfc3a94',    // Group: GRP_READ  (POC Reader 2)
+  ADMIN:  'deaa7af4-ef97-4ebe-8cf3-10bb52bcdc3b',   // Group: GRP_ADMIN  (POC Admin)
+  WRITE:  'de62386a-6618-40b9-94c6-4d04260942bc',    // Group: GRP_WRITE  (POC Writer)
+  READ:   '72991c97-a5f6-46be-b58b-8fa5ecfc3a94',    // Group: GRP_READ   (POC Reader)
 } as const;

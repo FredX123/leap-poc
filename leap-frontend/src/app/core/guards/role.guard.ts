@@ -3,11 +3,10 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 /**
- * Factory that creates a route guard requiring any of the given roles or
- * their corresponding groups (e.g. APP_ADMIN role or GRP_ADMIN group).
- * Usage in routes: canActivate: [roleGuard('APP_READ', 'APP_WRITE')]
+ * Factory that creates a route guard requiring any of the given groups.
+ * Usage in routes: canActivate: [groupGuard('GRP_READ', 'GRP_WRITE')]
  */
-export function roleGuard(...requiredRoles: string[]): CanActivateFn {
+export function groupGuard(...requiredGroups: string[]): CanActivateFn {
   return () => {
     const auth = inject(AuthService);
     const router = inject(Router);
@@ -17,11 +16,11 @@ export function roleGuard(...requiredRoles: string[]): CanActivateFn {
       return false;
     }
 
-    if (auth.hasAnyRoleOrGroup(...requiredRoles)) {
+    if (auth.hasAnyGroup(...requiredGroups)) {
       return true;
     }
 
-    // Logged in but lacks required role/group → redirect to access-denied page
+    // Logged in but lacks required group → redirect to access-denied page
     return router.createUrlTree(['/access-denied']);
   };
 }

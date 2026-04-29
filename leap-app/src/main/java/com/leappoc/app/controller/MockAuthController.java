@@ -25,24 +25,18 @@ import java.util.*;
 public class MockAuthController {
 
     private record MockUserDef(String displayName, String email,
-                                List<String> roles, List<String> groups,
+                                List<String> groups,
                                 String description) {}
 
     private static final LinkedHashMap<String, MockUserDef> MOCK_USERS = new LinkedHashMap<>();
 
     static {
-        MOCK_USERS.put("2ce33691-a662-434b-8676-55a3fc6799ef", new MockUserDef("POC Admin 1", "admin1@leappoc.mock",
-                List.of("APP_ADMIN"), List.of(), "Role: APP_ADMIN"));
-        MOCK_USERS.put("deaa7af4-ef97-4ebe-8cf3-10bb52bcdc3b", new MockUserDef("POC Admin 2", "admin2@leappoc.mock",
-                List.of(), List.of("GRP_ADMIN"), "Group: GRP_ADMIN"));
-        MOCK_USERS.put("2f2c9530-a002-4b59-8776-7ee1cd56e5a5", new MockUserDef("POC Writer 1", "write1@leappoc.mock",
-                List.of("APP_WRITE"), List.of(), "Role: APP_WRITE"));
-        MOCK_USERS.put("de62386a-6618-40b9-94c6-4d04260942bc", new MockUserDef("POC Writer 2", "write2@leappoc.mock",
-                List.of(), List.of("GRP_WRITE"), "Group: GRP_WRITE"));
-        MOCK_USERS.put("122386cf-65df-445e-99cf-b79501cf7ddb", new MockUserDef("POC Reader 1", "read1@leappoc.mock",
-                List.of("APP_READ"), List.of(), "Role: APP_READ"));
-        MOCK_USERS.put("72991c97-a5f6-46be-b58b-8fa5ecfc3a94", new MockUserDef("POC Reader 2", "read2@leappoc.mock",
-                List.of(), List.of("GRP_READ"), "Group: GRP_READ"));
+        MOCK_USERS.put("deaa7af4-ef97-4ebe-8cf3-10bb52bcdc3b", new MockUserDef("POC Admin", "admin@leappoc.mock",
+                List.of("GRP_ADMIN"), "Group: GRP_ADMIN"));
+        MOCK_USERS.put("de62386a-6618-40b9-94c6-4d04260942bc", new MockUserDef("POC Writer", "write@leappoc.mock",
+                List.of("GRP_WRITE"), "Group: GRP_WRITE"));
+        MOCK_USERS.put("72991c97-a5f6-46be-b58b-8fa5ecfc3a94", new MockUserDef("POC Reader", "read@leappoc.mock",
+                List.of("GRP_READ"), "Group: GRP_READ"));
     }
 
     record MockUserOption(String username, String displayName, String description) {}
@@ -66,11 +60,8 @@ public class MockAuthController {
 
         MockUserDef def = MOCK_USERS.get(username);
 
-        // Build authorities
+        // Build authorities from groups
         Set<GrantedAuthority> authorities = new HashSet<>();
-        for (String role : def.roles()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-        }
         for (String group : def.groups()) {
             authorities.add(new SimpleGrantedAuthority("GROUP_" + group));
         }
@@ -88,7 +79,7 @@ public class MockAuthController {
 
         // Build response DTO
         UserInfoDto dto = new UserInfoDto(def.displayName(), def.email(),
-                def.roles(), def.groups(), true);
+                List.of(), def.groups(), true);
         dto.setMock(true);
         return ResponseEntity.ok(dto);
     }
