@@ -63,3 +63,36 @@ export const COMMENT_CATEGORIES: CommentCategory[] = [
   { code: 'REG',  label: 'Regulatory change' },
   { code: 'OTH',  label: 'Other (see notes)' },
 ];
+
+/** Maps category code to its full label. */
+export const CATEGORY_LABEL_MAP: Record<string, string> = Object.fromEntries(
+  COMMENT_CATEGORIES.map(c => [c.code, c.label])
+);
+
+/** Info about a child row passed to the comment panel for hierarchy view. */
+export interface CommentChildRow {
+  code: string;
+  name: string;
+  parentCode: string | null;
+  level: number;
+  variance: number | null;
+}
+
+/** Summary data computed per-lineKey from hierarchy threads. */
+export interface LineCommentSummary {
+  lineKey: string;
+  rootCount: number;
+  lastUpdate: string | null;
+  latestAuthor: string | null;
+  drivers: string[];
+  threads: CommentThreadDto[];
+  variance: number | null;
+}
+
+/** Driver card data for By Driver tab. */
+export interface DriverGroupData {
+  driverCode: string;
+  driverLabel: string;
+  rowCount: number;
+  lines: { lineKey: string; name: string; breadcrumb: string; rootCount: number; threads: CommentThreadDto[] }[];
+}

@@ -1,9 +1,4 @@
 .comment-entry {
-  border-left: 2px solid #dee2e6;
-  padding-left: 12px;
-}
-
-:host:first-child .comment-entry {
   border-left: none;
   padding-left: 0;
 }
@@ -11,6 +6,11 @@
 .replies-container {
   margin-left: 20px;
   margin-top: 8px;
+
+  .comment-entry {
+    border-left: 2px solid #dee2e6;
+    padding-left: 12px;
+  }
 }
 
 .avatar {

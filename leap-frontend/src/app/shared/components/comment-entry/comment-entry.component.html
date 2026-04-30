@@ -39,6 +39,12 @@
                     class="form-control form-control-sm" rows="2"
                     [(ngModel)]="editText" maxlength="4000"
                     aria-label="Edit comment text"></textarea>
+          <div *ngIf="!comment.parentId" class="mt-1">
+            <select class="form-select form-select-sm" [(ngModel)]="editCategoryCode"
+                    aria-label="Change driver category">
+              <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.label }}</option>
+            </select>
+          </div>
           <div class="mt-1 d-flex gap-1">
             <button class="btn btn-sm btn-success" [disabled]="!editText.trim()"
                     (click)="saveEdit()" aria-label="Save edit">Save</button>

@@ -19,8 +19,34 @@
     <div class="resize-handle-indicator"></div>
   </div>
 
-  <!-- Panel header -->
-  <div class="panel-header d-flex align-items-center justify-content-between p-3 border-bottom">
+  <!-- Panel header (enhanced for rows with lineName) -->
+  <div class="panel-header border-bottom" *ngIf="lineName">
+    <!-- Line 1: Title + total comment count -->
+    <div class="header-row-1 d-flex align-items-center justify-content-between px-3 pt-3 pb-1">
+      <span class="panel-title fw-bold text-truncate">{{ truncatedLineName }}</span>
+      <div class="d-flex align-items-center gap-2">
+        <span class="comment-count-badge" *ngIf="totalRootCount > 0">{{ totalRootCount }}</span>
+        <button class="btn btn-sm btn-outline-secondary" (click)="close()"
+                aria-label="Close comments panel">
+          <i class="bi bi-x-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Line 2: Variance -->
+    <div class="header-row-2 px-3 py-1" *ngIf="variance != null">
+      <span [ngClass]="varianceClass(variance)">
+        <i class="bi" [ngClass]="varianceArrow(variance)"></i>
+        {{ formatVariance(variance) }}
+      </span>
+    </div>
+    <!-- Line 3: Last update -->
+    <div class="header-row-3 px-3 pb-2 text-muted small">
+      Comments<span *ngIf="lastUpdateDate"> - Last update {{ lastUpdateDate }}</span>
+    </div>
+  </div>
+
+  <!-- Simple header (fallback when no lineName) -->
+  <div class="panel-header d-flex align-items-center justify-content-between p-3 border-bottom" *ngIf="!lineName">
     <h6 class="mb-0" id="comment-panel-title">
       <i class="bi bi-chat-dots me-2" aria-hidden="true"></i>Comments
     </h6>
@@ -51,26 +77,148 @@
       </button>
     </div>
 
-    <!-- Empty state -->
-    <div *ngIf="!loading && !error && thread.length === 0"
-         class="text-center text-muted py-4">
-      <i class="bi bi-chat-square-text" style="font-size: 2rem;" aria-hidden="true"></i>
-      <p class="mt-2 small">No comments yet. Start the conversation!</p>
-    </div>
+    <!-- Own comments section -->
+    <div *ngIf="!loading && !error">
+      <!-- Empty state (only for leaf rows) -->
+      <div *ngIf="!hasChildren && thread.length === 0"
+           class="text-center text-muted py-4">
+        <i class="bi bi-chat-square-text" style="font-size: 2rem;" aria-hidden="true"></i>
+        <p class="mt-2 small">No comments yet. Start the conversation!</p>
+      </div>
 
-    <!-- Thread entries -->
-    <div *ngIf="!loading && thread.length > 0" class="thread-list"
-         role="list" aria-label="Comment thread">
-      <app-comment-entry
-        *ngFor="let entry of thread; trackBy: trackById"
-        [comment]="entry"
-        [canWrite]="canWrite"
-        [isAdmin]="isAdmin"
-        [replyErrorMap]="replyErrorMap"
-        (replied)="onReply($event)"
-        (edited)="onEdit($event)"
-        (deleted)="onDelete($event)"
-      ></app-comment-entry>
+      <!-- Thread entries (own row's comments) -->
+      <div *ngIf="thread.length > 0" class="thread-list"
+           role="list" aria-label="Comment thread">
+        <app-comment-entry
+          *ngFor="let entry of thread; trackBy: trackById"
+          [comment]="entry"
+          [canWrite]="canWrite"
+          [isAdmin]="isAdmin"
+          [replyErrorMap]="replyErrorMap"
+          (replied)="onReply($event)"
+          (edited)="onEdit($event)"
+          (deleted)="onDelete($event)"
+        ></app-comment-entry>
+      </div>
+
+      <!-- ─── Tabs (only for parent rows with children) ─── -->
+      <div *ngIf="hasChildren" class="hierarchy-tabs mt-3">
+        <ul class="nav nav-tabs nav-tabs-sm">
+          <li class="nav-item">
+            <button class="nav-link" [class.active]="activeTab === 'hierarchy'"
+                    (click)="switchTab('hierarchy')">Hierarchy</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" [class.active]="activeTab === 'driver'"
+                    (click)="switchTab('driver')">By Driver</button>
+          </li>
+        </ul>
+
+        <!-- Loading hierarchy data -->
+        <div *ngIf="hierarchyLoading" class="text-center py-3">
+          <div class="spinner-border spinner-border-sm text-secondary">
+            <span class="visually-hidden">Loading hierarchy...</span>
+          </div>
+        </div>
+
+        <!-- ─── Hierarchy Tab ─── -->
+        <div *ngIf="!hierarchyLoading && activeTab === 'hierarchy'" class="tab-content pt-2">
+          <div *ngIf="lineSummaries.length === 0" class="text-muted small text-center py-3">
+            No comments from child rows.
+          </div>
+
+          <div *ngFor="let summary of lineSummaries" class="hierarchy-card mb-2">
+            <div class="hierarchy-card-header">
+              <!-- Card header row 1: name + count + expand -->
+              <div class="card-row-1 d-flex align-items-center">
+                <span class="fw-bold flex-grow-1 text-truncate">
+                  {{ getLineBreadcrumb(summary.lineKey) }}
+                </span>
+                <span class="count-circle me-2">{{ summary.rootCount }}</span>
+                <button class="btn btn-sm btn-link p-0 expand-btn"
+                        (click)="toggleHierarchyCard(summary.lineKey)">
+                  <i class="bi" [ngClass]="isHierarchyCardExpanded(summary.lineKey) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                </button>
+              </div>
+              <!-- Card header row 2: author + last update -->
+              <div class="card-row-2 d-flex align-items-center gap-2" *ngIf="summary.latestAuthor">
+                <span class="author-circle">{{ getInitials(summary.latestAuthor) }}</span>
+                <span class="text-muted small">Last update: {{ summary.lastUpdate?.substring(0, 10) }}</span>
+              </div>
+              <!-- Card header row 3: variance + drivers -->
+              <div class="card-row-3 d-flex align-items-center justify-content-between">
+                <span *ngIf="summary.variance != null" [ngClass]="varianceClass(summary.variance)">
+                  <i class="bi" [ngClass]="varianceArrow(summary.variance)"></i>
+                  {{ formatVariance(summary.variance) }}
+                </span>
+                <span *ngIf="summary.variance == null">&nbsp;</span>
+                <span class="driver-badges">
+                  <span *ngFor="let d of summary.drivers" class="driver-badge">{{ d }}</span>
+                </span>
+              </div>
+            </div>
+            <!-- Expanded content: show comments -->
+            <div *ngIf="isHierarchyCardExpanded(summary.lineKey)" class="card-expanded">
+              <app-comment-entry
+                *ngFor="let entry of summary.threads; trackBy: trackById"
+                [comment]="entry"
+                [canWrite]="canWrite"
+                [isAdmin]="isAdmin"
+                [replyErrorMap]="replyErrorMap"
+                (replied)="onReply($event)"
+                (edited)="onEdit($event)"
+                (deleted)="onDelete($event)"
+              ></app-comment-entry>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── By Driver Tab ─── -->
+        <div *ngIf="!hierarchyLoading && activeTab === 'driver'" class="tab-content pt-2">
+          <div *ngIf="driverGroups.length === 0" class="text-muted small text-center py-3">
+            No comments from child rows.
+          </div>
+
+          <div *ngFor="let group of driverGroups" class="driver-card mb-3">
+            <!-- Driver card header -->
+            <div class="driver-card-header d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-2">
+                <span class="driver-code-badge">{{ group.driverCode }}</span>
+                <span class="driver-label small">{{ group.driverLabel }}</span>
+              </div>
+              <span class="text-muted small fst-italic">across {{ group.rowCount }} row{{ group.rowCount > 1 ? 's' : '' }}</span>
+            </div>
+            <!-- Driver card lines -->
+            <div class="driver-card-body">
+              <div *ngFor="let line of group.lines" class="driver-line mt-1">
+                <div class="d-flex align-items-center">
+                  <span class="flex-grow-1 text-truncate small">
+                    <span class="fw-bold">{{ line.breadcrumb }}</span>
+                  </span>
+                  <span class="count-circle me-2">{{ line.rootCount }}</span>
+                  <button class="btn btn-sm btn-link p-0 expand-btn"
+                          (click)="toggleDriverLine(group.driverCode, line.lineKey)">
+                    <i class="bi" [ngClass]="isDriverLineExpanded(group.driverCode, line.lineKey) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                  </button>
+                </div>
+                <!-- Expanded: show comments for this line+driver -->
+                <div *ngIf="isDriverLineExpanded(group.driverCode, line.lineKey)" class="driver-line-expanded">
+                  <app-comment-entry
+                    *ngFor="let entry of line.threads; trackBy: trackById"
+                    [comment]="entry"
+                    [canWrite]="canWrite"
+                    [isAdmin]="isAdmin"
+                    [replyErrorMap]="replyErrorMap"
+                    (replied)="onReply($event)"
+                    (edited)="onEdit($event)"
+                    (deleted)="onDelete($event)"
+                  ></app-comment-entry>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

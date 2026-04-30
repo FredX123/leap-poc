@@ -89,3 +89,155 @@
   opacity: 0;
   transition: opacity 0.15s;
 }
+
+/* ─── Enhanced header ─── */
+
+.panel-title {
+  font-size: 1rem;
+  max-width: 70%;
+}
+
+.comment-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f57c00;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0 5px;
+}
+
+/* ─── Hierarchy & Driver tabs ─── */
+
+.nav-tabs-sm .nav-link {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.hierarchy-card {
+  border-radius: 6px;
+  padding: 0;
+
+  .hierarchy-card-header {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+}
+
+.card-expanded {
+  border: 1px solid #dee2e6;
+  border-radius: 0 0 6px 6px;
+  padding: 10px 12px;
+  margin-top: 0;
+}
+
+.card-row-1 {
+  line-height: 1.4;
+}
+
+.card-row-2 {
+  margin-top: 4px;
+}
+
+.card-row-3 {
+  margin-top: 2px;
+}
+
+.count-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #dee2e6;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.author-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #6c757d;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.expand-btn {
+  color: #6c757d;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.expand-btn:hover {
+  color: #333;
+}
+
+.driver-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.driver-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: #e3f2fd;
+  color: #1565c0;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+/* ─── Driver card ─── */
+
+.driver-card {
+  border-radius: 6px;
+  padding: 0;
+
+  .driver-card-header {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+
+  .driver-card-body {
+    padding: 4px 12px 8px;
+  }
+}
+
+.driver-line-expanded {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 10px 12px;
+  margin-top: 4px;
+}
+
+.driver-code-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.driver-label {
+  color: #555;
+}
+
+.driver-line {
+  padding: 4px 0 4px 8px;
+  border-left: 2px solid #e0e0e0;
+}
