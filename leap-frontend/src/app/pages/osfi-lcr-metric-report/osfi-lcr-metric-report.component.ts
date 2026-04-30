@@ -5,6 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LcrReportService } from '../../core/services/lcr-report.service';
 import { CommentService } from '../../core/services/comment.service';
 import { CommentThreadPanelComponent } from '../../shared/components/comment-thread-panel/comment-thread-panel.component';
+import { CommentChildRow } from '../../shared/models/comment.model';
 import {
   OsfiLcrMetricReportItem,
   LcrMetricTreeRow,
@@ -37,7 +38,10 @@ export class OsfiLcrMetricReportComponent {
   commentPanelOpen = false;
   commentReportType = 'OSFI_LCR_METRIC_REPORT';
   commentLineKey = '';
+  commentLineName = '';
   commentSegmentName: string | null = null;
+  commentChildRows: CommentChildRow[] = [];
+  commentVariance: number | null = null;
 
   /** Row codes with comments, tracked separately per group */
   weightedCommentCodes = new Set<string>();
@@ -149,7 +153,10 @@ export class OsfiLcrMetricReportComponent {
   onCommentClick(row: LcrMetricTreeRow, group: 'W' | 'U', event: MouseEvent): void {
     event.stopPropagation();
     this.commentLineKey = row.code + '|' + group;
+    this.commentLineName = row.name;
     this.commentSegmentName = this.segmentName || null;
+    this.commentVariance = group === 'W' ? row.weightedVariancePct : row.unweightedVariancePct;
+    this.commentChildRows = row.expandable ? this.getDescendants(row.code, group) : [];
     this.commentPanelOpen = true;
     this.cd.markForCheck();
   }
@@ -164,10 +171,28 @@ export class OsfiLcrMetricReportComponent {
     this.activeMenu = null;
     if (action === 'comments') {
       this.commentLineKey = row.code + '|' + group;
+      this.commentLineName = row.name;
       this.commentSegmentName = this.segmentName || null;
+      this.commentVariance = group === 'W' ? row.weightedVariancePct : row.unweightedVariancePct;
+      this.commentChildRows = row.expandable ? this.getDescendants(row.code, group) : [];
       this.commentPanelOpen = true;
     }
     this.cd.markForCheck();
+  }
+
+  private getDescendants(parentCode: string, group: 'W' | 'U'): CommentChildRow[] {
+    const descendants: CommentChildRow[] = [];
+    const collect = (code: string) => {
+      for (const row of this.treeRows) {
+        if (row.parentCode === code) {
+          const v = group === 'W' ? row.weightedVariancePct : row.unweightedVariancePct;
+          descendants.push({ code: row.code + '|' + group, name: row.name, parentCode: row.parentCode ? row.parentCode + '|' + group : null, level: row.level, variance: v ?? null });
+          if (row.expandable) collect(row.code);
+        }
+      }
+    };
+    collect(parentCode);
+    return descendants;
   }
 
   closeCommentPanel(): void {

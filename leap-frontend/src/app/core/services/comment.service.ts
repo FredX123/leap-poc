@@ -20,12 +20,20 @@ export class CommentService {
     return this.http.get<CommentThreadDto[]>(this.baseUrl, { params });
   }
 
+  getHierarchyThreads(reportType: string, segmentName: string, lineKey: string): Observable<Record<string, CommentThreadDto[]>> {
+    const params = new HttpParams()
+      .set('reportType', reportType)
+      .set('segmentName', segmentName)
+      .set('lineKey', lineKey);
+    return this.http.get<Record<string, CommentThreadDto[]>>(`${this.baseUrl}/hierarchy`, { params });
+  }
+
   create(request: CreateCommentRequest): Observable<CommentDto> {
     return this.http.post<CommentDto>(this.baseUrl, request);
   }
 
-  update(id: number, content: string): Observable<CommentDto> {
-    return this.http.put<CommentDto>(`${this.baseUrl}/${id}`, { content });
+  update(id: number, content: string, categoryCode?: string): Observable<CommentDto> {
+    return this.http.put<CommentDto>(`${this.baseUrl}/${id}`, { content, categoryCode });
   }
 
   delete(id: number): Observable<void> {

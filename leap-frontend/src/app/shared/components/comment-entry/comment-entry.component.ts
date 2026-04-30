@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CommentThreadDto } from '../../models/comment.model';
+import { CommentThreadDto, CommentCategory, COMMENT_CATEGORIES } from '../../models/comment.model';
 import { CommentInputComponent } from '../comment-input/comment-input.component';
 import { AuthorTooltipDirective } from '../../directives/author-tooltip.directive';
 
@@ -24,12 +24,14 @@ export class CommentEntryComponent implements OnChanges {
   @Input() replyErrorMap: Record<number, string> = {};
 
   @Output() replied = new EventEmitter<{ parentId: number; content: string }>();
-  @Output() edited = new EventEmitter<{ id: number; content: string }>();
+  @Output() edited = new EventEmitter<{ id: number; content: string; categoryCode?: string }>();
   @Output() deleted = new EventEmitter<number>();
 
+  categories: CommentCategory[] = COMMENT_CATEGORIES;
   showReply = false;
   isEditing = false;
   editText = '';
+  editCategoryCode = 'NONE';
   expanded = false;
   confirmingDelete = false;
   inlineError: string | null = null;
@@ -83,6 +85,7 @@ export class CommentEntryComponent implements OnChanges {
 
   startEdit(): void {
     this.editText = this.comment.content;
+    this.editCategoryCode = this.comment.categoryCode || 'NONE';
     this.isEditing = true;
   }
 
@@ -93,7 +96,7 @@ export class CommentEntryComponent implements OnChanges {
   saveEdit(): void {
     const trimmed = this.editText.trim();
     if (trimmed) {
-      this.edited.emit({ id: this.comment.id, content: trimmed });
+      this.edited.emit({ id: this.comment.id, content: trimmed, categoryCode: this.editCategoryCode });
       this.isEditing = false;
     }
   }

@@ -5,6 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LcrReportService } from '../../core/services/lcr-report.service';
 import { CommentService } from '../../core/services/comment.service';
 import { CommentThreadPanelComponent } from '../../shared/components/comment-thread-panel/comment-thread-panel.component';
+import { CommentChildRow } from '../../shared/models/comment.model';
 import {
   OsfiLcrReportItem,
   LcrSegmentHeader,
@@ -36,7 +37,10 @@ export class OsfiLcrReportComponent {
   commentPanelOpen = false;
   commentReportType = 'OSFI_LCR_REPORT';
   commentLineKey = '';
+  commentLineName = '';
   commentSegmentName: string | null = null;
+  commentChildRows: CommentChildRow[] = [];
+  commentVariance: number | null = null;
 
   /** lineKey -> true for rows that have comments (leaf or bubbled-up parent) per segment */
   commentFlags: Record<string, Set<string>> = {};  // segmentName -> Set of lineCodes with comments
@@ -146,7 +150,17 @@ export class OsfiLcrReportComponent {
   onCommentClick(row: LcrTreeRow, segmentName: string, event: MouseEvent): void {
     event.stopPropagation();
     this.commentLineKey = row.code;
+    this.commentLineName = row.name;
     this.commentSegmentName = segmentName;
+    this.commentVariance = row.variancePct[this.segKey(segmentName)] ?? null;
+
+    // Gather descendant rows for hierarchy view
+    if (row.expandable) {
+      this.commentChildRows = this.getDescendants(row.code, this.segKey(segmentName));
+    } else {
+      this.commentChildRows = [];
+    }
+
     this.commentPanelOpen = true;
     this.cd.markForCheck();
   }
@@ -159,10 +173,27 @@ export class OsfiLcrReportComponent {
     this.activeMenu = null;
     if (action === 'comments') {
       this.commentLineKey = row.code;
+      this.commentLineName = row.name;
       this.commentSegmentName = segmentName || null;
+      this.commentVariance = row.variancePct[segKey] ?? null;
+      this.commentChildRows = row.expandable ? this.getDescendants(row.code, segKey) : [];
       this.commentPanelOpen = true;
     }
     this.cd.markForCheck();
+  }
+
+  private getDescendants(parentCode: string, segKey: string): CommentChildRow[] {
+    const descendants: CommentChildRow[] = [];
+    const collect = (code: string) => {
+      for (const row of this.treeRows) {
+        if (row.parentCode === code) {
+          descendants.push({ code: row.code, name: row.name, parentCode: row.parentCode, level: row.level, variance: row.variancePct[segKey] ?? null });
+          if (row.expandable) collect(row.code);
+        }
+      }
+    };
+    collect(parentCode);
+    return descendants;
   }
 
   closeCommentPanel(): void {

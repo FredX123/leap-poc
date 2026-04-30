@@ -34,4 +34,19 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
            "WHERE c.reportType = :reportType AND c.segmentName IS NULL " +
            "AND c.deletedAt IS NULL GROUP BY c.lineKey")
     List<Object[]> countByReportTypeNoSegment(@Param("reportType") String reportType);
+
+    @Query("SELECT c FROM Comment c WHERE c.reportType = :reportType " +
+           "AND c.segmentName = :segmentName AND c.lineKey IN :lineKeys " +
+           "AND c.deletedAt IS NULL ORDER BY c.lineKey, c.createdAt ASC")
+    List<Comment> findByLineKeys(@Param("reportType") String reportType,
+                                  @Param("segmentName") String segmentName,
+                                  @Param("lineKeys") List<String> lineKeys);
+
+    @Query("SELECT c FROM Comment c WHERE c.reportType = :reportType " +
+           "AND c.segmentName = :segmentName " +
+           "AND c.lineKey LIKE :prefix " +
+           "AND c.deletedAt IS NULL ORDER BY c.lineKey, c.createdAt ASC")
+    List<Comment> findDescendants(@Param("reportType") String reportType,
+                                  @Param("segmentName") String segmentName,
+                                  @Param("prefix") String prefix);
 }

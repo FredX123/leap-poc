@@ -9,10 +9,13 @@ public interface CommentService {
 
     List<CommentThreadDto> getThread(String reportType, String lineKey, String segmentName, String currentUserId);
 
+    Map<String, List<CommentThreadDto>> getHierarchyThreads(String reportType, String segmentName,
+                                                             String lineKey, String currentUserId);
+
     CommentDto createComment(CreateCommentRequest request,
                              String userId, String displayName, String email);
 
-    CommentDto updateComment(Long id, String content, String currentUserId);
+    CommentDto updateComment(Long id, String content, String categoryCode, String currentUserId);
 
     void deleteComment(Long id, String currentUserId, boolean isAdmin);
 

@@ -38,6 +38,50 @@ public class CommentServiceImpl implements CommentService {
                 ? repository.findThread(reportType, lineKey, segmentName)
                 : repository.findThreadNoSegment(reportType, lineKey);
 
+        return buildThreadedList(comments, currentUserId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, List<CommentThreadDto>> getHierarchyThreads(String reportType, String segmentName,
+                                                                     String lineKey, String currentUserId) {
+        validateReportType(reportType);
+
+        // Determine the LIKE prefix for descendant lineKeys.
+        // For metric reports, lineKey ends with |W or |U (e.g. "20|210|W").
+        // Descendants are like "20|210|21101|W". Use base prefix + "|%" filtering by suffix.
+        String prefix;
+        String suffix = null;
+        if (lineKey.endsWith("|W") || lineKey.endsWith("|U")) {
+            suffix = lineKey.substring(lineKey.length() - 2); // "|W" or "|U"
+            String base = lineKey.substring(0, lineKey.length() - 2); // e.g. "20|210"
+            prefix = base + "|%";
+        } else {
+            prefix = lineKey + "|%";
+        }
+
+        List<Comment> allComments = repository.findDescendants(reportType, segmentName, prefix);
+
+        // If metric, filter to only those ending with the same suffix
+        if (suffix != null) {
+            String sfx = suffix;
+            allComments = allComments.stream()
+                    .filter(c -> c.getLineKey().endsWith(sfx))
+                    .collect(Collectors.toList());
+        }
+
+        // Group by lineKey, then build threaded list per group
+        Map<String, List<Comment>> byLineKey = allComments.stream()
+                .collect(Collectors.groupingBy(Comment::getLineKey, LinkedHashMap::new, Collectors.toList()));
+
+        Map<String, List<CommentThreadDto>> result = new LinkedHashMap<>();
+        for (Map.Entry<String, List<Comment>> entry : byLineKey.entrySet()) {
+            result.put(entry.getKey(), buildThreadedList(entry.getValue(), currentUserId));
+        }
+        return result;
+    }
+
+    private List<CommentThreadDto> buildThreadedList(List<Comment> comments, String currentUserId) {
         Map<Long, CommentThreadDto> dtoMap = new LinkedHashMap<>();
         for (Comment c : comments) {
             CommentThreadDto dto = mapper.toThreadDto(c);
@@ -112,7 +156,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentDto updateComment(Long id, String content, String currentUserId) {
+    public CommentDto updateComment(Long id, String content, String categoryCode, String currentUserId) {
         Comment comment = findActiveComment(id);
 
         if (!comment.getUserId().equals(currentUserId)) {
@@ -120,6 +164,9 @@ public class CommentServiceImpl implements CommentService {
         }
 
         comment.setContent(content);
+        if (categoryCode != null) {
+            comment.setCategoryCode(categoryCode);
+        }
         Comment saved = repository.save(comment);
 
         CommentDto dto = mapper.toDto(saved);

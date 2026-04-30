@@ -62,7 +62,7 @@ public class CommentController {
             Authentication authentication) {
 
         String currentUserId = extractUserId(authentication);
-        CommentDto updated = commentService.updateComment(id, request.getContent(), currentUserId);
+        CommentDto updated = commentService.updateComment(id, request.getContent(), request.getCategoryCode(), currentUserId);
         return ResponseEntity.ok(updated);
     }
 
@@ -90,6 +90,21 @@ public class CommentController {
 
         Map<String, Long> counts = commentService.getCounts(reportType, segmentName);
         return ResponseEntity.ok(counts);
+    }
+
+    @GetMapping("/hierarchy")
+    @PreAuthorize("hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '"
+            + RoleConstants.GROUP_GRP_WRITE + "', '" + RoleConstants.GROUP_GRP_ADMIN + "')")
+    public ResponseEntity<Map<String, List<CommentThreadDto>>> getHierarchyThreads(
+            @RequestParam String reportType,
+            @RequestParam String segmentName,
+            @RequestParam String lineKey,
+            Authentication authentication) {
+
+        String currentUserId = extractUserId(authentication);
+        Map<String, List<CommentThreadDto>> result = commentService.getHierarchyThreads(
+                reportType, segmentName, lineKey, currentUserId);
+        return ResponseEntity.ok(result);
     }
 
     // --------------- private helpers ---------------
