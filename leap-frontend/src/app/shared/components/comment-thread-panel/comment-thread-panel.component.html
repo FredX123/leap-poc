@@ -86,6 +86,11 @@
         <p class="mt-2 small">No comments yet. Start the conversation!</p>
       </div>
 
+      <!-- Empty state (parent rows with no own comments) -->
+      <div *ngIf="hasChildren && thread.length === 0" class="py-3">
+        <p class="small text-muted fst-italic mb-0" style="color: #b0b0b0 !important;">No comments for this row yet.</p>
+      </div>
+
       <!-- Thread entries (own row's comments) -->
       <div *ngIf="thread.length > 0" class="thread-list"
            role="list" aria-label="Comment thread">
@@ -101,8 +106,8 @@
         ></app-comment-entry>
       </div>
 
-      <!-- ─── Tabs (only for parent rows with children) ─── -->
-      <div *ngIf="hasChildren" class="hierarchy-tabs mt-3">
+      <!-- ─── Tabs (only for parent rows with children that have comments) ─── -->
+      <div *ngIf="hasChildren && lineSummaries.length > 0" class="hierarchy-tabs mt-3">
         <ul class="nav nav-tabs nav-tabs-sm">
           <li class="nav-item">
             <button class="nav-link" [class.active]="activeTab === 'hierarchy'"

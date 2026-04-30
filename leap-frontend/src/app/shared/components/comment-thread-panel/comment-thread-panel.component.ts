@@ -289,7 +289,10 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
     this.commentService.create(request).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: () => this.loadThread(),
+      next: () => {
+        this.selectedCategoryCode = 'NONE';
+        this.loadThread();
+      },
       error: (err: HttpErrorResponse) => {
         this.thread = this.thread.filter(t => t.id !== optimistic.id);
         this.commentCountChanged.emit(this.countComments(this.thread));
