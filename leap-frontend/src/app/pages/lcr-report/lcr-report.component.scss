@@ -1,0 +1,59 @@
+.lcr-calc-table {
+  font-size: 0.85rem;
+
+  .name-col { min-width: 300px; }
+  .code-col { width: 80px; }
+  .amount-col { width: 160px; }
+  .weight-col { width: 70px; }
+}
+
+.section-row td {
+  background-color: #f8f9fa;
+  border-top: 2px solid #dee2e6;
+}
+
+.subsection-row td {
+  background-color: #f8f9fa;
+}
+
+.subheader-row td {
+  background-color: #fff;
+}
+
+.data-row {
+  &.has-adjustment {
+    background-color: #fff3cd20;
+  }
+}
+
+.bg-market-value {
+  background-color: #d4edda40;
+}
+
+.bg-weighted {
+  background-color: transparent;
+}
+
+.bg-weighted-negative {
+  background-color: #ffff0050;
+}
+
+.clickable-cell {
+  cursor: pointer;
+  &:hover {
+    background-color: #e8f4fd !important;
+  }
+}
+
+.adj-icon {
+  font-size: 0.7rem;
+  color: #856404;
+}
+
+.nav-tabs .nav-link {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.8rem;
+  &.active {
+    font-weight: 600;
+  }
+}

@@ -38,6 +38,12 @@ export const routes: Routes = [
     canActivate: [groupGuard('GRP_READ', 'GRP_WRITE')]
   },
   {
+    path: 'lcr-report',
+    loadComponent: () =>
+      import('./pages/lcr-report/lcr-report.component').then(m => m.LcrReportComponent),
+    canActivate: [groupGuard('GRP_READ', 'GRP_WRITE')]
+  },
+  {
     path: 'access-denied',
     loadComponent: () =>
       import('./pages/access-denied/access-denied.component').then(m => m.AccessDeniedComponent)
