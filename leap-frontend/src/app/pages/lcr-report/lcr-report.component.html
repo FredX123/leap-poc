@@ -82,7 +82,8 @@
 
           <!-- Data row -->
           <tr *ngIf="line.lineType === 'data'" class="data-row"
-              [class.has-adjustment]="hasAdjustment(line) && showAdjustments">
+              [class.has-adjustment]="hasAdjustment(line) && showAdjustments"
+              [class.active-row]="adjustmentPanelOpen && adjustmentLine?.id === line.id">
             <td class="name-col small ps-4">{{ line.lineName }}</td>
             <td class="code-col text-center small">{{ line.lineCode }}</td>
             <td class="amount-col text-end small"

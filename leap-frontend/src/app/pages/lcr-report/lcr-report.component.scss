@@ -40,14 +40,20 @@
 
 .clickable-cell {
   cursor: pointer;
-  &:hover {
-    background-color: #e8f4fd !important;
-  }
 }
 
 .adj-icon {
   font-size: 0.7rem;
   color: #856404;
+}
+
+// Row hover & active row highlighting
+.lcr-calc-table tbody tr:hover > td {
+  background-color: #e8f4fd !important;
+}
+
+.lcr-calc-table tbody tr.active-row > td {
+  background-color: #cfe2ff !important;
 }
 
 .nav-tabs .nav-link {

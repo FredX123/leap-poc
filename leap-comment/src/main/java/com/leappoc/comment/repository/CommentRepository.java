@@ -45,8 +45,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c WHERE c.reportType = :reportType " +
            "AND c.segmentName = :segmentName " +
            "AND c.lineKey LIKE :prefix " +
+           "AND c.lineKey <> :excludeKey " +
            "AND c.deletedAt IS NULL ORDER BY c.lineKey, c.createdAt ASC")
     List<Comment> findDescendants(@Param("reportType") String reportType,
                                   @Param("segmentName") String segmentName,
-                                  @Param("prefix") String prefix);
+                                  @Param("prefix") String prefix,
+                                  @Param("excludeKey") String excludeKey);
 }

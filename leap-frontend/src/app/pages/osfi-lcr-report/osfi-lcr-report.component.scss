@@ -40,9 +40,6 @@
 
     &.clickable {
       cursor: pointer;
-      &:hover {
-        background-color: #f0f8ff;
-      }
     }
 
     .tree-indent {
@@ -114,18 +111,27 @@
   }
 }
 
-.level-1-row {
+.level-1-row td {
   background-color: #e8f0fe !important;
   font-weight: 700;
 }
 
-.level-2-row {
+.level-2-row td {
   background-color: #f3f6fa !important;
   font-weight: 600;
 }
 
 .level-3-row {
   font-weight: 400;
+}
+
+// Row hover & active row highlighting
+.lcr-table tbody tr:hover > td {
+  background-color: #e8f4fd !important;
+}
+
+.lcr-table tbody tr.active-row > td {
+  background-color: #cfe2ff !important;
 }
 
 .text-danger {

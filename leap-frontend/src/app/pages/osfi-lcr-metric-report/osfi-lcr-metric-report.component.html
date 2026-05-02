@@ -88,7 +88,8 @@
               'level-1-row': row.level === 1,
               'level-2-row': row.level === 2,
               'level-3-row': row.level >= 3 && row.expandable,
-              'leaf-row': !row.expandable && row.level >= 3
+              'leaf-row': !row.expandable && row.level >= 3,
+              'active-row': isActiveRow(row)
             }">
           <!-- Name cell with tree indentation -->
           <td class="name-cell" (click)="toggleRow(row)"

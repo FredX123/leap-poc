@@ -167,6 +167,13 @@ export class OsfiLcrMetricReportComponent {
       : this.unweightedCommentCodes.has(row.code);
   }
 
+  isActiveRow(row: LcrMetricTreeRow): boolean {
+    if (!this.commentPanelOpen || !this.commentLineKey) return false;
+    // commentLineKey is "compositeCode|W" or "compositeCode|U"; strip suffix to compare
+    const base = this.commentLineKey.replace(/\|[WU]$/, '');
+    return row.code === base;
+  }
+
   onMenuAction(action: string, row: LcrMetricTreeRow, group: 'W' | 'U'): void {
     this.activeMenu = null;
     if (action === 'comments') {
@@ -278,17 +285,17 @@ export class OsfiLcrMetricReportComponent {
       }));
 
       // Ensure each group node in the path exists
-      let parentCode: string | null = null;
+      let parentCompositeKey: string | null = null;
       for (let i = 0; i < levels.length; i++) {
         const compositeKey = levels.slice(0, i + 1).map(l => l.code).join('|');
         if (!groupNodes.has(compositeKey)) {
           const groupRow: LcrMetricTreeRow = {
             level: i + 1,
             name: levels[i].desc,
-            code: levels[i].code,
+            code: compositeKey,
             expanded: i === 0,
             expandable: true,
-            parentCode,
+            parentCode: parentCompositeKey,
             grandparentCode: null,
             weightedAmounts: {},
             weightedVariancePct: 0,
@@ -298,18 +305,21 @@ export class OsfiLcrMetricReportComponent {
           groupNodes.set(compositeKey, groupRow);
           rows.push(groupRow);
         }
-        parentCode = levels[i].code;
+        parentCompositeKey = compositeKey;
       }
 
       // Add leaf row
       const leafLevel = levels.length + 1;
+      const leafCompositeKey = parentCompositeKey
+        ? parentCompositeKey + '|' + item.v_report_line_code
+        : item.v_report_line_code;
       const leafRow: LcrMetricTreeRow = {
         level: leafLevel,
         name: item.v_report_line_name,
-        code: item.v_report_line_code,
+        code: leafCompositeKey,
         expanded: false,
         expandable: false,
-        parentCode,
+        parentCode: parentCompositeKey,
         grandparentCode: null,
         weightedAmounts: {},
         weightedVariancePct: 0,

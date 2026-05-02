@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
             prefix = lineKey + "|%";
         }
 
-        List<Comment> allComments = repository.findDescendants(reportType, segmentName, prefix);
+        List<Comment> allComments = repository.findDescendants(reportType, segmentName, prefix, lineKey);
 
         // If metric, filter to only those ending with the same suffix
         if (suffix != null) {

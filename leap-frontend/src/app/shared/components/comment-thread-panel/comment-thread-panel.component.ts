@@ -97,11 +97,19 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isOpen'] && this.isOpen && this.reportType && this.lineKey) {
+    const reopened = changes['isOpen'] && this.isOpen;
+    const keyChanged = changes['lineKey'] && !changes['lineKey'].firstChange;
+
+    if ((reopened || keyChanged) && this.isOpen && this.reportType && this.lineKey) {
       this.replyErrorMap = {};
       this.expandedHierarchyCards = new Set();
       this.expandedDriverLines = new Set();
       this.activeTab = 'hierarchy';
+      this.hierarchyData = {};
+      this.lineSummaries = [];
+      this.driverGroups = [];
+      this.totalRootCount = 0;
+      this.lastUpdateDate = null;
       this.loadThread();
       if (this.hasChildren) {
         this.loadHierarchyData();
