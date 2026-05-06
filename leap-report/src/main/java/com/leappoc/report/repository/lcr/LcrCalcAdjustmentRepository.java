@@ -10,10 +10,11 @@ import java.util.Optional;
 
 public interface LcrCalcAdjustmentRepository extends JpaRepository<LcrCalcAdjustment, Long> {
 
-    @Query("SELECT a FROM LcrCalcAdjustment a " +
-           "JOIN FETCH a.line l " +
-           "WHERE a.calcId = :calcId " +
-           "AND a.reportableCurrency = :currency")
+    @Query("SELECT a " +
+           "  FROM LcrCalcAdjustment a " +
+           "       JOIN FETCH a.line l " +
+           " WHERE a.calcId = :calcId " +
+           "   AND a.reportableCurrency = :currency")
     List<LcrCalcAdjustment> findByCalcIdAndCurrency(
             @Param("calcId") Integer calcId,
             @Param("currency") String currency);

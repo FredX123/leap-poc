@@ -1,0 +1,12 @@
+spring:
+  config:
+    import:
+        - file:${LEAP_CONFIG_DIR:./}/leap-config.properties
+
+report:
+  mock:
+    fallback:
+      osfi-lcr: ${LEAP_MOCK_DIR:./}/lcr/osfi-lcr.json
+      osfi-lcr-metric: ${LEAP_MOCK_DIR:./}/lcr/osfi-lcr-metric.json
+    dml:
+      lcr: ${LEAP_MOCK_DIR:./}/lcr/lcr_lock_data.sql

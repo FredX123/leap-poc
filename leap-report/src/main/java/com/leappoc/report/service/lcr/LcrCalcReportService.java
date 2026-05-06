@@ -1,11 +1,11 @@
 package com.leappoc.report.service.lcr;
 
 import com.leappoc.report.model.lcr.LcrCalcAdjustment;
-import com.leappoc.report.model.lcr.LcrCalcData;
-import com.leappoc.report.model.lcr.LcrCalcLine;
+import com.leappoc.report.model.lcr.LcrReportData;
+import com.leappoc.report.model.lcr.LcrReportLine;
 import com.leappoc.report.repository.lcr.LcrCalcAdjustmentRepository;
-import com.leappoc.report.repository.lcr.LcrCalcDataRepository;
-import com.leappoc.report.repository.lcr.LcrCalcLineRepository;
+import com.leappoc.report.repository.lcr.LcrReportDataRepository;
+import com.leappoc.report.repository.lcr.LcrReportLineRepository;
 import com.leappoc.shared.dto.lcr.LcrCalcAdjustmentRequest;
 import com.leappoc.shared.dto.lcr.LcrCalcLineDto;
 import com.leappoc.shared.dto.lcr.LcrCalcReportDto;
@@ -21,12 +21,14 @@ import java.util.stream.Collectors;
 @Service
 public class LcrCalcReportService {
 
-    private final LcrCalcLineRepository lineRepository;
-    private final LcrCalcDataRepository dataRepository;
+    private static final String REPORT_CODE_LCR_CALC = "LCR_CALC";
+
+    private final LcrReportLineRepository lineRepository;
+    private final LcrReportDataRepository dataRepository;
     private final LcrCalcAdjustmentRepository adjustmentRepository;
 
-    public LcrCalcReportService(LcrCalcLineRepository lineRepository,
-                                LcrCalcDataRepository dataRepository,
+    public LcrCalcReportService(LcrReportLineRepository lineRepository,
+                                LcrReportDataRepository dataRepository,
                                 LcrCalcAdjustmentRepository adjustmentRepository) {
         this.lineRepository = lineRepository;
         this.dataRepository = dataRepository;
@@ -35,35 +37,43 @@ public class LcrCalcReportService {
 
     @Transactional(readOnly = true)
     public LcrCalcReportDto getReport(Integer calcId, String currency, LocalDate reportingDate) {
-        List<LcrCalcLine> allLines = lineRepository.findAllByOrderByDisplayOrderAsc();
-        List<LcrCalcData> dataList = dataRepository.findByCalcIdAndCurrencyAndDate(calcId, currency, reportingDate);
+        List<LcrReportLine> allLines = lineRepository.findByReportCodeOrderByDisplayOrderAsc(REPORT_CODE_LCR_CALC);
+        List<LcrReportData> dataList = dataRepository.findByCalcIdAndCurrencyAndDate(calcId, currency, reportingDate);
         List<LcrCalcAdjustment> adjustments = adjustmentRepository.findByCalcIdAndCurrency(calcId, currency);
         List<String> currencies = dataRepository.findDistinctCurrenciesByCalcId(calcId);
 
-        // Index data by line ID
-        Map<Long, LcrCalcData> dataByLineId = dataList.stream()
-                .collect(Collectors.toMap(d -> d.getLine().getId(), Function.identity(), (a, b) -> a));
+        // Index data by report line ID
+        Map<Long, LcrReportData> dataByLineId = dataList.stream()
+                .collect(Collectors.toMap(d -> d.getReportLine().getId(), Function.identity(), (a, b) -> a));
 
         // Index adjustments by line ID
         Map<Long, LcrCalcAdjustment> adjByLineId = adjustments.stream()
                 .collect(Collectors.toMap(a -> a.getLine().getId(), Function.identity(), (a, b) -> a));
 
         List<LcrCalcLineDto> lineDtos = new ArrayList<>();
-        for (LcrCalcLine line : allLines) {
+        for (LcrReportLine line : allLines) {
             LcrCalcLineDto dto = new LcrCalcLineDto();
             dto.setId(line.getId());
-            dto.setLineCode(line.getLineCode());
-            dto.setLineName(line.getLineName());
-            dto.setSectionCode(line.getSectionCode());
-            dto.setSectionName(line.getSectionName());
-            dto.setSubsectionCode(line.getSubsectionCode());
-            dto.setSubsectionName(line.getSubsectionName());
+            // For non-data lines, lineCode is null (stored with 'H' prefix in DB for uniqueness)
+            String lineCode = line.getReportLineCode();
+            dto.setLineCode(lineCode != null && !lineCode.startsWith("H") ? lineCode : null);
+            dto.setLineName(line.getReportLineName());
+            dto.setSectionCode(line.getParaCode());
+            // Section/subsection names from levels
+            if (line.getLevels() != null && !line.getLevels().isEmpty()) {
+                dto.setSectionName(line.getLevels().get(0).getLevelDesc());
+                dto.setSectionCode(line.getLevels().get(0).getLevelCode());
+                if (line.getLevels().size() > 1) {
+                    dto.setSubsectionCode(line.getLevels().get(1).getLevelCode());
+                    dto.setSubsectionName(line.getLevels().get(1).getLevelDesc());
+                }
+            }
             dto.setWeight(line.getWeight());
             dto.setWeightedLineCode(line.getWeightedLineCode());
             dto.setLineType(line.getLineType());
             dto.setDisplayOrder(line.getDisplayOrder());
 
-            LcrCalcData data = dataByLineId.get(line.getId());
+            LcrReportData data = dataByLineId.get(line.getId());
             if (data != null) {
                 dto.setMarketValue(data.getMarketValue());
                 dto.setWeightedAmount(data.getWeightedAmount());

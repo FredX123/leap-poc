@@ -17,7 +17,7 @@ public class LcrCalcAdjustment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "line_id", nullable = false)
-    private LcrCalcLine line;
+    private LcrReportLine line;
 
     @Column(name = "v_reportable_currency", nullable = false, length = 10)
     private String reportableCurrency;
@@ -48,8 +48,8 @@ public class LcrCalcAdjustment {
     public Integer getCalcId() { return calcId; }
     public void setCalcId(Integer calcId) { this.calcId = calcId; }
 
-    public LcrCalcLine getLine() { return line; }
-    public void setLine(LcrCalcLine line) { this.line = line; }
+    public LcrReportLine getLine() { return line; }
+    public void setLine(LcrReportLine line) { this.line = line; }
 
     public String getReportableCurrency() { return reportableCurrency; }
     public void setReportableCurrency(String reportableCurrency) { this.reportableCurrency = reportableCurrency; }
