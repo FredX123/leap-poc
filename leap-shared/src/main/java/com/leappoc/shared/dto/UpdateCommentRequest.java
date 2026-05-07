@@ -9,14 +9,14 @@ public class UpdateCommentRequest {
     @Size(max = 4000, message = "Content must not exceed 4000 characters")
     private String content;
 
-    @Size(max = 50, message = "Category code must not exceed 50 characters")
-    private String categoryCode;
+    @Size(max = 50, message = "Driver code must not exceed 50 characters")
+    private String driverCode;
 
     public UpdateCommentRequest() {}
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
 
-    public String getCategoryCode() { return categoryCode; }
-    public void setCategoryCode(String categoryCode) { this.categoryCode = categoryCode; }
+    public String getDriverCode() { return driverCode; }
+    public void setDriverCode(String driverCode) { this.driverCode = driverCode; }
 }

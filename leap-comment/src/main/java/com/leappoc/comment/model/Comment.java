@@ -35,8 +35,8 @@ public class Comment {
     @Column(name = "v_segment_name", length = 100)
     private String segmentName;
 
-    @Column(name = "v_category_code", nullable = false, length = 10)
-    private String categoryCode = "NONE";
+    @Column(name = "v_driver_code", nullable = false, length = 10)
+    private String driverCode = "NONE";
 
     @Column(name = "event_type", nullable = false, length = 50)
     private String eventType = "COMMENT";
@@ -97,8 +97,8 @@ public class Comment {
     public String getSegmentName() { return segmentName; }
     public void setSegmentName(String segmentName) { this.segmentName = segmentName; }
 
-    public String getCategoryCode() { return categoryCode; }
-    public void setCategoryCode(String categoryCode) { this.categoryCode = categoryCode; }
+    public String getDriverCode() { return driverCode; }
+    public void setDriverCode(String driverCode) { this.driverCode = driverCode; }
 
     public String getEventType() { return eventType; }
     public void setEventType(String eventType) { this.eventType = eventType; }

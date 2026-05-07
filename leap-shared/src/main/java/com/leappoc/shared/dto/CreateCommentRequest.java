@@ -19,7 +19,7 @@ public class CreateCommentRequest {
 
     private Long parentId;
 
-    private String categoryCode = "NONE";
+    private String driverCode = "NONE";
 
     public CreateCommentRequest() {}
 
@@ -40,6 +40,6 @@ public class CreateCommentRequest {
     public Long getParentId() { return parentId; }
     public void setParentId(Long parentId) { this.parentId = parentId; }
 
-    public String getCategoryCode() { return categoryCode; }
-    public void setCategoryCode(String categoryCode) { this.categoryCode = categoryCode; }
+    public String getDriverCode() { return driverCode; }
+    public void setDriverCode(String driverCode) { this.driverCode = driverCode; }
 }

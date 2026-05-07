@@ -32,8 +32,8 @@ export class CommentService {
     return this.http.post<CommentDto>(this.baseUrl, request);
   }
 
-  update(id: number, content: string, categoryCode?: string): Observable<CommentDto> {
-    return this.http.put<CommentDto>(`${this.baseUrl}/${id}`, { content, categoryCode });
+  update(id: number, content: string, driverCode?: string): Observable<CommentDto> {
+    return this.http.put<CommentDto>(`${this.baseUrl}/${id}`, { content, driverCode });
   }
 
   delete(id: number): Observable<void> {

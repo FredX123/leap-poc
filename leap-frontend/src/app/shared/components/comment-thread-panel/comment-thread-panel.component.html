@@ -239,9 +239,9 @@
     </div>
     <div class="p-3">
       <div class="mb-2">
-        <select class="form-select form-select-sm" [(ngModel)]="selectedCategoryCode"
-                aria-label="Comment driver category">
-          <option *ngFor="let cat of categories" [value]="cat.code">{{ cat.label }}</option>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedDriverCode"
+                aria-label="Comment driver">
+          <option *ngFor="let d of drivers" [value]="d.code">{{ d.label }}</option>
         </select>
       </div>
       <app-comment-input [textareaHeight]="footerHeight - 24"

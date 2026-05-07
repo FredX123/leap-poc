@@ -144,7 +144,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setReportType(request.getReportType());
         comment.setLineKey(request.getLineKey());
         comment.setSegmentName(request.getSegmentName());
-        comment.setCategoryCode(request.getCategoryCode() != null ? request.getCategoryCode() : "NONE");
+        comment.setDriverCode(request.getDriverCode() != null ? request.getDriverCode() : "NONE");
         comment.setEventType(eventType);
 
         Comment saved = repository.save(comment);
@@ -156,7 +156,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentDto updateComment(Long id, String content, String categoryCode, String currentUserId) {
+    public CommentDto updateComment(Long id, String content, String driverCode, String currentUserId) {
         Comment comment = findActiveComment(id);
 
         if (!comment.getUserId().equals(currentUserId)) {
@@ -164,8 +164,8 @@ public class CommentServiceImpl implements CommentService {
         }
 
         comment.setContent(content);
-        if (categoryCode != null) {
-            comment.setCategoryCode(categoryCode);
+        if (driverCode != null) {
+            comment.setDriverCode(driverCode);
         }
         Comment saved = repository.save(comment);
 

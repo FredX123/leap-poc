@@ -4,8 +4,8 @@ INSERT INTO REPORT_TYPE (v_report_type,v_description,created_at) VALUES
 	 (N'OSFI_LCR_METRIC_REPORT',N'OSFI LCR Metric Report','2026-04-27 01:56:58.4033333'),
 	 (N'OSFI_LCR_REPORT',N'OSFI LCR Report','2026-04-27 01:56:58.4033333');
 
--- 2. COMMENT_CATEGORY
-INSERT INTO COMMENT_CATEGORY (v_category_code, v_category_name, n_sort_order) VALUES
+-- 2. COMMENT_DRIVER
+INSERT INTO COMMENT_DRIVER (v_driver_code, v_driver_name, n_sort_order) VALUES
     ('NONE', N'— No driver —',            0),
     ('MAT',  N'Maturity rollover',         1),
     ('SSN',  N'Seasonality',               2),

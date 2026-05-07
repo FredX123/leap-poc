@@ -62,7 +62,7 @@ public class CommentController {
             Authentication authentication) {
 
         String currentUserId = extractUserId(authentication);
-        CommentDto updated = commentService.updateComment(id, request.getContent(), request.getCategoryCode(), currentUserId);
+        CommentDto updated = commentService.updateComment(id, request.getContent(), request.getDriverCode(), currentUserId);
         return ResponseEntity.ok(updated);
     }
 

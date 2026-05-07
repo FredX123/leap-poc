@@ -15,7 +15,7 @@ public interface CommentService {
     CommentDto createComment(CreateCommentRequest request,
                              String userId, String displayName, String email);
 
-    CommentDto updateComment(Long id, String content, String categoryCode, String currentUserId);
+    CommentDto updateComment(Long id, String content, String driverCode, String currentUserId);
 
     void deleteComment(Long id, String currentUserId, boolean isAdmin);
 

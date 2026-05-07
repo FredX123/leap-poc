@@ -8,8 +8,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommentService } from '../../../core/services/comment.service';
 import { AuthService } from '../../../core/services/auth.service';
 import {
-  CommentThreadDto, CreateCommentRequest, COMMENT_CATEGORIES, CommentCategory,
-  CATEGORY_LABEL_MAP, CommentChildRow, LineCommentSummary, DriverGroupData
+  CommentThreadDto, CreateCommentRequest, COMMENT_DRIVERS, CommentDriver,
+  DRIVER_LABEL_MAP, CommentChildRow, LineCommentSummary, DriverGroupData
 } from '../../models/comment.model';
 import { FormsModule } from '@angular/forms';
 import { CommentEntryComponent } from '../comment-entry/comment-entry.component';
@@ -32,8 +32,8 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
   @Input() childRows: CommentChildRow[] = [];
   @Input() variance: number | null = null;
 
-  categories: CommentCategory[] = COMMENT_CATEGORIES;
-  selectedCategoryCode = 'NONE';
+  drivers: CommentDriver[] = COMMENT_DRIVERS;
+  selectedDriverCode = 'NONE';
   @Output() closed = new EventEmitter<void>();
   @Output() commentCountChanged = new EventEmitter<number>();
 
@@ -196,7 +196,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
   }
 
   getDriverLabel(code: string): string {
-    return CATEGORY_LABEL_MAP[code] || code;
+    return DRIVER_LABEL_MAP[code] || code;
   }
 
   truncate(text: string, max: number): string {
@@ -286,7 +286,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       segmentName: this.segmentName,
       content,
       parentId: null,
-      categoryCode: this.selectedCategoryCode
+      driverCode: this.selectedDriverCode
     };
 
     const optimistic = this.createOptimisticEntry(content, null);
@@ -298,7 +298,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: () => {
-        this.selectedCategoryCode = 'NONE';
+        this.selectedDriverCode = 'NONE';
         this.loadThread();
       },
       error: (err: HttpErrorResponse) => {
@@ -323,7 +323,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       segmentName: this.segmentName,
       content: event.content,
       parentId: event.parentId,
-      categoryCode: 'NONE'
+      driverCode: 'NONE'
     };
     this.commentService.create(request).pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -341,8 +341,8 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
     });
   }
 
-  onEdit(event: { id: number; content: string; categoryCode?: string }): void {
-    this.commentService.update(event.id, event.content, event.categoryCode).pipe(
+  onEdit(event: { id: number; content: string; driverCode?: string }): void {
+    this.commentService.update(event.id, event.content, event.driverCode).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: () => {
@@ -435,7 +435,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       const latestComment = allComments.length > 0
         ? allComments.reduce((a, b) => a.updatedAt > b.updatedAt ? a : b)
         : null;
-      const drivers = [...new Set(roots.map(r => r.categoryCode))];
+      const drivers = [...new Set(roots.map(r => r.driverCode))];
 
       summaries.push({
         lineKey: child.code,
@@ -457,7 +457,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       const latestComment = allComments.length > 0
         ? allComments.reduce((a, b) => a.updatedAt > b.updatedAt ? a : b)
         : null;
-      const drivers = [...new Set(roots.map(r => r.categoryCode))];
+      const drivers = [...new Set(roots.map(r => r.driverCode))];
 
       summaries.push({
         lineKey: key,
@@ -486,7 +486,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       const breadcrumb = child ? this.getBreadcrumb(child) : key;
 
       for (const root of roots) {
-        const driver = root.categoryCode || 'NONE';
+        const driver = root.driverCode || 'NONE';
         if (!driverMap.has(driver)) driverMap.set(driver, []);
 
         const existing = driverMap.get(driver)!.find(l => l.lineKey === key);
@@ -498,7 +498,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
             name,
             breadcrumb,
             rootCount: 1,
-            threads: threads.filter(t => t.parentId == null && t.categoryCode === driver)
+            threads: threads.filter(t => t.parentId == null && t.driverCode === driver)
           });
         }
       }
@@ -607,7 +607,7 @@ export class CommentThreadPanelComponent implements OnChanges, OnDestroy {
       reportType: this.reportType,
       lineKey: this.lineKey,
       segmentName: this.segmentName,
-      categoryCode: this.selectedCategoryCode,
+      driverCode: this.selectedDriverCode,
       eventType: 'COMMENT',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

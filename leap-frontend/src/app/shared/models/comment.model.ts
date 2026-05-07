@@ -8,7 +8,7 @@ export interface CommentDto {
   reportType: string;
   lineKey: string;
   segmentName: string | null;
-  categoryCode: string;
+  driverCode: string;
   eventType: string;
   createdAt: string;
   updatedAt: string;
@@ -26,7 +26,7 @@ export interface CommentThreadDto {
   reportType: string;
   lineKey: string;
   segmentName: string | null;
-  categoryCode: string;
+  driverCode: string;
   eventType: string;
   createdAt: string;
   updatedAt: string;
@@ -42,31 +42,31 @@ export interface CreateCommentRequest {
   segmentName: string | null;
   content: string;
   parentId: number | null;
-  categoryCode: string;
+  driverCode: string;
 }
 
-export interface CommentCategory {
+export interface CommentDriver {
   code: string;
   label: string;
 }
 
-export const COMMENT_CATEGORIES: CommentCategory[] = [
-  { code: 'NONE', label: '— No driver —' },
-  { code: 'MAT',  label: 'Maturity rollover' },
-  { code: 'SSN',  label: 'Seasonality' },
-  { code: 'WIN',  label: 'Client win / inflow' },
-  { code: 'LOSS', label: 'Client loss / outflow' },
-  { code: 'RATE', label: 'Rate repricing' },
-  { code: 'CORP', label: 'Corporate action' },
-  { code: 'FIX',  label: 'Data correction' },
-  { code: 'OP',   label: 'Operational balance shift' },
-  { code: 'REG',  label: 'Regulatory change' },
-  { code: 'OTH',  label: 'Other (see notes)' },
+export const COMMENT_DRIVERS: CommentDriver[] = [
+  {code: 'NONE', label: '— No driver —'},
+  {code: 'MAT', label: 'Maturity rollover'},
+  {code: 'SSN', label: 'Seasonality'},
+  {code: 'WIN', label: 'Client win / inflow'},
+  {code: 'LOSS', label: 'Client loss / outflow'},
+  {code: 'RATE', label: 'Rate repricing'},
+  {code: 'CORP', label: 'Corporate action'},
+  {code: 'FIX', label: 'Data correction'},
+  {code: 'OP', label: 'Operational balance shift'},
+  {code: 'REG', label: 'Regulatory change'},
+  {code: 'OTH', label: 'Other (see notes)'},
 ];
 
-/** Maps category code to its full label. */
-export const CATEGORY_LABEL_MAP: Record<string, string> = Object.fromEntries(
-  COMMENT_CATEGORIES.map(c => [c.code, c.label])
+/** Maps driver code to its full label. */
+export const DRIVER_LABEL_MAP: Record<string, string> = Object.fromEntries(
+  COMMENT_DRIVERS.map(c => [c.code, c.label])
 );
 
 /** Info about a child row passed to the comment panel for hierarchy view. */

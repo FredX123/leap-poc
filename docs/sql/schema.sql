@@ -3,7 +3,7 @@
 -- Target: MS SQL Server Developer Edition
 -- ============================================================
 -- This file represents the final schema state after all migrations.
--- Tables: REPORT_TYPE, COMMENT_CATEGORY, COMMENT,
+-- Tables: REPORT_TYPE, COMMENT_DRIVER, COMMENT,
 --         LCR_REPORT_LINE, LCR_REPORT_LINE_LEVEL, LCR_SEGMENT,
 --         LCR_REPORT_DATA, LCR_CALC_ADJUSTMENT
 -- ============================================================
@@ -22,16 +22,16 @@ CREATE TABLE REPORT_TYPE (
 GO
 
 
--- ===================== COMMENT_CATEGORY (lookup) =====================
--- Driver/category options for root-level comments.
+-- ===================== COMMENT_DRIVER (lookup) =====================
+-- Driver options for root-level comments.
 
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'COMMENT_CATEGORY')
-CREATE TABLE COMMENT_CATEGORY (
-    v_category_code NVARCHAR(10)    NOT NULL,
-    v_category_name NVARCHAR(100)   NOT NULL,
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'COMMENT_DRIVER')
+CREATE TABLE COMMENT_DRIVER (
+    v_driver_code   NVARCHAR(10)    NOT NULL,
+    v_driver_name   NVARCHAR(100)   NOT NULL,
     n_sort_order    INT             NOT NULL DEFAULT 0,
     created_at      DATETIME2       NOT NULL DEFAULT GETUTCDATE(),
-    CONSTRAINT PK_COMMENT_CATEGORY PRIMARY KEY (v_category_code)
+    CONSTRAINT PK_COMMENT_DRIVER PRIMARY KEY (v_driver_code)
 );
 GO
 
@@ -44,7 +44,7 @@ GO
 --   v_line_key      — pipe-delimited level path identifying the row, e.g. "10|110|11001"
 --   v_segment_name  — segment name, e.g. "Enterprise", "CA Retail"
 --                     NULL for reports with no segment dimension
---   v_category_code — driver category (only on root comments; replies use 'NONE')
+--   v_driver_code — driver (only on root comments; replies use 'NONE')
 --   parent_id       — threading (adjacency list: NULL = root, non-NULL = reply)
 --   event_type      — 'COMMENT' or 'REPLY'
 
@@ -68,8 +68,8 @@ CREATE TABLE COMMENT (
     v_line_key          NVARCHAR(200)   NOT NULL,
     v_segment_name      NVARCHAR(100)   NULL,
 
-    -- Driver category
-    v_category_code     NVARCHAR(10)    NOT NULL DEFAULT 'NONE',
+    -- Driver
+    v_driver_code       NVARCHAR(10)    NOT NULL DEFAULT 'NONE',
 
     -- Event type
     event_type          NVARCHAR(50)    NOT NULL DEFAULT 'COMMENT',
@@ -85,8 +85,8 @@ CREATE TABLE COMMENT (
         REFERENCES COMMENT(id),
     CONSTRAINT FK_COMMENT_REPORT_TYPE FOREIGN KEY (v_report_type)
         REFERENCES REPORT_TYPE(v_report_type),
-    CONSTRAINT FK_COMMENT_CATEGORY FOREIGN KEY (v_category_code)
-        REFERENCES COMMENT_CATEGORY(v_category_code),
+    CONSTRAINT FK_COMMENT_DRIVER FOREIGN KEY (v_driver_code)
+        REFERENCES COMMENT_DRIVER(v_driver_code),
     CONSTRAINT CK_COMMENT_EVENT_TYPE
         CHECK (event_type IN ('COMMENT', 'REPLY'))
 );
@@ -209,7 +209,7 @@ GO
 -- COMMENT indexes
 CREATE NONCLUSTERED INDEX IX_COMMENT_REPORT_LINE
     ON COMMENT(v_report_type, v_line_key, v_segment_name)
-    INCLUDE (parent_id, v_category_code, created_at)
+    INCLUDE (parent_id, v_driver_code, created_at)
     WHERE deleted_at IS NULL;
 GO
 

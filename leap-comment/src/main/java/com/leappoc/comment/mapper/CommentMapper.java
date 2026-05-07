@@ -19,7 +19,7 @@ public class CommentMapper {
         dto.setReportType(comment.getReportType());
         dto.setLineKey(comment.getLineKey());
         dto.setSegmentName(comment.getSegmentName());
-        dto.setCategoryCode(comment.getCategoryCode());
+        dto.setDriverCode(comment.getDriverCode());
         dto.setEventType(comment.getEventType());
         dto.setCreatedAt(comment.getCreatedAt());
         dto.setUpdatedAt(comment.getUpdatedAt());
@@ -38,7 +38,7 @@ public class CommentMapper {
         dto.setReportType(comment.getReportType());
         dto.setLineKey(comment.getLineKey());
         dto.setSegmentName(comment.getSegmentName());
-        dto.setCategoryCode(comment.getCategoryCode());
+        dto.setDriverCode(comment.getDriverCode());
         dto.setEventType(comment.getEventType());
         dto.setCreatedAt(comment.getCreatedAt());
         dto.setUpdatedAt(comment.getUpdatedAt());

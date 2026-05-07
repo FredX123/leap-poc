@@ -14,7 +14,7 @@ public class CommentDto {
     private String reportType;
     private String lineKey;
     private String segmentName;
-    private String categoryCode;
+    private String driverCode;
     private String eventType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -56,8 +56,8 @@ public class CommentDto {
     public String getSegmentName() { return segmentName; }
     public void setSegmentName(String segmentName) { this.segmentName = segmentName; }
 
-    public String getCategoryCode() { return categoryCode; }
-    public void setCategoryCode(String categoryCode) { this.categoryCode = categoryCode; }
+    public String getDriverCode() { return driverCode; }
+    public void setDriverCode(String driverCode) { this.driverCode = driverCode; }
 
     public String getEventType() { return eventType; }
     public void setEventType(String eventType) { this.eventType = eventType; }
