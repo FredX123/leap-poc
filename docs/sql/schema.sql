@@ -5,7 +5,8 @@
 -- This file represents the final schema state after all migrations.
 -- Tables: REPORT_TYPE, COMMENT_DRIVER, COMMENT,
 --         LCR_REPORT_LINE, LCR_REPORT_LINE_LEVEL, LCR_SEGMENT,
---         LCR_REPORT_DATA, LCR_CALC_ADJUSTMENT
+--         LCR_REPORT_DATA, LCR_CALC_ADJUSTMENT,
+--         LCR_CALCULATED_DATA, LCR_CALCULATED_DEPENDENCY, LCR_REFERENCE_DATA
 -- ============================================================
 
 
@@ -94,7 +95,7 @@ GO
 
 
 -- ===================== LCR_REPORT_LINE (dimension) =====================
--- Line definitions for all report types (OSFI_LCR, OSFI_LCR_METRIC, LCR_CALC).
+-- Line definitions for all report types (OSFI_LCR, OSFI_LCR_METRIC).
 -- Lines with v_line_type = 'data' are data rows; 'section'/'subsection'/'subheader' are headers.
 
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LCR_REPORT_LINE')
@@ -149,22 +150,22 @@ GO
 
 -- ===================== LCR_REPORT_DATA (fact) =====================
 -- Stores amount data for all report types.
--- OSFI reports use: segment_id, n_date_skey, d_calander_date, n_amount_rpt_ccy, n_rw_amount_rpt_ccy
--- LCR_CALC uses: n_calc_id, v_reportable_currency, d_calander_date, n_market_value, n_weighted_amount
+-- OSFI_LCR_METRIC uses: segment_id, n_date_skey, d_calander_date, n_amount_rpt_ccy, n_rw_amount_rpt_ccy
+-- OSFI_LCR uses: n_calc_id, v_reportable_currency, d_calander_date, n_market_value, n_weighted_amount
 
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LCR_REPORT_DATA')
 CREATE TABLE LCR_REPORT_DATA (
     id                      BIGINT          IDENTITY(1,1) NOT NULL,
     report_line_id          BIGINT          NOT NULL,
 
-    -- OSFI report columns
+    -- OSFI_LCR_METRIC report columns
     segment_id              BIGINT          NULL,
     n_date_skey             INT             NOT NULL,
     d_calander_date         DATE            NOT NULL,
     n_amount_rpt_ccy        DECIMAL(20,5)   NULL,
     n_rw_amount_rpt_ccy     DECIMAL(20,5)   NULL,
 
-    -- LCR Calc report columns
+    -- OSFI_LCR report columns
     n_calc_id               INT             NULL,
     v_reportable_currency   NVARCHAR(10)    NULL,
     n_market_value          DECIMAL(20,5)   NULL,
@@ -180,7 +181,7 @@ GO
 
 
 -- ===================== LCR_CALC_ADJUSTMENT (user adjustments) =====================
--- Stores user adjustment deltas to LCR Calc report market values.
+-- Stores user adjustment deltas to OSFI LCR report market values.
 
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LCR_CALC_ADJUSTMENT')
 CREATE TABLE LCR_CALC_ADJUSTMENT (
@@ -198,6 +199,62 @@ CREATE TABLE LCR_CALC_ADJUSTMENT (
     CONSTRAINT FK_LCR_CALC_ADJ_REPORT_LINE FOREIGN KEY (line_id)
         REFERENCES LCR_REPORT_LINE(id),
     CONSTRAINT UQ_LCR_CALC_ADJUSTMENT UNIQUE (n_calc_id, line_id, v_reportable_currency)
+);
+GO
+
+
+-- ===================== LCR_CALCULATED_DATA =====================
+-- Stores calculatedData from OSFI LCR report (formula-based computed records).
+
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LCR_CALCULATED_DATA')
+CREATE TABLE LCR_CALCULATED_DATA (
+    id                  BIGINT          IDENTITY(1,1) NOT NULL,
+    n_calc_id           INT             NOT NULL,
+    v_record_id         NVARCHAR(20)    NOT NULL,
+    n_calculated_value  DECIMAL(38,15)  NULL,
+    v_type              NVARCHAR(20)    NOT NULL,
+    v_formula           NVARCHAR(500)   NULL,
+    n_weight            DECIMAL(10,5)   NULL,
+    n_display_value     DECIMAL(38,15)  NULL,
+    CONSTRAINT PK_LCR_CALCULATED_DATA PRIMARY KEY (id),
+    CONSTRAINT UQ_LCR_CALCULATED_DATA UNIQUE (n_calc_id, v_record_id)
+);
+GO
+
+
+-- ===================== LCR_CALCULATED_DEPENDENCY =====================
+-- Stores dependencies for each calculatedData record.
+
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LCR_CALCULATED_DEPENDENCY')
+CREATE TABLE LCR_CALCULATED_DEPENDENCY (
+    id                      BIGINT          IDENTITY(1,1) NOT NULL,
+    calculated_data_id      BIGINT          NOT NULL,
+    v_record_id             NVARCHAR(20)    NOT NULL,
+    n_value                 DECIMAL(38,15)  NULL,
+    CONSTRAINT PK_LCR_CALCULATED_DEPENDENCY PRIMARY KEY (id),
+    CONSTRAINT FK_LCR_CALC_DEP_DATA FOREIGN KEY (calculated_data_id)
+        REFERENCES LCR_CALCULATED_DATA(id)
+);
+GO
+
+
+-- ===================== LCR_REFERENCE_DATA =====================
+-- Stores referenceData (drill-down/source rows) from OSFI LCR report.
+
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LCR_REFERENCE_DATA')
+CREATE TABLE LCR_REFERENCE_DATA (
+    id                          BIGINT          IDENTITY(1,1) NOT NULL,
+    n_calc_id                   INT             NOT NULL,
+    n_reporting_row             INT             NOT NULL,
+    v_product_class_result      NVARCHAR(500)   NOT NULL,
+    v_reporting_type_amount     NVARCHAR(200)   NOT NULL,
+    v_original_currency         NVARCHAR(10)    NOT NULL,
+    n_original_amount           DECIMAL(38,15)  NULL,
+    v_reporting_currency        NVARCHAR(10)    NOT NULL,
+    n_reporting_amount          DECIMAL(38,15)  NULL,
+    v_reportable_currency       NVARCHAR(10)    NULL,
+    n_row_no                    INT             NULL,
+    CONSTRAINT PK_LCR_REFERENCE_DATA PRIMARY KEY (id)
 );
 GO
 
@@ -247,13 +304,13 @@ CREATE NONCLUSTERED INDEX IX_LCR_REPORT_DATA_LINE_DATE
     ON LCR_REPORT_DATA (report_line_id, d_calander_date);
 GO
 
--- Filtered unique index for OSFI reports (segment-based)
+-- Filtered unique index for OSFI_LCR_METRIC reports (segment-based)
 CREATE UNIQUE NONCLUSTERED INDEX UQ_LCR_REPORT_DATA_SEGMENT
     ON LCR_REPORT_DATA (report_line_id, segment_id, n_date_skey)
     WHERE segment_id IS NOT NULL;
 GO
 
--- Filtered unique index for LCR Calc reports (calc-based)
+-- Filtered unique index for OSFI_LCR reports (calc-based)
 CREATE UNIQUE NONCLUSTERED INDEX UQ_LCR_REPORT_DATA_CALC
     ON LCR_REPORT_DATA (report_line_id, n_calc_id, v_reportable_currency, d_calander_date)
     WHERE n_calc_id IS NOT NULL;
@@ -267,4 +324,19 @@ GO
 -- LCR_CALC_ADJUSTMENT indexes
 CREATE NONCLUSTERED INDEX IX_LCR_CALC_ADJ_CALC
     ON LCR_CALC_ADJUSTMENT (n_calc_id, line_id);
+GO
+
+-- LCR_CALCULATED_DATA indexes
+CREATE NONCLUSTERED INDEX IX_LCR_CALCULATED_DATA_CALC
+    ON LCR_CALCULATED_DATA (n_calc_id);
+GO
+
+-- LCR_CALCULATED_DEPENDENCY indexes
+CREATE NONCLUSTERED INDEX IX_LCR_CALC_DEP_DATA
+    ON LCR_CALCULATED_DEPENDENCY (calculated_data_id);
+GO
+
+-- LCR_REFERENCE_DATA indexes
+CREATE NONCLUSTERED INDEX IX_LCR_REFERENCE_DATA_CALC
+    ON LCR_REFERENCE_DATA (n_calc_id, n_reporting_row);
 GO

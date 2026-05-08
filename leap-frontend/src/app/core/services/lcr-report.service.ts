@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  LcrDateRequest,
   LcrMetricRequest,
-  OsfiLcrReportItem,
-  OsfiLcrMetricReportItem
+  OsfiLcrMetricReportItem,
+  OsfiLcrReportDto,
+  OsfiLcrRequest
 } from '../../shared/models/lcr-report.model';
 
 @Injectable({ providedIn: 'root' })
@@ -15,8 +15,8 @@ export class LcrReportService {
 
   constructor(private http: HttpClient) {}
 
-  getOsfiLcrReport(request: LcrDateRequest): Observable<OsfiLcrReportItem[]> {
-    return this.http.post<OsfiLcrReportItem[]>(`${this.baseUrl}/osfi-lcr`, request);
+  getOsfiLcrReport(request: OsfiLcrRequest): Observable<OsfiLcrReportDto> {
+    return this.http.post<OsfiLcrReportDto>(`${this.baseUrl}/osfi-lcr`, request);
   }
 
   getOsfiLcrMetricReport(request: LcrMetricRequest): Observable<OsfiLcrMetricReportItem[]> {

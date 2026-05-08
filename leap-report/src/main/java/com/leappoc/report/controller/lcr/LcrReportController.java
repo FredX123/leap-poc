@@ -21,9 +21,8 @@ public class LcrReportController {
 
     @PostMapping("/osfi-lcr")
     @PreAuthorize("hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '" + RoleConstants.GROUP_GRP_WRITE + "')")
-    public ResponseEntity<List<OsfiLcrReportDto>> getOsfiLcrReport(@RequestBody LcrDateRequest request) {
-        List<OsfiLcrReportDto> result = lcrReportService.getOsfiLcrReport(
-                request.getStartDate(), request.getEndDate());
+    public ResponseEntity<OsfiLcrReportDto> getOsfiLcrReport(@RequestBody OsfiLcrRequest request) {
+        OsfiLcrReportDto result = lcrReportService.getOsfiLcrReport(request.getCalcId());
         return ResponseEntity.ok(result);
     }
 

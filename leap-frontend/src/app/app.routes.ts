@@ -26,21 +26,15 @@ export const routes: Routes = [
     canActivate: [groupGuard('GRP_READ')]
   },
   {
-    path: 'osfi-lcr-report',
-    loadComponent: () =>
-      import('./pages/osfi-lcr-report/osfi-lcr-report.component').then(m => m.OsfiLcrReportComponent),
-    canActivate: [groupGuard('GRP_READ', 'GRP_WRITE')]
-  },
-  {
     path: 'osfi-lcr-metric-report',
     loadComponent: () =>
       import('./pages/osfi-lcr-metric-report/osfi-lcr-metric-report.component').then(m => m.OsfiLcrMetricReportComponent),
     canActivate: [groupGuard('GRP_READ', 'GRP_WRITE')]
   },
   {
-    path: 'lcr-report',
+    path: 'osfi-lcr-report',
     loadComponent: () =>
-      import('./pages/lcr-report/lcr-report.component').then(m => m.LcrReportComponent),
+      import('./pages/osfi-lcr-report/osfi-lcr-report.component').then(m => m.OsfiLcrReportComponent),
     canActivate: [groupGuard('GRP_READ', 'GRP_WRITE')]
   },
   {

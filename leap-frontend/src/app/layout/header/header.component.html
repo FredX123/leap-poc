@@ -28,7 +28,7 @@
           routerLink="/osfi-lcr-report"
           routerLinkActive="active"
         >
-          <i class="bi bi-graph-up me-1"></i>OSFI LCR
+          <i class="bi bi-calculator me-1"></i>OSFI LCR
         </a>
       </li>
       <li class="nav-item" *ngIf="auth.hasAnyGroup('GRP_READ', 'GRP_WRITE')">
@@ -38,15 +38,6 @@
           routerLinkActive="active"
         >
           <i class="bi bi-graph-up-arrow me-1"></i>OSFI LCR Metric
-        </a>
-      </li>
-      <li class="nav-item" *ngIf="auth.hasAnyGroup('GRP_READ', 'GRP_WRITE')">
-        <a
-          class="nav-link"
-          routerLink="/lcr-report"
-          routerLinkActive="active"
-        >
-          <i class="bi bi-calculator me-1"></i>LCR
         </a>
       </li>
       <li class="nav-item">

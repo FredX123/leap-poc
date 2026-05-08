@@ -36,24 +36,4 @@ public interface LcrReportDataRepository extends JpaRepository<LcrReportData, Lo
             @Param("segmentName") String segmentName,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
-
-    // --- LCR Calc report queries ---
-
-    @Query("SELECT d " +
-           "  FROM LcrReportData d " +
-           "       JOIN FETCH d.reportLine rl " +
-           " WHERE d.calcId = :calcId " +
-           "   AND d.reportableCurrency = :currency " +
-           "   AND d.calendarDate = :reportingDate " +
-           " ORDER BY rl.displayOrder")
-    List<LcrReportData> findByCalcIdAndCurrencyAndDate(
-            @Param("calcId") Integer calcId,
-            @Param("currency") String currency,
-            @Param("reportingDate") LocalDate reportingDate);
-
-    @Query("SELECT DISTINCT d.reportableCurrency " +
-           "  FROM LcrReportData d " +
-           " WHERE d.calcId = :calcId " +
-           " ORDER BY d.reportableCurrency")
-    List<String> findDistinctCurrenciesByCalcId(@Param("calcId") Integer calcId);
 }

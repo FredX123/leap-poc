@@ -1,132 +1,155 @@
-<div class="container-fluid mt-4">
-  <h2><i class="bi bi-graph-up me-2"></i>OSFI LCR Report</h2>
-  <hr>
+<div class="container-fluid px-4 py-3">
+  <h2 class="mb-3">OSFI LCR</h2>
 
-  <!-- Search Form -->
-  <form class="row g-3 mb-4" (ngSubmit)="onViewAnalytics()">
+  <!-- Controls -->
+  <div class="row align-items-end mb-3 g-2">
     <div class="col-auto">
-      <label for="startDate" class="form-label">Start Date</label>
-      <input type="date" id="startDate" class="form-control"
-             [(ngModel)]="startDate" name="startDate" required
-             #startDateEl (click)="startDateEl.showPicker()">
+      <label for="calcId" class="form-label mb-0 small">Calculation Id</label>
+      <input type="number" id="calcId" class="form-control form-control-sm" [(ngModel)]="calcId" style="width: 100px;">
     </div>
     <div class="col-auto">
-      <label for="endDate" class="form-label">End Date</label>
-      <input type="date" id="endDate" class="form-control"
-             [(ngModel)]="endDate" name="endDate" required
-             #endDateEl (click)="endDateEl.showPicker()">
+      <label for="reportingDate" class="form-label mb-0 small">Reporting Date</label>
+      <input type="date" id="reportingDate" class="form-control form-control-sm" [(ngModel)]="reportingDate">
     </div>
-    <div class="col-auto d-flex align-items-end">
-      <button type="submit" class="btn btn-primary"
-              [disabled]="!startDate || !endDate || loading">
-        <i class="bi bi-bar-chart-line me-1"></i>View Analytics
+    <div class="col-auto">
+      <label for="currency" class="form-label mb-0 small">Currency</label>
+      <input type="text" id="currency" class="form-control form-control-sm" [(ngModel)]="selectedCurrency" style="width: 80px;">
+    </div>
+    <div class="col-auto">
+      <button type="button" class="btn btn-primary btn-sm" (click)="onLoadReport()" [disabled]="!calcId">
+        <i class="bi bi-search me-1"></i>Load Report
       </button>
     </div>
-  </form>
-
-  <!-- Alert -->
-  <div *ngIf="message"
-       class="alert"
-       [class.alert-success]="message.type === 'success'"
-       [class.alert-danger]="message.type === 'danger'"
-       role="alert">
-    {{ message.text }}
   </div>
 
-  <!-- Loading spinner -->
-  <div *ngIf="loading" class="text-center my-5">
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center my-4">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
 
-  <!-- LCR Tree Table -->
-  <div *ngIf="!loading && treeRows.length > 0" class="lcr-table-container" (click)="closeMenu()">
-    <table class="table table-sm table-bordered lcr-table">
-      <thead class="table-dark">
-        <!-- Header row 1: name + segment groups -->
-        <tr>
-          <th rowspan="2" class="name-header">
-            <div class="header-title">Enterprise LCR</div>
-            <div class="header-subtitle">(Amount in Billions CAD)</div>
-          </th>
-          <ng-container *ngFor="let seg of segments">
-            <th [attr.colspan]="colsPerSegment" class="text-center segment-header">
-              {{ seg.segmentName }}
-            </th>
-          </ng-container>
-        </tr>
-        <!-- Header row 2: date columns + variance per segment -->
-        <tr>
-          <ng-container *ngFor="let seg of segments">
-            <th *ngFor="let date of dates" class="text-center date-header">
-              {{ formatShortDate(date) }}
-            </th>
-            <th class="text-center date-header">Variance</th>
-            <th class="text-center action-header"><i class="bi bi-chat-left-text"></i></th>
-            <th class="text-center action-header"><i class="bi bi-sliders"></i></th>
-          </ng-container>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of visibleRows"
-            [ngClass]="{
-              'level-1-row': row.level === 1,
-              'level-2-row': row.level === 2,
-              'level-3-row': row.level >= 3,
-              'active-row': commentPanelOpen && commentLineKey === row.code
-            }">
-          <!-- Name cell with tree indentation -->
-          <td class="name-cell" (click)="toggleRow(row)"
-              [class.clickable]="row.expandable">
-            <span class="tree-indent" [style.paddingLeft.px]="(row.level - 1) * 20">
-              <span *ngIf="row.expandable" class="toggle-icon">
-                <i class="bi" [ngClass]="row.expanded ? 'bi-dash-square' : 'bi-plus-square'"></i>
-              </span>
-              <span [class.fw-bold]="row.expandable">{{ row.name }}</span>
-            </span>
-          </td>
-          <!-- Amount cells per segment -->
-          <ng-container *ngFor="let seg of segments">
-            <td *ngFor="let date of dates" class="text-end amount-cell">
-              {{ formatAmount(row.amounts[segKey(seg.segmentName)][date]) }}
+  <!-- Error -->
+  <div *ngIf="message" class="alert" [ngClass]="'alert-' + message.type" role="alert">{{ message.text }}</div>
+
+  <!-- Empty state -->
+  <p *ngIf="!report && !loading" class="text-muted mt-3">Enter a Calculation Id and click <strong>Load Report</strong>.</p>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-0" *ngIf="report">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'calculated'" (click)="activeTab = 'calculated'" href="javascript:void(0)">
+        <i class="bi bi-calculator me-1"></i>Calculated Data
+        <span class="badge bg-secondary ms-1">{{ report.calculatedData.length }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'reference'" (click)="activeTab = 'reference'" href="javascript:void(0)">
+        <i class="bi bi-table me-1"></i>Reference Data
+        <span class="badge bg-secondary ms-1">{{ report.referenceData.length }}</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Calculated Data Table -->
+  <div *ngIf="report && activeTab === 'calculated'">
+    <!-- Filter -->
+    <div class="d-flex align-items-center gap-2 py-2 bg-light px-2 border border-top-0">
+      <label class="form-label mb-0 small fw-semibold">Type:</label>
+      <select class="form-select form-select-sm" style="width: 140px;" [(ngModel)]="typeFilter">
+        <option value="">All</option>
+        <option *ngFor="let t of calculatedDataTypes" [value]="t">{{ t }}</option>
+      </select>
+      <span class="text-muted small ms-2">{{ filteredCalculatedData.length }} records</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered table-hover mb-0 osfi-table">
+        <thead>
+          <tr class="table-light">
+            <th class="text-center" style="width:100px;">Record ID</th>
+            <th class="text-center" style="width:80px;">Type</th>
+            <th style="min-width:200px;">Formula</th>
+            <th class="text-end" style="width:100px;">Weight</th>
+            <th class="text-end" style="width:180px;">Calculated Value</th>
+            <th class="text-end" style="width:180px;">Display Value</th>
+            <th style="min-width:200px;">Dependencies</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of filteredCalculatedData; trackBy: trackByRecordId">
+            <td class="text-center fw-semibold small">{{ row.recordId }}</td>
+            <td class="text-center small">
+              <span class="badge" [ngClass]="{
+                'bg-primary': row.type === 'lcr',
+                'bg-success': row.type === 'dpa',
+                'bg-warning text-dark': row.type === 'dpa_complex'
+              }">{{ row.type }}</span>
             </td>
-            <td class="text-end variance-cell"
-                [ngClass]="varianceClass(row.variancePct[segKey(seg.segmentName)])">
-              <span *ngIf="row.variancePct[segKey(seg.segmentName)] != null">
-                <i class="bi" [ngClass]="varianceArrow(row.variancePct[segKey(seg.segmentName)])"></i>
-                {{ formatVariance(row.variancePct[segKey(seg.segmentName)]) }}
+            <td class="small text-break">{{ row.formula }}</td>
+            <td class="text-end small">{{ row.weight != null ? row.weight : '' }}</td>
+            <td class="text-end small" [class.text-danger]="isNegative(row.calculatedValue)">
+              {{ formatNumber(row.calculatedValue) }}
+            </td>
+            <td class="text-end small" [class.text-danger]="isNegative(row.displayValue)">
+              {{ formatNumber(row.displayValue) }}
+            </td>
+            <td class="small">
+              <span *ngFor="let dep of row.dependencies; let last = last" class="text-nowrap">
+                <code>{{ dep.recordId }}</code>=<span [class.text-danger]="isNegative(dep.value)">{{ formatNumber(dep.value) }}</span>{{ last ? '' : ', ' }}
               </span>
             </td>
-            <td class="text-center action-cell">
-              <span class="icon-wrapper" (click)="onCommentClick(row, seg.segmentName, $event)">
-                <i class="bi bi-chat-left-text action-icon" title="Comments"></i>
-                <span class="red-dot" *ngIf="hasCommentsForRow(row, seg.segmentName)"></span>
-              </span>
-            </td>
-            <td class="text-center action-cell">
-              <span class="icon-wrapper">
-                <i class="bi bi-sliders action-icon" title="Adjustments"></i>
-              </span>
-            </td>
-          </ng-container>
-        </tr>
-      </tbody>
-    </table>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <div *ngIf="!loading && treeRows.length === 0 && !message" class="text-muted mt-3">
-    Enter a date range and click <strong>View Analytics</strong> to load the OSFI LCR report.
+  <!-- Reference Data Table -->
+  <div *ngIf="report && activeTab === 'reference'">
+    <!-- Filter -->
+    <div class="d-flex align-items-center gap-2 py-2 bg-light px-2 border border-top-0">
+      <label class="form-label mb-0 small fw-semibold">Reporting Row:</label>
+      <input type="text" class="form-control form-control-sm" style="width: 100px;"
+             [(ngModel)]="referenceRowFilter" placeholder="Filter...">
+      <span class="text-muted small ms-2">{{ filteredReferenceData.length }} records</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered table-hover mb-0 osfi-table">
+        <thead>
+          <tr class="table-light">
+            <th class="text-center" style="width:100px;">Row</th>
+            <th style="min-width:250px;">Product Class Result</th>
+            <th style="min-width:180px;">Reporting Type Amount</th>
+            <th class="text-center" style="width:60px;">Calc ID</th>
+            <th class="text-center" style="width:60px;">Orig Ccy</th>
+            <th class="text-end" style="width:160px;">Original Amount</th>
+            <th class="text-center" style="width:60px;">Rpt Ccy</th>
+            <th class="text-end" style="width:160px;">Reporting Amount</th>
+            <th class="text-center" style="width:60px;">Rptbl Ccy</th>
+            <th class="text-center" style="width:60px;">Row #</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of filteredReferenceData; trackBy: trackByRefIdx">
+            <td class="text-center small fw-semibold">{{ row.reporting_row }}</td>
+            <td class="small text-break">{{ row.product_class_result }}</td>
+            <td class="small">{{ row.reporting_type_amount }}</td>
+            <td class="text-center small">{{ row.calc_id }}</td>
+            <td class="text-center small">{{ row.original_currency }}</td>
+            <td class="text-end small" [class.text-danger]="isNegative(row.original_amount)">
+              {{ formatNumber(row.original_amount) }}
+            </td>
+            <td class="text-center small">{{ row.reporting_currency }}</td>
+            <td class="text-end small" [class.text-danger]="isNegative(row.reporting_amount)">
+              {{ formatNumber(row.reporting_amount) }}
+            </td>
+            <td class="text-center small">{{ row.reportable_currency }}</td>
+            <td class="text-center small">{{ row.rowNo }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
-
-<app-comment-thread-panel
-  [reportType]="commentReportType"
-  [lineKey]="commentLineKey"
-  [lineName]="commentLineName"
-  [segmentName]="commentSegmentName"
-  [isOpen]="commentPanelOpen"
-  [childRows]="commentChildRows"
-  [variance]="commentVariance"
-  (closed)="closeCommentPanel()">
-</app-comment-thread-panel>

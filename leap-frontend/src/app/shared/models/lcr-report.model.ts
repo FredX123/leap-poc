@@ -1,15 +1,3 @@
-export interface OsfiLcrDateData {
-  n_date_skey: number;
-  d_calander_date: string;
-  n_amount_rpt_ccy: number;
-}
-
-export interface OsfiLcrSegmentData {
-  n_segment_order: number;
-  v_segment_name: string;
-  date_data: OsfiLcrDateData[];
-}
-
 export interface ReportLineLevel {
   v_level_code: string;
   v_level_desc: string;
@@ -29,15 +17,6 @@ export function extractLevels(item: { [key: string]: any }): ReportLineLevel[] {
     levels.push({ v_level_code: code, v_level_desc: desc });
   }
   return levels;
-}
-
-export interface OsfiLcrReportItem {
-  v_report_code: string;
-  v_para_code?: string;
-  v_report_line_code: string;
-  v_report_line_name: string;
-  segment_data: OsfiLcrSegmentData[];
-  [key: string]: any;
 }
 
 export interface OsfiLcrMetricDateData {
@@ -62,37 +41,54 @@ export interface OsfiLcrMetricReportItem {
   [key: string]: any;
 }
 
-export interface LcrDateRequest {
-  startDate: string;
-  endDate: string;
-}
-
 export interface LcrMetricRequest {
   segment: string;
   startDate: string;
   endDate: string;
 }
 
+// --- OSFI LCR Report types ---
+
+export interface OsfiLcrDependency {
+  recordId: string;
+  value: number;
+}
+
+export interface OsfiLcrCalculatedData {
+  recordId: string;
+  calculatedValue: number;
+  type: string;
+  formula: string;
+  weight?: number;
+  dependencies: OsfiLcrDependency[];
+  displayValue: number;
+}
+
+export interface OsfiLcrReferenceData {
+  reporting_row: number;
+  product_class_result: string;
+  reporting_type_amount: string;
+  calc_id: number;
+  original_currency: string;
+  original_amount: number;
+  reporting_currency: string;
+  reporting_amount: number;
+  reportable_currency: string;
+  rowNo: number;
+}
+
+export interface OsfiLcrReportDto {
+  calculatedData: OsfiLcrCalculatedData[];
+  referenceData: OsfiLcrReferenceData[];
+}
+
+export interface OsfiLcrRequest {
+  calcId: number;
+  reportingDate: string;
+  currency: string;
+}
+
 // --- Tree node types for rendering ---
-
-export interface LcrSegmentHeader {
-  segmentName: string;
-  segmentOrder: number;
-}
-
-export interface LcrTreeRow {
-  level: number;
-  name: string;
-  code: string;
-  expanded: boolean;
-  expandable: boolean;
-  parentCode: string | null;
-  grandparentCode: string | null;
-  /** Per-segment, per-date amounts: segmentKey -> dateStr -> amount */
-  amounts: Record<string, Record<string, number>>;
-  /** Per-segment variance %: segmentKey -> pct */
-  variancePct: Record<string, number>;
-}
 
 export interface LcrMetricTreeRow {
   level: number;
