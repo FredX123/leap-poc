@@ -2,13 +2,19 @@ package com.leappoc.shared.dto.lcr;
 
 import java.math.BigDecimal;
 
-public class LcrCalcAdjustmentRequest {
+public class OsfiLcrAdjustmentDto {
 
+    private Long id;
     private Integer calcId;
     private Long lineId;
     private String currency;
     private BigDecimal adjustmentValue;
     private String comment;
+
+    public OsfiLcrAdjustmentDto() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
     public Integer getCalcId() { return calcId; }
     public void setCalcId(Integer calcId) { this.calcId = calcId; }
@@ -25,3 +31,4 @@ public class LcrCalcAdjustmentRequest {
     public String getComment() { return comment; }
     public void setComment(String comment) { this.comment = comment; }
 }
+

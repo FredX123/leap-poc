@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "LCR_CALC_ADJUSTMENT")
-public class LcrCalcAdjustment {
+@Table(name = "OSFI_LCR_ADJUSTMENT")
+public class OsfiLcrAdjustment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,7 @@ public class LcrCalcAdjustment {
     @Column(name = "dt_updated_at")
     private LocalDateTime updatedAt;
 
-    public LcrCalcAdjustment() {}
+    public OsfiLcrAdjustment() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -72,3 +72,4 @@ public class LcrCalcAdjustment {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
+

@@ -8,5 +8,6 @@ import java.util.List;
 public interface LcrReportLineRepository extends JpaRepository<LcrReportLine, Long> {
 
     List<LcrReportLine> findByReportCodeOrderByDisplayOrderAsc(String reportCode);
-}
 
+    List<LcrReportLine> findByReportCodeAndLineTypeIsNotNullAndDisplayOrderIsNotNullOrderByDisplayOrderAsc(String reportCode);
+}

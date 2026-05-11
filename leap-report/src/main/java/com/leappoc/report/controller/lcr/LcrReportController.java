@@ -5,6 +5,7 @@ import com.leappoc.shared.dto.lcr.*;
 import com.leappoc.shared.security.RoleConstants;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class LcrReportController {
     @PostMapping("/osfi-lcr")
     @PreAuthorize("hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '" + RoleConstants.GROUP_GRP_WRITE + "')")
     public ResponseEntity<OsfiLcrReportDto> getOsfiLcrReport(@RequestBody OsfiLcrRequest request) {
-        OsfiLcrReportDto result = lcrReportService.getOsfiLcrReport(request.getCalcId());
+        OsfiLcrReportDto result = lcrReportService.getOsfiLcrReport(request.getCalcId(), request.getCurrency());
         return ResponseEntity.ok(result);
     }
 
@@ -32,6 +33,40 @@ public class LcrReportController {
         List<OsfiLcrMetricReportDto> result = lcrReportService.getOsfiLcrMetricReport(
                 request.getSegment(), request.getStartDate(), request.getEndDate());
         return ResponseEntity.ok(result);
+    }
+
+    // --- Adjustment endpoints ---
+
+    @GetMapping("/osfi-lcr/adjustment")
+    @PreAuthorize("hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '" + RoleConstants.GROUP_GRP_WRITE + "')")
+    public ResponseEntity<OsfiLcrAdjustmentDto> getAdjustment(
+            @RequestParam Integer calcId,
+            @RequestParam Long lineId,
+            @RequestParam String currency) {
+        OsfiLcrAdjustmentDto dto = lcrReportService.getAdjustment(calcId, lineId, currency);
+        if (dto == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/osfi-lcr/adjustment")
+    @PreAuthorize("hasAuthority('" + RoleConstants.GROUP_GRP_WRITE + "')")
+    public ResponseEntity<Void> saveAdjustment(
+            @RequestBody OsfiLcrAdjustmentRequest request,
+            Authentication auth) {
+        lcrReportService.saveAdjustment(request, auth.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/osfi-lcr/adjustment")
+    @PreAuthorize("hasAuthority('" + RoleConstants.GROUP_GRP_WRITE + "')")
+    public ResponseEntity<Void> deleteAdjustment(
+            @RequestParam Integer calcId,
+            @RequestParam Long lineId,
+            @RequestParam String currency) {
+        lcrReportService.deleteAdjustment(calcId, lineId, currency);
+        return ResponseEntity.noContent().build();
     }
 
     // --- Auth test endpoints (for RBAC verification on welcome page) ---

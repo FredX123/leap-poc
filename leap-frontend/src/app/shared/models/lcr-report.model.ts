@@ -80,12 +80,46 @@ export interface OsfiLcrReferenceData {
 export interface OsfiLcrReportDto {
   calculatedData: OsfiLcrCalculatedData[];
   referenceData: OsfiLcrReferenceData[];
+  lines: OsfiLcrReportLine[];
+  adjustments: OsfiLcrAdjustmentDto[];
+}
+
+export interface OsfiLcrReportLine {
+  id: number;
+  lineCode: string;
+  lineName: string;
+  lineType: 'section' | 'subsection' | 'subheader' | 'data';
+  displayOrder: number;
+  weight: number | null;
+  weightedLineCode: string | null;
 }
 
 export interface OsfiLcrRequest {
   calcId: number;
   reportingDate: string;
   currency: string;
+}
+
+/** Available currencies for the LCR report */
+export const LCR_CURRENCIES = ['ALL', 'CAD', 'USD', 'JPY', 'EUR', 'GBP', 'OTH', 'ADJ'] as const;
+
+/** Adjustment request sent to the backend */
+export interface OsfiLcrAdjustmentRequest {
+  calcId: number;
+  lineId: number;
+  currency: string;
+  adjustmentValue: number;
+  comment: string;
+}
+
+/** Adjustment loaded from the backend */
+export interface OsfiLcrAdjustmentDto {
+  id: number;
+  calcId: number;
+  lineId: number;
+  currency: string;
+  adjustmentValue: number;
+  comment: string;
 }
 
 // --- Tree node types for rendering ---

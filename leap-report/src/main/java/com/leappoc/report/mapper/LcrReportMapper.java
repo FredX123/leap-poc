@@ -4,6 +4,7 @@ import com.leappoc.report.model.lcr.LcrCalculatedData;
 import com.leappoc.report.model.lcr.LcrCalculatedDependency;
 import com.leappoc.report.model.lcr.LcrReferenceData;
 import com.leappoc.report.model.lcr.LcrReportData;
+import com.leappoc.report.model.lcr.LcrReportLine;
 import com.leappoc.report.model.lcr.LcrReportLineLevel;
 import com.leappoc.shared.dto.lcr.*;
 import org.springframework.stereotype.Component;
@@ -90,6 +91,22 @@ public class LcrReportMapper {
             result.add(dto);
         }
         return result;
+    }
+
+    public List<OsfiLcrReportLineDto> toReportLineDtos(List<LcrReportLine> lines) {
+        return lines.stream().map(this::toReportLineDto).collect(Collectors.toList());
+    }
+
+    private OsfiLcrReportLineDto toReportLineDto(LcrReportLine entity) {
+        OsfiLcrReportLineDto dto = new OsfiLcrReportLineDto();
+        dto.setId(entity.getId());
+        dto.setLineCode(entity.getReportLineCode());
+        dto.setLineName(entity.getReportLineName());
+        dto.setLineType(entity.getLineType());
+        dto.setDisplayOrder(entity.getDisplayOrder());
+        dto.setWeight(entity.getWeight());
+        dto.setWeightedLineCode(entity.getWeightedLineCode());
+        return dto;
     }
 
     // ------------------------------------------------------------------

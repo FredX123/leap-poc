@@ -1,155 +1,153 @@
-<div class="container-fluid px-4 py-3">
-  <h2 class="mb-3">OSFI LCR</h2>
-
-  <!-- Controls -->
-  <div class="row align-items-end mb-3 g-2">
-    <div class="col-auto">
-      <label for="calcId" class="form-label mb-0 small">Calculation Id</label>
-      <input type="number" id="calcId" class="form-control form-control-sm" [(ngModel)]="calcId" style="width: 100px;">
-    </div>
-    <div class="col-auto">
-      <label for="reportingDate" class="form-label mb-0 small">Reporting Date</label>
-      <input type="date" id="reportingDate" class="form-control form-control-sm" [(ngModel)]="reportingDate">
-    </div>
-    <div class="col-auto">
-      <label for="currency" class="form-label mb-0 small">Currency</label>
-      <input type="text" id="currency" class="form-control form-control-sm" [(ngModel)]="selectedCurrency" style="width: 80px;">
-    </div>
-    <div class="col-auto">
-      <button type="button" class="btn btn-primary btn-sm" (click)="onLoadReport()" [disabled]="!calcId">
-        <i class="bi bi-search me-1"></i>Load Report
-      </button>
+<div class="osfi-container bg-white rounded p-3 shadow">
+  <!-- Header -->
+  <div class="header">
+    <h2 class="header__lcr">LCR</h2>
+    <div class="row align-items-end g-2">
+      <div class="col-auto">
+        <label for="calcId" class="form-label mb-0 small">Calculation Id:</label>
+        <input type="number" id="calcId" class="form-control form-control-sm" [(ngModel)]="calcId" readonly style="width:100px">
+      </div>
+      <div class="col-auto">
+        <label for="reportingDate" class="form-label mb-0 small">Reporting Date:</label>
+        <input type="text" id="reportingDate" class="form-control form-control-sm" [(ngModel)]="reportingDate" readonly>
+      </div>
+      <div class="col-auto">
+        <div class="form-check form-switch mt-3">
+          <input class="form-check-input" type="checkbox" id="adjToggle" [(ngModel)]="adjustmentMode">
+          <label class="form-check-label small" for="adjToggle">Adjustment</label>
+        </div>
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-primary btn-sm" (click)="onLoadReport()" [disabled]="!calcId">
+          Load Report
+        </button>
+      </div>
+      <div class="col-auto">
+        <span class="form-label mb-0 small text-muted">Canadian dollars in thousands</span>
+      </div>
     </div>
   </div>
+
+  <!-- Currency tabs -->
+  <ul class="nav nav-tabs mt-2 mb-0">
+    <li class="nav-item" *ngFor="let ccy of currencies">
+      <a class="nav-link" [class.active]="selectedCurrency === ccy"
+         href="javascript:void(0)" (click)="selectCurrency(ccy)">{{ ccy }}</a>
+    </li>
+  </ul>
 
   <!-- Loading -->
   <div *ngIf="loading" class="text-center my-4">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
+    <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
   </div>
 
   <!-- Error -->
-  <div *ngIf="message" class="alert" [ngClass]="'alert-' + message.type" role="alert">{{ message.text }}</div>
+  <div *ngIf="message" class="alert mt-2" [ngClass]="'alert-' + message.type">{{ message.text }}</div>
 
   <!-- Empty state -->
   <p *ngIf="!report && !loading" class="text-muted mt-3">Enter a Calculation Id and click <strong>Load Report</strong>.</p>
 
-  <!-- Tabs -->
-  <ul class="nav nav-tabs mb-0" *ngIf="report">
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab === 'calculated'" (click)="activeTab = 'calculated'" href="javascript:void(0)">
-        <i class="bi bi-calculator me-1"></i>Calculated Data
-        <span class="badge bg-secondary ms-1">{{ report.calculatedData.length }}</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" [class.active]="activeTab === 'reference'" (click)="activeTab = 'reference'" href="javascript:void(0)">
-        <i class="bi bi-table me-1"></i>Reference Data
-        <span class="badge bg-secondary ms-1">{{ report.referenceData.length }}</span>
-      </a>
-    </li>
-  </ul>
+  <!-- Report Sections -->
+  <ng-container *ngIf="report && sections.length > 0">
+    <ng-container *ngFor="let section of sections; let i = index; trackBy: trackBySection">
 
-  <!-- Calculated Data Table -->
-  <div *ngIf="report && activeTab === 'calculated'">
-    <!-- Filter -->
-    <div class="d-flex align-items-center gap-2 py-2 bg-light px-2 border border-top-0">
-      <label class="form-label mb-0 small fw-semibold">Type:</label>
-      <select class="form-select form-select-sm" style="width: 140px;" [(ngModel)]="typeFilter">
-        <option value="">All</option>
-        <option *ngFor="let t of calculatedDataTypes" [value]="t">{{ t }}</option>
-      </select>
-      <span class="text-muted small ms-2">{{ filteredCalculatedData.length }} records</span>
-    </div>
+      <!-- Section header (only on first occurrence of section name) -->
+      <ng-container *ngIf="getSectionName(i) as secName">
+        <div class="osfi-container__header">
+          <h3 class="osfi-container_header-text">{{ secName }}</h3>
+        </div>
+      </ng-container>
 
-    <div class="table-responsive">
-      <table class="table table-sm table-bordered table-hover mb-0 osfi-table">
-        <thead>
-          <tr class="table-light">
-            <th class="text-center" style="width:100px;">Record ID</th>
-            <th class="text-center" style="width:80px;">Type</th>
-            <th style="min-width:200px;">Formula</th>
-            <th class="text-end" style="width:100px;">Weight</th>
-            <th class="text-end" style="width:180px;">Calculated Value</th>
-            <th class="text-end" style="width:180px;">Display Value</th>
-            <th style="min-width:200px;">Dependencies</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of filteredCalculatedData; trackBy: trackByRecordId">
-            <td class="text-center fw-semibold small">{{ row.recordId }}</td>
-            <td class="text-center small">
-              <span class="badge" [ngClass]="{
-                'bg-primary': row.type === 'lcr',
-                'bg-success': row.type === 'dpa',
-                'bg-warning text-dark': row.type === 'dpa_complex'
-              }">{{ row.type }}</span>
-            </td>
-            <td class="small text-break">{{ row.formula }}</td>
-            <td class="text-end small">{{ row.weight != null ? row.weight : '' }}</td>
-            <td class="text-end small" [class.text-danger]="isNegative(row.calculatedValue)">
-              {{ formatNumber(row.calculatedValue) }}
-            </td>
-            <td class="text-end small" [class.text-danger]="isNegative(row.displayValue)">
-              {{ formatNumber(row.displayValue) }}
-            </td>
-            <td class="small">
-              <span *ngFor="let dep of row.dependencies; let last = last" class="text-nowrap">
-                <code>{{ dep.recordId }}</code>=<span [class.text-danger]="isNegative(dep.value)">{{ formatNumber(dep.value) }}</span>{{ last ? '' : ', ' }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+      <!-- Subsection table -->
+      <div class="section">
+        <div class="section-table">
+          <table class="level1-assets" style="table-layout: fixed;">
+            <!-- Subsection header row -->
+            <tr>
+              <th class="row-title no-top-border">{{ section.subsectionName }}</th>
+              <th class="center section__lcr-cell"></th>
+              <th class="center section__money-header">Market Value</th>
+              <th class="center spacer-col"></th>
+              <th class="center section__weight">Weight</th>
+              <th class="center section__lcr-cell"></th>
+              <th class="center section__money-header">Weighted Amount</th>
+            </tr>
 
-  <!-- Reference Data Table -->
-  <div *ngIf="report && activeTab === 'reference'">
-    <!-- Filter -->
-    <div class="d-flex align-items-center gap-2 py-2 bg-light px-2 border border-top-0">
-      <label class="form-label mb-0 small fw-semibold">Reporting Row:</label>
-      <input type="text" class="form-control form-control-sm" style="width: 100px;"
-             [(ngModel)]="referenceRowFilter" placeholder="Filter...">
-      <span class="text-muted small ms-2">{{ filteredReferenceData.length }} records</span>
-    </div>
+            <!-- Data rows -->
+            <tr *ngFor="let line of section.lines; trackBy: trackByOrder"
+                [class.subheader-row]="isSubheader(line)"
+                [class.total-row]="isTotalRow(line)">
 
-    <div class="table-responsive">
-      <table class="table table-sm table-bordered table-hover mb-0 osfi-table">
-        <thead>
-          <tr class="table-light">
-            <th class="text-center" style="width:100px;">Row</th>
-            <th style="min-width:250px;">Product Class Result</th>
-            <th style="min-width:180px;">Reporting Type Amount</th>
-            <th class="text-center" style="width:60px;">Calc ID</th>
-            <th class="text-center" style="width:60px;">Orig Ccy</th>
-            <th class="text-end" style="width:160px;">Original Amount</th>
-            <th class="text-center" style="width:60px;">Rpt Ccy</th>
-            <th class="text-end" style="width:160px;">Reporting Amount</th>
-            <th class="text-center" style="width:60px;">Rptbl Ccy</th>
-            <th class="text-center" style="width:60px;">Row #</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of filteredReferenceData; trackBy: trackByRefIdx">
-            <td class="text-center small fw-semibold">{{ row.reporting_row }}</td>
-            <td class="small text-break">{{ row.product_class_result }}</td>
-            <td class="small">{{ row.reporting_type_amount }}</td>
-            <td class="text-center small">{{ row.calc_id }}</td>
-            <td class="text-center small">{{ row.original_currency }}</td>
-            <td class="text-end small" [class.text-danger]="isNegative(row.original_amount)">
-              {{ formatNumber(row.original_amount) }}
-            </td>
-            <td class="text-center small">{{ row.reporting_currency }}</td>
-            <td class="text-end small" [class.text-danger]="isNegative(row.reporting_amount)">
-              {{ formatNumber(row.reporting_amount) }}
-            </td>
-            <td class="text-center small">{{ row.reportable_currency }}</td>
-            <td class="text-center small">{{ row.rowNo }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+              <!-- Name column with indentation -->
+              <td [class]="getIndentClass(line, section)"
+                  [class.grey]="isSubheader(line)">
+                {{ line.lineName }}
+              </td>
+
+              <!-- Market Value line code -->
+              <td class="center" [class.grey]="hasNoValue(line)">
+                <span *ngIf="!isSubheader(line) && getValue(line.lineCode) !== null">{{ line.lineCode }}</span>
+              </td>
+
+              <!-- Market Value (clickable when adjustment mode is on) -->
+              <td class="center"
+                  [class.grey]="hasNoValue(line)"
+                  [class.lcr-value]="!isSubheader(line) && getValue(line.lineCode) !== null && !isNegative(getValue(line.lineCode))"
+                  [class.lcr-neg]="isNegative(getValue(line.lineCode))"
+                  [class.clickable-cell]="isClickable(line)"
+                  [class.adjusted-cell]="hasAdjustment(line)"
+                  (click)="openAdjustmentPanel(line)"
+                  [title]="hasAdjustment(line) ? 'Adjustment: ' + formatCurrency(getAdjustmentInfo(line)?.value ?? 0) + (getAdjustmentInfo(line)?.comment ? ' — ' + getAdjustmentInfo(line)?.comment : '') : ''">
+                <ng-container *ngIf="!isSubheader(line) && getValue(line.lineCode) !== null">
+                  <div class="dpa-value">
+                    <span class="dpa-value-txt">{{ formatCurrency(getValue(line.lineCode)) }}</span>
+                    <span *ngIf="hasAdjustment(line)" class="adj-badge" title="This value has been adjusted">▲</span>
+                    <span *ngIf="adjustmentMode && isClickable(line) && !hasAdjustment(line)" class="adj-icon ms-1">✎</span>
+                  </div>
+                </ng-container>
+              </td>
+
+              <!-- Spacer -->
+              <td class="center grey"></td>
+
+              <!-- Weight -->
+              <td class="center" [class.grey]="isSubheader(line) || line.weight == null">
+                <span *ngIf="!isSubheader(line) && line.weight != null">{{ formatWeight(line.weight) }}</span>
+              </td>
+
+              <!-- Weighted line code -->
+              <td class="center" [class.grey]="isSubheader(line) || !line.weightedLineCode">
+                <span *ngIf="!isSubheader(line) && line.weightedLineCode">{{ line.weightedLineCode }}</span>
+              </td>
+
+              <!-- Weighted Amount -->
+              <td class="center"
+                  [class.grey]="hasNoWeighted(line)"
+                  [class.lcr-neg]="isNegative(getValue(line.weightedLineCode))">
+                <ng-container *ngIf="!isSubheader(line) && getValue(line.weightedLineCode) !== null">
+                  <div class="dpa-value">
+                    <span class="dpa-value-txt">{{ formatCurrency(getValue(line.weightedLineCode)) }}</span>
+                  </div>
+                </ng-container>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
 </div>
+
+<!-- Adjustment side panel -->
+<app-osfi-lcr-adjustment-panel
+  [isOpen]="adjustmentPanelOpen"
+  [line]="adjustmentLine"
+  [currentValue]="adjustmentLine ? getValue(adjustmentLine.lineCode) : null"
+  [existingAdjustment]="existingAdjustmentValue"
+  [existingComment]="existingAdjustmentComment"
+  [saving]="adjustmentSaving"
+  [loadingAdjustment]="adjustmentLoading"
+  (closed)="closeAdjustmentPanel()"
+  (saved)="onAdjustmentSave($event)"
+  (deleted)="onAdjustmentDelete($event)">
+</app-osfi-lcr-adjustment-panel>
