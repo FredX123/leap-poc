@@ -12,14 +12,13 @@ public interface OsfiLcrAdjustmentRepository extends JpaRepository<OsfiLcrAdjust
 
     @Query("SELECT a " +
            "  FROM OsfiLcrAdjustment a " +
-           "       JOIN FETCH a.line l " +
            " WHERE a.calcId = :calcId " +
            "   AND a.reportableCurrency = :currency")
     List<OsfiLcrAdjustment> findByCalcIdAndCurrency(
             @Param("calcId") Integer calcId,
             @Param("currency") String currency);
 
-    Optional<OsfiLcrAdjustment> findByCalcIdAndLineIdAndReportableCurrency(
-            Integer calcId, Long lineId, String reportableCurrency);
+    Optional<OsfiLcrAdjustment> findByCalcIdAndLineCodeAndReportableCurrency(
+            Integer calcId, String lineCode, String reportableCurrency);
 }
 

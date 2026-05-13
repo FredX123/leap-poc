@@ -15,9 +15,8 @@ public class OsfiLcrAdjustment {
     @Column(name = "n_calc_id", nullable = false)
     private Integer calcId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "line_id", nullable = false)
-    private LcrReportLine line;
+    @Column(name = "v_line_code", nullable = false, length = 20)
+    private String lineCode;
 
     @Column(name = "v_reportable_currency", nullable = false, length = 10)
     private String reportableCurrency;
@@ -48,8 +47,8 @@ public class OsfiLcrAdjustment {
     public Integer getCalcId() { return calcId; }
     public void setCalcId(Integer calcId) { this.calcId = calcId; }
 
-    public LcrReportLine getLine() { return line; }
-    public void setLine(LcrReportLine line) { this.line = line; }
+    public String getLineCode() { return lineCode; }
+    public void setLineCode(String lineCode) { this.lineCode = lineCode; }
 
     public String getReportableCurrency() { return reportableCurrency; }
     public void setReportableCurrency(String reportableCurrency) { this.reportableCurrency = reportableCurrency; }

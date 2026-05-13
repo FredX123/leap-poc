@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,24 +57,28 @@ public class LcrReportService {
      */
     @Transactional(readOnly = true)
     public OsfiLcrReportDto getOsfiLcrReport(Integer calcId, String currency) {
-        List<LcrCalculatedData> calcData = calculatedDataRepository.findByCalcIdWithDependencies(calcId);
-        List<LcrReferenceData> refData = referenceDataRepository.findByCalcIdOrderByReportingRowAsc(calcId);
 
-        OsfiLcrReportDto report;
-        if (calcData.isEmpty() && refData.isEmpty()) {
-            log.info("No OSFI LCR data found in DB for calcId={}; loading fallback from classpath:{}", calcId, FALLBACK_LCR);
-            report = loadOsfiLcrFallback();
-        } else {
-            report = mapper.toOsfiLcrReport(calcData, refData);
-        }
+        OsfiLcrReportDto report = loadOsfiLcrFallback();
 
-        // Always load structured report line definitions
-        List<LcrReportLine> lines = reportLineRepository
-                .findByReportCodeAndLineTypeIsNotNullAndDisplayOrderIsNotNullOrderByDisplayOrderAsc("OSFI_LCR");
-        report.setLines(mapper.toReportLineDtos(lines));
+//        List<LcrCalculatedData> calcData = calculatedDataRepository.findByCalcIdWithDependencies(calcId);
+//        List<LcrReferenceData> refData = referenceDataRepository.findByCalcIdOrderByReportingRowAsc(calcId);
+//
+//        OsfiLcrReportDto report;
+//        if (calcData.isEmpty() && refData.isEmpty()) {
+//            log.info("No OSFI LCR data found in DB for calcId={}; loading fallback from classpath:{}", calcId, FALLBACK_LCR);
+//            report = loadOsfiLcrFallback();
+//        } else {
+//            report = mapper.toOsfiLcrReport(calcData, refData);
+//        }
+//
+//        // Always load structured report line definitions
+//        List<LcrReportLine> lines = reportLineRepository
+//                .findByReportCodeAndLineTypeIsNotNullAndDisplayOrderIsNotNullOrderByDisplayOrderAsc("OSFI_LCR");
+//        report.setLines(mapper.toReportLineDtos(lines));
 
         // Load all adjustments for this calcId + currency
-        if (currency != null && !currency.isBlank()) {
+        if (report != null && !CollectionUtils.isEmpty(report.getCalculatedData())
+                && currency != null && !currency.isBlank()) {
             List<OsfiLcrAdjustment> adjustments = adjustmentRepository.findByCalcIdAndCurrency(calcId, currency);
             List<OsfiLcrAdjustmentDto> adjDtos = new ArrayList<>();
             for (OsfiLcrAdjustment adj : adjustments) {
@@ -93,14 +98,17 @@ public class LcrReportService {
     @Transactional(readOnly = true)
     public List<OsfiLcrMetricReportDto> getOsfiLcrMetricReport(
             String segment, LocalDate startDate, LocalDate endDate) {
-        List<LcrReportData> data = repository.findByReportCodeAndSegmentAndDateRange(
+
+        return loadFallback(FALLBACK_LCR_METRIC, new TypeReference<>() {});
+
+/*        List<LcrReportData> data = repository.findByReportCodeAndSegmentAndDateRange(
                 REPORT_CODE_LCR_METRIC, segment, startDate, endDate);
         List<OsfiLcrMetricReportDto> result = mapper.toLcrMetricReport(data);
         if (result.isEmpty()) {
             log.info("No LCR-Metric data found in DB for segment={} [{} - {}]; loading fallback from classpath:{}", segment, startDate, endDate, FALLBACK_LCR_METRIC);
             result = loadFallback(FALLBACK_LCR_METRIC, new TypeReference<>() {});
         }
-        return result;
+        return result;*/
     }
 
     private OsfiLcrReportDto loadOsfiLcrFallback() {
@@ -130,8 +138,8 @@ public class LcrReportService {
     // --- Adjustment operations ---
 
     @Transactional(readOnly = true)
-    public OsfiLcrAdjustmentDto getAdjustment(Integer calcId, Long lineId, String currency) {
-        return adjustmentRepository.findByCalcIdAndLineIdAndReportableCurrency(calcId, lineId, currency)
+    public OsfiLcrAdjustmentDto getAdjustment(Integer calcId, String lineCode, String currency) {
+        return adjustmentRepository.findByCalcIdAndLineCodeAndReportableCurrency(calcId, lineCode, currency)
                 .map(this::toAdjustmentDto)
                 .orElse(null);
     }
@@ -139,8 +147,8 @@ public class LcrReportService {
     @Transactional
     public void saveAdjustment(OsfiLcrAdjustmentRequest request, String currentUserId) {
         Optional<OsfiLcrAdjustment> existing = adjustmentRepository
-                .findByCalcIdAndLineIdAndReportableCurrency(
-                        request.getCalcId(), request.getLineId(), request.getCurrency());
+                .findByCalcIdAndLineCodeAndReportableCurrency(
+                        request.getCalcId(), request.getLineCode(), request.getCurrency());
 
         OsfiLcrAdjustment adj;
         if (existing.isPresent()) {
@@ -152,7 +160,7 @@ public class LcrReportService {
         } else {
             adj = new OsfiLcrAdjustment();
             adj.setCalcId(request.getCalcId());
-            adj.setLine(reportLineRepository.getReferenceById(request.getLineId()));
+            adj.setLineCode(request.getLineCode());
             adj.setReportableCurrency(request.getCurrency());
             adj.setAdjustmentValue(request.getAdjustmentValue());
             adj.setComment(request.getComment());
@@ -163,8 +171,8 @@ public class LcrReportService {
     }
 
     @Transactional
-    public void deleteAdjustment(Integer calcId, Long lineId, String currency) {
-        adjustmentRepository.findByCalcIdAndLineIdAndReportableCurrency(calcId, lineId, currency)
+    public void deleteAdjustment(Integer calcId, String lineCode, String currency) {
+        adjustmentRepository.findByCalcIdAndLineCodeAndReportableCurrency(calcId, lineCode, currency)
                 .ifPresent(adjustmentRepository::delete);
     }
 
@@ -172,7 +180,7 @@ public class LcrReportService {
         OsfiLcrAdjustmentDto dto = new OsfiLcrAdjustmentDto();
         dto.setId(entity.getId());
         dto.setCalcId(entity.getCalcId());
-        dto.setLineId(entity.getLine().getId());
+        dto.setLineCode(entity.getLineCode());
         dto.setCurrency(entity.getReportableCurrency());
         dto.setAdjustmentValue(entity.getAdjustmentValue());
         dto.setComment(entity.getComment());

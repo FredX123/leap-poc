@@ -188,7 +188,7 @@ CREATE TABLE LCR_REPORT_DATA (
 CREATE TABLE OSFI_LCR_ADJUSTMENT (
     id                      BIGINT          IDENTITY(1,1) NOT NULL,
     n_calc_id               INT             NOT NULL,
-    line_id                 BIGINT          NOT NULL,
+    v_line_code             NVARCHAR(20)    NOT NULL,
     v_reportable_currency   NVARCHAR(10)    NOT NULL,
     n_adjustment_value      DECIMAL(20,5)   NOT NULL DEFAULT 0,
     v_comment               NVARCHAR(500)   NOT NULL DEFAULT '',
@@ -197,9 +197,7 @@ CREATE TABLE OSFI_LCR_ADJUSTMENT (
     v_updated_by            NVARCHAR(100)   NULL,
     dt_updated_at           DATETIME2       NULL,
     CONSTRAINT PK_OSFI_LCR_ADJUSTMENT PRIMARY KEY (id),
-    CONSTRAINT FK_OSFI_LCR_ADJ_REPORT_LINE FOREIGN KEY (line_id)
-        REFERENCES LCR_REPORT_LINE(id),
-    CONSTRAINT UQ_OSFI_LCR_ADJUSTMENT UNIQUE (n_calc_id, line_id, v_reportable_currency)
+    CONSTRAINT UQ_OSFI_LCR_ADJUSTMENT UNIQUE (n_calc_id, v_line_code, v_reportable_currency)
 );
 
 
@@ -317,7 +315,7 @@ CREATE NONCLUSTERED INDEX IX_LCR_REPORT_DATA_CALC
 
 -- OSFI_LCR_ADJUSTMENT indexes
 CREATE NONCLUSTERED INDEX IX_OSFI_LCR_ADJ_CALC
-    ON OSFI_LCR_ADJUSTMENT (n_calc_id, line_id);
+    ON OSFI_LCR_ADJUSTMENT (n_calc_id, v_line_code);
 
 
 -- LCR_CALCULATED_DATA indexes

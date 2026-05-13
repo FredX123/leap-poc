@@ -12,6 +12,7 @@ import {
   OsfiLcrAdjustmentRequest
 } from '../../shared/models/lcr-report.model';
 import { OsfiLcrAdjustmentPanelComponent, AdjustmentSaveEvent } from './osfi-lcr-adjustment-panel.component';
+import { OSFI_LCR_LINES } from '../../shared/data/osfi-lcr-lines';
 
 /** A section groups lines under a section header + subsection header */
 export interface ReportSection {
@@ -49,7 +50,7 @@ export class OsfiLcrReportComponent {
   calcDataMap: Record<string, OsfiLcrCalculatedData> = {};
 
   /** Adjustments indexed by lineId for quick lookup */
-  adjustmentMap: Record<number, { value: number; comment: string }> = {};
+  adjustmentMap: Record<string, { value: number; comment: string }> = {};
 
   /** Sections grouped from lines */
   sections: ReportSection[] = [];
@@ -117,29 +118,29 @@ export class OsfiLcrReportComponent {
     this.adjustmentMap = {};
     if (!this.report?.adjustments) return;
     for (const adj of this.report.adjustments) {
-      this.adjustmentMap[adj.lineId] = { value: adj.adjustmentValue, comment: adj.comment };
+      this.adjustmentMap[adj.lineCode] = { value: adj.adjustmentValue, comment: adj.comment };
     }
   }
 
   /** Returns true if a line has a saved adjustment */
   hasAdjustment(line: OsfiLcrReportLine): boolean {
-    return this.adjustmentMap[line.id] != null;
+    return this.adjustmentMap[line.lineCode] != null;
   }
 
   /** Returns the adjustment info for a line, or null */
   getAdjustmentInfo(line: OsfiLcrReportLine): { value: number; comment: string } | null {
-    return this.adjustmentMap[line.id] ?? null;
+    return this.adjustmentMap[line.lineCode] ?? null;
   }
 
   private buildSections(): void {
     this.sections = [];
-    if (!this.report?.lines) return;
+    if (!this.report) return;
 
     let currentSection = '';
     let currentSubsection = '';
     let currentLines: OsfiLcrReportLine[] = [];
 
-    for (const line of this.report.lines) {
+    for (const line of OSFI_LCR_LINES) {
       if (line.lineType === 'section') {
         currentSection = line.lineName;
         continue;
@@ -267,7 +268,7 @@ export class OsfiLcrReportComponent {
     this.existingAdjustmentComment = null;
 
     // Pre-fill from local map if available
-    const localAdj = this.adjustmentMap[line.id];
+    const localAdj = this.adjustmentMap[line.lineCode];
     if (localAdj) {
       this.existingAdjustmentValue = localAdj.value;
       this.existingAdjustmentComment = localAdj.comment;
@@ -280,7 +281,7 @@ export class OsfiLcrReportComponent {
     this.cd.markForCheck();
 
     // Load existing adjustment from backend
-    this.service.getAdjustment(this.calcId, line.id, this.selectedCurrency)
+    this.service.getAdjustment(this.calcId, line.lineCode, this.selectedCurrency)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (dto) => {
@@ -309,7 +310,7 @@ export class OsfiLcrReportComponent {
     this.adjustmentSaving = true;
     const request: OsfiLcrAdjustmentRequest = {
       calcId: this.calcId,
-      lineId: event.lineId,
+      lineCode: event.lineCode,
       currency: this.selectedCurrency,
       adjustmentValue: event.adjustmentValue,
       comment: event.comment
@@ -330,10 +331,10 @@ export class OsfiLcrReportComponent {
       });
   }
 
-  onAdjustmentDelete(lineId: number): void {
+  onAdjustmentDelete(lineCode: string): void {
     if (!this.report) return;
     this.adjustmentSaving = true;
-    this.service.deleteAdjustment(this.calcId, lineId, this.selectedCurrency)
+    this.service.deleteAdjustment(this.calcId, lineCode, this.selectedCurrency)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

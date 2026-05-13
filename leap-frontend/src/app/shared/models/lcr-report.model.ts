@@ -80,12 +80,10 @@ export interface OsfiLcrReferenceData {
 export interface OsfiLcrReportDto {
   calculatedData: OsfiLcrCalculatedData[];
   referenceData: OsfiLcrReferenceData[];
-  lines: OsfiLcrReportLine[];
   adjustments: OsfiLcrAdjustmentDto[];
 }
 
 export interface OsfiLcrReportLine {
-  id: number;
   lineCode: string;
   lineName: string;
   lineType: 'section' | 'subsection' | 'subheader' | 'data';
@@ -106,7 +104,7 @@ export const LCR_CURRENCIES = ['ALL', 'CAD', 'USD', 'JPY', 'EUR', 'GBP', 'OTH', 
 /** Adjustment request sent to the backend */
 export interface OsfiLcrAdjustmentRequest {
   calcId: number;
-  lineId: number;
+  lineCode: string;
   currency: string;
   adjustmentValue: number;
   comment: string;
@@ -116,7 +114,7 @@ export interface OsfiLcrAdjustmentRequest {
 export interface OsfiLcrAdjustmentDto {
   id: number;
   calcId: number;
-  lineId: number;
+  lineCode: string;
   currency: string;
   adjustmentValue: number;
   comment: string;

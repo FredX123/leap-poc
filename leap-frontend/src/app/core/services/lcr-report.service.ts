@@ -25,10 +25,10 @@ export class LcrReportService {
     return this.http.post<OsfiLcrMetricReportItem[]>(`${this.baseUrl}/osfi-lcr-metric`, request);
   }
 
-  getAdjustment(calcId: number, lineId: number, currency: string): Observable<OsfiLcrAdjustmentDto> {
+  getAdjustment(calcId: number, lineCode: string, currency: string): Observable<OsfiLcrAdjustmentDto> {
     const params = new HttpParams()
       .set('calcId', calcId)
-      .set('lineId', lineId)
+      .set('lineCode', lineCode)
       .set('currency', currency);
     return this.http.get<OsfiLcrAdjustmentDto>(`${this.baseUrl}/osfi-lcr/adjustment`, { params });
   }
@@ -37,10 +37,10 @@ export class LcrReportService {
     return this.http.post<void>(`${this.baseUrl}/osfi-lcr/adjustment`, request);
   }
 
-  deleteAdjustment(calcId: number, lineId: number, currency: string): Observable<void> {
+  deleteAdjustment(calcId: number, lineCode: string, currency: string): Observable<void> {
     const params = new HttpParams()
       .set('calcId', calcId)
-      .set('lineId', lineId)
+      .set('lineCode', lineCode)
       .set('currency', currency);
     return this.http.delete<void>(`${this.baseUrl}/osfi-lcr/adjustment`, { params });
   }

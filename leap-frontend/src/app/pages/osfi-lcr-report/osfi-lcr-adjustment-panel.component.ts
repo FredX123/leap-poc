@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { OsfiLcrReportLine } from '../../shared/models/lcr-report.model';
 
 export interface AdjustmentSaveEvent {
-  lineId: number;
+  lineCode: string;
   adjustmentValue: number;
   comment: string;
 }
@@ -142,7 +142,7 @@ export class OsfiLcrAdjustmentPanelComponent implements OnChanges {
 
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<AdjustmentSaveEvent>();
-  @Output() deleted = new EventEmitter<number>(); // line id
+  @Output() deleted = new EventEmitter<string>(); // line code
 
   adjustmentValue: string = '';
   comment: string = '';
@@ -200,7 +200,7 @@ export class OsfiLcrAdjustmentPanelComponent implements OnChanges {
     this.submitted = true;
     if (!this.isAdjustmentValid || !this.isCommentValid || !this.line) return;
     this.saved.emit({
-      lineId: this.line.id,
+      lineCode: this.line.lineCode,
       adjustmentValue: parseFloat(this.adjustmentValue),
       comment: this.comment.trim()
     });
@@ -208,7 +208,7 @@ export class OsfiLcrAdjustmentPanelComponent implements OnChanges {
 
   onDelete(): void {
     if (this.line) {
-      this.deleted.emit(this.line.id);
+      this.deleted.emit(this.line.lineCode);
     }
   }
 }

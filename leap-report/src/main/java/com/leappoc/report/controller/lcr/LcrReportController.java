@@ -41,9 +41,9 @@ public class LcrReportController {
     @PreAuthorize("hasAnyAuthority('" + RoleConstants.GROUP_GRP_READ + "', '" + RoleConstants.GROUP_GRP_WRITE + "')")
     public ResponseEntity<OsfiLcrAdjustmentDto> getAdjustment(
             @RequestParam Integer calcId,
-            @RequestParam Long lineId,
+            @RequestParam String lineCode,
             @RequestParam String currency) {
-        OsfiLcrAdjustmentDto dto = lcrReportService.getAdjustment(calcId, lineId, currency);
+        OsfiLcrAdjustmentDto dto = lcrReportService.getAdjustment(calcId, lineCode, currency);
         if (dto == null) {
             return ResponseEntity.noContent().build();
         }
@@ -63,9 +63,9 @@ public class LcrReportController {
     @PreAuthorize("hasAuthority('" + RoleConstants.GROUP_GRP_WRITE + "')")
     public ResponseEntity<Void> deleteAdjustment(
             @RequestParam Integer calcId,
-            @RequestParam Long lineId,
+            @RequestParam String lineCode,
             @RequestParam String currency) {
-        lcrReportService.deleteAdjustment(calcId, lineId, currency);
+        lcrReportService.deleteAdjustment(calcId, lineCode, currency);
         return ResponseEntity.noContent().build();
     }
 

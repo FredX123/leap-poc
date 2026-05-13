@@ -20493,5 +20493,3599 @@
             "reportable_currency": "USD",
             "rowNo": 1
         }
+    ],
+    "lines": [
+        {
+            "lineCode": "H1",
+            "lineName": "1. Stock of high quality liquid assets (HQLA)",
+            "lineType": "section",
+            "displayOrder": 1,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H2",
+            "lineName": "1.1. Level 1 assets",
+            "lineType": "subsection",
+            "displayOrder": 2,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "11001",
+            "lineName": "Coins and banknotes",
+            "lineType": "data",
+            "displayOrder": 3,
+            "weight": 1.00,
+            "weightedLineCode": "61001"
+        },
+        {
+            "lineCode": "H4",
+            "lineName": "Total central bank reserves; of which:",
+            "lineType": "subheader",
+            "displayOrder": 4,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "11002",
+            "lineName": "part of central bank reserves that can be drawn in times of stress",
+            "lineType": "data",
+            "displayOrder": 5,
+            "weight": 1.00,
+            "weightedLineCode": "61002"
+        },
+        {
+            "lineCode": "11003",
+            "lineName": "part of central bank reserves that cannot be drawn in times of stress",
+            "lineType": "data",
+            "displayOrder": 6,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H7",
+            "lineName": "Securities with a 0% risk weight:",
+            "lineType": "subheader",
+            "displayOrder": 7,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "11004",
+            "lineName": "issued by sovereigns",
+            "lineType": "data",
+            "displayOrder": 8,
+            "weight": 1.00,
+            "weightedLineCode": "61004"
+        },
+        {
+            "lineCode": "11005",
+            "lineName": "guaranteed by sovereigns",
+            "lineType": "data",
+            "displayOrder": 9,
+            "weight": 1.00,
+            "weightedLineCode": "61005"
+        },
+        {
+            "lineCode": "11006",
+            "lineName": "issued or guaranteed by central banks",
+            "lineType": "data",
+            "displayOrder": 10,
+            "weight": 1.00,
+            "weightedLineCode": "61006"
+        },
+        {
+            "lineCode": "11007",
+            "lineName": "issued or guaranteed by PSEs",
+            "lineType": "data",
+            "displayOrder": 11,
+            "weight": 1.00,
+            "weightedLineCode": "61007"
+        },
+        {
+            "lineCode": "11008",
+            "lineName": "issued or guaranteed by BIS, IMF, ECB and European Community, or MDBs",
+            "lineType": "data",
+            "displayOrder": 12,
+            "weight": 1.00,
+            "weightedLineCode": "61008"
+        },
+        {
+            "lineCode": "H13",
+            "lineName": "For non-0% risk-weighted sovereigns:",
+            "lineType": "subheader",
+            "displayOrder": 13,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "11009",
+            "lineName": "sovereign or central bank debt securities issued in domestic currencies by the sovereign or central bank in the country in which the liquidity risk is being taken or in the bankÃ¢â‚¬â„¢s home country",
+            "lineType": "data",
+            "displayOrder": 14,
+            "weight": 1.00,
+            "weightedLineCode": "61009"
+        },
+        {
+            "lineCode": "11010",
+            "lineName": "domestic sovereign or central bank debt securities issued in foreign currencies, up to the amount of the bankÃ¢â‚¬â„¢s stressed net cash outflows in that specific foreign currency stemming from the bankÃ¢â‚¬â„¢s operations in the jurisdiction where the bankÃ¢â‚¬â„¢s liquidity risk is being taken",
+            "lineType": "data",
+            "displayOrder": 15,
+            "weight": 1.00,
+            "weightedLineCode": "61010"
+        },
+        {
+            "lineCode": "99001",
+            "lineName": "Total stock of Level 1 assets",
+            "lineType": "data",
+            "displayOrder": 16,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99002",
+            "lineName": "Adjustment to stock of Level 1 assets",
+            "lineType": "data",
+            "displayOrder": 17,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99003",
+            "lineName": "Adjusted amount of Level 1 assets",
+            "lineType": "data",
+            "displayOrder": 18,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H19",
+            "lineName": "1.2. Level 2A assets",
+            "lineType": "subsection",
+            "displayOrder": 19,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H20",
+            "lineName": "Securities with a 20% risk weight:",
+            "lineType": "subheader",
+            "displayOrder": 20,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "12001",
+            "lineName": "issued by sovereigns",
+            "lineType": "data",
+            "displayOrder": 21,
+            "weight": 0.85,
+            "weightedLineCode": "62001"
+        },
+        {
+            "lineCode": "12002",
+            "lineName": "guaranteed by sovereigns",
+            "lineType": "data",
+            "displayOrder": 22,
+            "weight": 0.85,
+            "weightedLineCode": "62002"
+        },
+        {
+            "lineCode": "12003",
+            "lineName": "issued or guaranteed by central banks",
+            "lineType": "data",
+            "displayOrder": 23,
+            "weight": 0.85,
+            "weightedLineCode": "62003"
+        },
+        {
+            "lineCode": "12004",
+            "lineName": "issued or guaranteed by PSEs",
+            "lineType": "data",
+            "displayOrder": 24,
+            "weight": 0.85,
+            "weightedLineCode": "62004"
+        },
+        {
+            "lineCode": "12005",
+            "lineName": "issued or guaranteed by MDBs",
+            "lineType": "data",
+            "displayOrder": 25,
+            "weight": 0.85,
+            "weightedLineCode": "62005"
+        },
+        {
+            "lineCode": "H26",
+            "lineName": "Non-financial corporate bonds and covered bonds:",
+            "lineType": "subheader",
+            "displayOrder": 26,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "12006",
+            "lineName": "Non-financial corporate bonds, rated AA- or better",
+            "lineType": "data",
+            "displayOrder": 27,
+            "weight": 0.85,
+            "weightedLineCode": "62006"
+        },
+        {
+            "lineCode": "12007",
+            "lineName": "Covered bonds, not self-issued, rated AA- or better",
+            "lineType": "data",
+            "displayOrder": 28,
+            "weight": 0.85,
+            "weightedLineCode": "62007"
+        },
+        {
+            "lineCode": "99004",
+            "lineName": "Total stock of Level 2A assets",
+            "lineType": "data",
+            "displayOrder": 29,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99005",
+            "lineName": "Adjustment to stock of Level 2A assets",
+            "lineType": "data",
+            "displayOrder": 30,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99006",
+            "lineName": "Adjusted amount of Level 2A assets",
+            "lineType": "data",
+            "displayOrder": 31,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99007",
+            "lineName": "Adjustment to stock of Level 2A assets",
+            "lineType": "data",
+            "displayOrder": 32,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H33",
+            "lineName": "1.3. Level 2B assets",
+            "lineType": "subsection",
+            "displayOrder": 33,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H34",
+            "lineName": "Residential mortgage-backed securities (RMBS):",
+            "lineType": "subheader",
+            "displayOrder": 34,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "13001",
+            "lineName": "Residential mortgage-backed securities (RMBS), rated AA or better",
+            "lineType": "data",
+            "displayOrder": 35,
+            "weight": 0.75,
+            "weightedLineCode": "63001"
+        },
+        {
+            "lineCode": "H36",
+            "lineName": "Non-RMBS assets:",
+            "lineType": "subheader",
+            "displayOrder": 36,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "13002",
+            "lineName": "Non-financial corporate bonds, rated BBB- to A+ ",
+            "lineType": "data",
+            "displayOrder": 37,
+            "weight": 0.50,
+            "weightedLineCode": "63002"
+        },
+        {
+            "lineCode": "13003",
+            "lineName": "Non-financial common equity shares ",
+            "lineType": "data",
+            "displayOrder": 38,
+            "weight": 0.50,
+            "weightedLineCode": "63003"
+        },
+        {
+            "lineCode": "13004",
+            "lineName": "Sovereign or central bank debt securities, rated BBB- to BBB+",
+            "lineType": "data",
+            "displayOrder": 39,
+            "weight": 0.50,
+            "weightedLineCode": "63004"
+        },
+        {
+            "lineCode": "99009",
+            "lineName": "Total stock of Level 2B RMBS assets",
+            "lineType": "data",
+            "displayOrder": 40,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99010",
+            "lineName": "Adjustment to stock of Level 2B RMBS assets",
+            "lineType": "data",
+            "displayOrder": 41,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99011",
+            "lineName": "Adjusted amount of Level 2B RMBS assets",
+            "lineType": "data",
+            "displayOrder": 42,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99012",
+            "lineName": "Total stock of Level 2B non-RMBS assets",
+            "lineType": "data",
+            "displayOrder": 43,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99013",
+            "lineName": "Adjustment to stock of Level 2B non-RMBS assets",
+            "lineType": "data",
+            "displayOrder": 44,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99014",
+            "lineName": "Adjusted amount of Level 2B non-RMBS assets",
+            "lineType": "data",
+            "displayOrder": 45,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99015",
+            "lineName": "Adjusted amount of Level 2B (RMBS and non-RMBS) assets",
+            "lineType": "data",
+            "displayOrder": 46,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99018",
+            "lineName": "Total stock of Level 2B non-RMBS assets",
+            "lineType": "data",
+            "displayOrder": 47,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99020",
+            "lineName": "Adjusted amount of Level 2B (RMBS and non-RMBS) assets",
+            "lineType": "data",
+            "displayOrder": 48,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H49",
+            "lineName": "1.4. Total stock of HQLA",
+            "lineType": "subsection",
+            "displayOrder": 49,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "14001",
+            "lineName": "Level 1 - Assets held at the entity level, but excluded from the consolidated stock of HQLA ",
+            "lineType": "data",
+            "displayOrder": 50,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "14002",
+            "lineName": "Level 2A - Assets held at the entity level, but excluded from the consolidated stock of HQLA ",
+            "lineType": "data",
+            "displayOrder": 51,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "14003",
+            "lineName": "Level 2B RMBS - Assets held at the entity level, but excluded from the consolidated stock of HQLA ",
+            "lineType": "data",
+            "displayOrder": 52,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "14004",
+            "lineName": "Level 2B non-RMBS - Assets held at the entity level, but excluded from the consolidated stock of HQLA ",
+            "lineType": "data",
+            "displayOrder": 53,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "14005",
+            "lineName": "Level 1 - Assets excluded from the stock of high quality liquid assets due to operational restrictions",
+            "lineType": "data",
+            "displayOrder": 54,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "14006",
+            "lineName": "Level 2A - Assets excluded from the stock of high quality liquid assets due to operational restrictions",
+            "lineType": "data",
+            "displayOrder": 55,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "14007",
+            "lineName": "Level 2B RMBS - Assets excluded from the stock of high quality liquid assets due to operational restrictions",
+            "lineType": "data",
+            "displayOrder": 56,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "14008",
+            "lineName": "Level 2B non-RMBS - Assets excluded from the stock of high quality liquid assets due to operational restrictions",
+            "lineType": "data",
+            "displayOrder": 57,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99023",
+            "lineName": "Total stock of HQLA",
+            "lineType": "data",
+            "displayOrder": 58,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H59",
+            "lineName": "1.6. Total stock of HQLA and eligible non-operational demand deposits",
+            "lineType": "subsection",
+            "displayOrder": 59,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99060",
+            "lineName": "Total stock of HQLA and non-operational demand deposits placed by indirect clearers with OSFI or provincially-regulated direct clearers",
+            "lineType": "data",
+            "displayOrder": 60,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H61",
+            "lineName": "2. Net cash outflows",
+            "lineType": "section",
+            "displayOrder": 61,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H62",
+            "lineName": "2.1. Cash outflows",
+            "lineType": "subsection",
+            "displayOrder": 62,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21101",
+            "lineName": "are in Canada",
+            "lineType": "data",
+            "displayOrder": 63,
+            "weight": 0.03,
+            "weightedLineCode": "71101"
+        },
+        {
+            "lineCode": "21102",
+            "lineName": "are not in Canada",
+            "lineType": "data",
+            "displayOrder": 64,
+            "weight": 0.03,
+            "weightedLineCode": "71102"
+        },
+        {
+            "lineCode": "21103",
+            "lineName": "eligible for a 5% run-off rate",
+            "lineType": "data",
+            "displayOrder": 65,
+            "weight": 0.05,
+            "weightedLineCode": "71103"
+        },
+        {
+            "lineCode": "21104",
+            "lineName": "are in Canada",
+            "lineType": "data",
+            "displayOrder": 66,
+            "weight": 0.03,
+            "weightedLineCode": "71104"
+        },
+        {
+            "lineCode": "21105",
+            "lineName": "are not in Canada",
+            "lineType": "data",
+            "displayOrder": 67,
+            "weight": 0.03,
+            "weightedLineCode": "71105"
+        },
+        {
+            "lineCode": "21106",
+            "lineName": "eligible for a 5% run-off rate",
+            "lineType": "data",
+            "displayOrder": 68,
+            "weight": 0.05,
+            "weightedLineCode": "71106"
+        },
+        {
+            "lineCode": "21107",
+            "lineName": "Insured deposits in non-transactional and no established relationship accounts",
+            "lineType": "data",
+            "displayOrder": 69,
+            "weight": 0.10,
+            "weightedLineCode": "71107"
+        },
+        {
+            "lineCode": "21108",
+            "lineName": "Uninsured deposits",
+            "lineType": "data",
+            "displayOrder": 70,
+            "weight": 0.10,
+            "weightedLineCode": "71108"
+        },
+        {
+            "lineCode": "21110",
+            "lineName": "Deposits denominated in a foreign currency",
+            "lineType": "data",
+            "displayOrder": 71,
+            "weight": 0.10,
+            "weightedLineCode": "71110"
+        },
+        {
+            "lineCode": "21111",
+            "lineName": "Term deposits with a remaining maturity of  > 30 days",
+            "lineType": "data",
+            "displayOrder": 72,
+            "weight": 0.00,
+            "weightedLineCode": "71111"
+        },
+        {
+            "lineCode": "21112",
+            "lineName": "Insured deposits received from funds and trusts where the balance is controlled by underlying retail customer",
+            "lineType": "data",
+            "displayOrder": 73,
+            "weight": 0.10,
+            "weightedLineCode": "71112"
+        },
+        {
+            "lineCode": "21114",
+            "lineName": "Rate sensitive deposits directly managed by the client -  established relationship or deposit in a transactional account",
+            "lineType": "data",
+            "displayOrder": 74,
+            "weight": 0.10,
+            "weightedLineCode": "71114"
+        },
+        {
+            "lineCode": "21115",
+            "lineName": "Rate sensitive deposits directly managed by the client - no established relationship and not in a transactional account",
+            "lineType": "data",
+            "displayOrder": 75,
+            "weight": 0.20,
+            "weightedLineCode": "71115"
+        },
+        {
+            "lineCode": "21116",
+            "lineName": "Term deposits managed by an unaffiliated third-party - cashable or maturing in the next 30 days",
+            "lineType": "data",
+            "displayOrder": 76,
+            "weight": 0.30,
+            "weightedLineCode": "71116"
+        },
+        {
+            "lineCode": "21117",
+            "lineName": "Demand deposits managed by an unaffiliated third-party",
+            "lineType": "data",
+            "displayOrder": 77,
+            "weight": 0.40,
+            "weightedLineCode": "71117"
+        },
+        {
+            "lineCode": "21118",
+            "lineName": "Less stable retail deposits subject to host jurisdiction requirements",
+            "lineType": "data",
+            "displayOrder": 78,
+            "weight": 0.10,
+            "weightedLineCode": "71118"
+        },
+        {
+            "lineCode": "21201",
+            "lineName": "are in Canada",
+            "lineType": "data",
+            "displayOrder": 79,
+            "weight": 0.03,
+            "weightedLineCode": "71201"
+        },
+        {
+            "lineCode": "21202",
+            "lineName": "are not in Canada",
+            "lineType": "data",
+            "displayOrder": 80,
+            "weight": 0.03,
+            "weightedLineCode": "71202"
+        },
+        {
+            "lineCode": "21203",
+            "lineName": "eligible for a 5% run-off rate",
+            "lineType": "data",
+            "displayOrder": 81,
+            "weight": 0.05,
+            "weightedLineCode": "71203"
+        },
+        {
+            "lineCode": "21204",
+            "lineName": "are in Canada",
+            "lineType": "data",
+            "displayOrder": 82,
+            "weight": 0.03,
+            "weightedLineCode": "71204"
+        },
+        {
+            "lineCode": "21205",
+            "lineName": "are not in Canada",
+            "lineType": "data",
+            "displayOrder": 83,
+            "weight": 0.03,
+            "weightedLineCode": "71205"
+        },
+        {
+            "lineCode": "21206",
+            "lineName": "eligible for a 5% run-off rate",
+            "lineType": "data",
+            "displayOrder": 84,
+            "weight": 0.05,
+            "weightedLineCode": "71206"
+        },
+        {
+            "lineCode": "21207",
+            "lineName": "Insured deposits in non-transactional and no established relationship accounts",
+            "lineType": "data",
+            "displayOrder": 85,
+            "weight": 0.10,
+            "weightedLineCode": "71207"
+        },
+        {
+            "lineCode": "21208",
+            "lineName": "Uninsured deposits",
+            "lineType": "data",
+            "displayOrder": 86,
+            "weight": 0.10,
+            "weightedLineCode": "71208"
+        },
+        {
+            "lineCode": "21210",
+            "lineName": "Deposits denominated in a foreign currency",
+            "lineType": "data",
+            "displayOrder": 87,
+            "weight": 0.10,
+            "weightedLineCode": "71210"
+        },
+        {
+            "lineCode": "21211",
+            "lineName": "Term deposits with a remaining maturity of  > 30 days",
+            "lineType": "data",
+            "displayOrder": 88,
+            "weight": 0.00,
+            "weightedLineCode": "71211"
+        },
+        {
+            "lineCode": "21212",
+            "lineName": "insured, with a 3% run-off rate",
+            "lineType": "data",
+            "displayOrder": 89,
+            "weight": 0.03,
+            "weightedLineCode": "71212"
+        },
+        {
+            "lineCode": "21213",
+            "lineName": "insured, with a 5% run-off rate",
+            "lineType": "data",
+            "displayOrder": 90,
+            "weight": 0.05,
+            "weightedLineCode": "71213"
+        },
+        {
+            "lineCode": "21214",
+            "lineName": "uninsured",
+            "lineType": "data",
+            "displayOrder": 91,
+            "weight": 0.25,
+            "weightedLineCode": "71214"
+        },
+        {
+            "lineCode": "21215",
+            "lineName": "where entire amount is fully covered by an effective deposit insurance scheme",
+            "lineType": "data",
+            "displayOrder": 92,
+            "weight": 0.20,
+            "weightedLineCode": "71215"
+        },
+        {
+            "lineCode": "21216",
+            "lineName": "where entire amount is not fully covered by an effective deposit insurance scheme",
+            "lineType": "data",
+            "displayOrder": 93,
+            "weight": 0.40,
+            "weightedLineCode": "71216"
+        },
+        {
+            "lineCode": "21217",
+            "lineName": "insured, with a 3% run-off rate",
+            "lineType": "data",
+            "displayOrder": 94,
+            "weight": 0.03,
+            "weightedLineCode": "71217"
+        },
+        {
+            "lineCode": "21218",
+            "lineName": "insured, with a 5% run-off rate",
+            "lineType": "data",
+            "displayOrder": 95,
+            "weight": 0.05,
+            "weightedLineCode": "71218"
+        },
+        {
+            "lineCode": "21219",
+            "lineName": "uninsured",
+            "lineType": "data",
+            "displayOrder": 96,
+            "weight": 0.25,
+            "weightedLineCode": "71219"
+        },
+        {
+            "lineCode": "21220",
+            "lineName": "where entire amount is fully covered by an effective deposit insurance scheme",
+            "lineType": "data",
+            "displayOrder": 97,
+            "weight": 0.20,
+            "weightedLineCode": "71220"
+        },
+        {
+            "lineCode": "21221",
+            "lineName": "where entire amount is not fully covered by an effective deposit insurance scheme",
+            "lineType": "data",
+            "displayOrder": 98,
+            "weight": 0.40,
+            "weightedLineCode": "71221"
+        },
+        {
+            "lineCode": "21222",
+            "lineName": "insured, with a 3% run-off rate",
+            "lineType": "data",
+            "displayOrder": 99,
+            "weight": 0.03,
+            "weightedLineCode": "71222"
+        },
+        {
+            "lineCode": "21223",
+            "lineName": "insured, with a 5% run-off rate",
+            "lineType": "data",
+            "displayOrder": 100,
+            "weight": 0.05,
+            "weightedLineCode": "71223"
+        },
+        {
+            "lineCode": "21224",
+            "lineName": "uninsured",
+            "lineType": "data",
+            "displayOrder": 101,
+            "weight": 0.25,
+            "weightedLineCode": "71224"
+        },
+        {
+            "lineCode": "21225",
+            "lineName": "provided by other banks",
+            "lineType": "data",
+            "displayOrder": 102,
+            "weight": 1.00,
+            "weightedLineCode": "71225"
+        },
+        {
+            "lineCode": "21226",
+            "lineName": "insured, with a 3% run-off rate",
+            "lineType": "data",
+            "displayOrder": 103,
+            "weight": 0.03,
+            "weightedLineCode": "71226"
+        },
+        {
+            "lineCode": "21227",
+            "lineName": "insured, with a 5% run-off rate",
+            "lineType": "data",
+            "displayOrder": 104,
+            "weight": 0.05,
+            "weightedLineCode": "71227"
+        },
+        {
+            "lineCode": "21228",
+            "lineName": "uninsured",
+            "lineType": "data",
+            "displayOrder": 105,
+            "weight": 0.25,
+            "weightedLineCode": "71228"
+        },
+        {
+            "lineCode": "21229",
+            "lineName": "provided by other financial institutions and other legal entities",
+            "lineType": "data",
+            "displayOrder": 106,
+            "weight": 1.00,
+            "weightedLineCode": "71229"
+        },
+        {
+            "lineCode": "21230",
+            "lineName": "Unsecured debt issuance",
+            "lineType": "data",
+            "displayOrder": 107,
+            "weight": 1.00,
+            "weightedLineCode": "71230"
+        },
+        {
+            "lineCode": "21231",
+            "lineName": "Additional balances required to be installed in central bank reserves",
+            "lineType": "data",
+            "displayOrder": 108,
+            "weight": 1.00,
+            "weightedLineCode": "71231"
+        },
+        {
+            "lineCode": "21232",
+            "lineName": "Insured deposits received from funds and trusts where the balance is controlled by underlying retail customer",
+            "lineType": "data",
+            "displayOrder": 109,
+            "weight": 0.10,
+            "weightedLineCode": "71232"
+        },
+        {
+            "lineCode": "21233",
+            "lineName": "Rate sensitive deposits directly managed by the client -  established relationship or deposit in a transactional account",
+            "lineType": "data",
+            "displayOrder": 110,
+            "weight": 0.10,
+            "weightedLineCode": "71233"
+        },
+        {
+            "lineCode": "21234",
+            "lineName": "Rate sensitive deposits directly managed by the client - no established relationship and not in a transactional account",
+            "lineType": "data",
+            "displayOrder": 111,
+            "weight": 0.20,
+            "weightedLineCode": "71234"
+        },
+        {
+            "lineCode": "21235",
+            "lineName": "Term deposits managed by an unaffiliated third-party cashable or maturing in the next 30 days",
+            "lineType": "data",
+            "displayOrder": 112,
+            "weight": 0.30,
+            "weightedLineCode": "71235"
+        },
+        {
+            "lineCode": "21236",
+            "lineName": "Demand deposits managed by unaffiliated third-party",
+            "lineType": "data",
+            "displayOrder": 113,
+            "weight": 0.40,
+            "weightedLineCode": "71236"
+        },
+        {
+            "lineCode": "21237",
+            "lineName": "Less stable small business deposits subject to host jurisdiction requirements",
+            "lineType": "data",
+            "displayOrder": 114,
+            "weight": 0.10,
+            "weightedLineCode": "71237"
+        },
+        {
+            "lineCode": "21301",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 115,
+            "weight": 0.00,
+            "weightedLineCode": "71301"
+        },
+        {
+            "lineCode": "21302",
+            "lineName": "Outflow item 21302",
+            "lineType": "data",
+            "displayOrder": 116,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21303",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 117,
+            "weight": 0.00,
+            "weightedLineCode": "71303"
+        },
+        {
+            "lineCode": "21304",
+            "lineName": "Outflow item 21304",
+            "lineType": "data",
+            "displayOrder": 118,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21305",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 119,
+            "weight": 0.00,
+            "weightedLineCode": "71305"
+        },
+        {
+            "lineCode": "21306",
+            "lineName": "Outflow item 21306",
+            "lineType": "data",
+            "displayOrder": 120,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21307",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 121,
+            "weight": 0.00,
+            "weightedLineCode": "71307"
+        },
+        {
+            "lineCode": "21308",
+            "lineName": "Outflow item 21308",
+            "lineType": "data",
+            "displayOrder": 122,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21309",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 123,
+            "weight": 0.00,
+            "weightedLineCode": "71309"
+        },
+        {
+            "lineCode": "21310",
+            "lineName": "Outflow item 21310",
+            "lineType": "data",
+            "displayOrder": 124,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21311",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 125,
+            "weight": 0.00,
+            "weightedLineCode": "71311"
+        },
+        {
+            "lineCode": "21312",
+            "lineName": "Outflow item 21312",
+            "lineType": "data",
+            "displayOrder": 126,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21313",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 127,
+            "weight": 0.00,
+            "weightedLineCode": "71313"
+        },
+        {
+            "lineCode": "21314",
+            "lineName": "Outflow item 21314",
+            "lineType": "data",
+            "displayOrder": 128,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21315",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 129,
+            "weight": 0.00,
+            "weightedLineCode": "71315"
+        },
+        {
+            "lineCode": "21316",
+            "lineName": "Outflow item 21316",
+            "lineType": "data",
+            "displayOrder": 130,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21317",
+            "lineName": "Backed by other assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 131,
+            "weight": 0.00,
+            "weightedLineCode": "71317"
+        },
+        {
+            "lineCode": "21318",
+            "lineName": "Outflow item 21318",
+            "lineType": "data",
+            "displayOrder": 132,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21319",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 133,
+            "weight": 0.00,
+            "weightedLineCode": "71319"
+        },
+        {
+            "lineCode": "21320",
+            "lineName": "Outflow item 21320",
+            "lineType": "data",
+            "displayOrder": 134,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21321",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 135,
+            "weight": 0.00,
+            "weightedLineCode": "71321"
+        },
+        {
+            "lineCode": "21322",
+            "lineName": "Outflow item 21322",
+            "lineType": "data",
+            "displayOrder": 136,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21323",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 137,
+            "weight": 0.15,
+            "weightedLineCode": "71323"
+        },
+        {
+            "lineCode": "21324",
+            "lineName": "Outflow item 21324",
+            "lineType": "data",
+            "displayOrder": 138,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21325",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 139,
+            "weight": 0.15,
+            "weightedLineCode": "71325"
+        },
+        {
+            "lineCode": "21326",
+            "lineName": "Outflow item 21326",
+            "lineType": "data",
+            "displayOrder": 140,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21327",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 141,
+            "weight": 0.25,
+            "weightedLineCode": "71327"
+        },
+        {
+            "lineCode": "21328",
+            "lineName": "Outflow item 21328",
+            "lineType": "data",
+            "displayOrder": 142,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21329",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 143,
+            "weight": 0.25,
+            "weightedLineCode": "71329"
+        },
+        {
+            "lineCode": "21330",
+            "lineName": "Outflow item 21330",
+            "lineType": "data",
+            "displayOrder": 144,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21331",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 145,
+            "weight": 0.25,
+            "weightedLineCode": "71331"
+        },
+        {
+            "lineCode": "21332",
+            "lineName": "Outflow item 21332",
+            "lineType": "data",
+            "displayOrder": 146,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21333",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 147,
+            "weight": 0.25,
+            "weightedLineCode": "71333"
+        },
+        {
+            "lineCode": "21334",
+            "lineName": "Outflow item 21334",
+            "lineType": "data",
+            "displayOrder": 148,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21335",
+            "lineName": "Transactions involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 149,
+            "weight": 0.50,
+            "weightedLineCode": "71335"
+        },
+        {
+            "lineCode": "21336",
+            "lineName": "Outflow item 21336",
+            "lineType": "data",
+            "displayOrder": 150,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21337",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Received",
+            "lineType": "data",
+            "displayOrder": 151,
+            "weight": 0.50,
+            "weightedLineCode": "71337"
+        },
+        {
+            "lineCode": "21338",
+            "lineName": "Outflow item 21338",
+            "lineType": "data",
+            "displayOrder": 152,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21339",
+            "lineName": "Counterparties are domestic sovereigns, MDBs or domestic PSEs with a 20% risk weight - Amount Received",
+            "lineType": "data",
+            "displayOrder": 153,
+            "weight": 0.25,
+            "weightedLineCode": "71339"
+        },
+        {
+            "lineCode": "21340",
+            "lineName": "Outflow item 21340",
+            "lineType": "data",
+            "displayOrder": 154,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21341",
+            "lineName": "Counterparties are not domestic sovereigns, MDBs or domestic PSEs with a 20% risk weight - Amount Received",
+            "lineType": "data",
+            "displayOrder": 155,
+            "weight": 1.00,
+            "weightedLineCode": "71341"
+        },
+        {
+            "lineCode": "21342",
+            "lineName": "Outflow item 21342",
+            "lineType": "data",
+            "displayOrder": 156,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21401",
+            "lineName": "Derivatives cash outflow",
+            "lineType": "data",
+            "displayOrder": 157,
+            "weight": 1.00,
+            "weightedLineCode": "71401"
+        },
+        {
+            "lineCode": "21402",
+            "lineName": "Increased liquidity needs related to downgrade triggers in derivatives and other financing transactions",
+            "lineType": "data",
+            "displayOrder": 158,
+            "weight": 1.00,
+            "weightedLineCode": "71402"
+        },
+        {
+            "lineCode": "21403",
+            "lineName": "Cash and Level 1 assets",
+            "lineType": "data",
+            "displayOrder": 159,
+            "weight": 0.00,
+            "weightedLineCode": "71403"
+        },
+        {
+            "lineCode": "21404",
+            "lineName": "For other collateral (ie all non-Level 1 collateral)",
+            "lineType": "data",
+            "displayOrder": 160,
+            "weight": 0.20,
+            "weightedLineCode": "71404"
+        },
+        {
+            "lineCode": "21405",
+            "lineName": "Increased liquidity needs related to excess non-segregated collateral held by the bank that could contractually be called at any time by the counterparty",
+            "lineType": "data",
+            "displayOrder": 161,
+            "weight": 1.00,
+            "weightedLineCode": "71405"
+        },
+        {
+            "lineCode": "21406",
+            "lineName": "Increased liquidity needs related to contractually required collateral on transactions for which the counterparty has not yet demanded the collateral be posted",
+            "lineType": "data",
+            "displayOrder": 162,
+            "weight": 1.00,
+            "weightedLineCode": "71406"
+        },
+        {
+            "lineCode": "21407",
+            "lineName": "Increased liquidity needs related to contracts that allow collateral substitution to non-HQLA assets",
+            "lineType": "data",
+            "displayOrder": 163,
+            "weight": 1.00,
+            "weightedLineCode": "71407"
+        },
+        {
+            "lineCode": "21408",
+            "lineName": "Increased liquidity needs related to market valuation changes on derivative or other transactions",
+            "lineType": "data",
+            "displayOrder": 164,
+            "weight": 1.00,
+            "weightedLineCode": "71408"
+        },
+        {
+            "lineCode": "21409",
+            "lineName": "Loss of funding on ABS and other structured financing instruments issued by the bank, excluding covered bonds",
+            "lineType": "data",
+            "displayOrder": 165,
+            "weight": 1.00,
+            "weightedLineCode": "71409"
+        },
+        {
+            "lineCode": "21410",
+            "lineName": "Loss of funding on covered bonds issued by the bank",
+            "lineType": "data",
+            "displayOrder": 166,
+            "weight": 1.00,
+            "weightedLineCode": "71410"
+        },
+        {
+            "lineCode": "21411",
+            "lineName": "debt maturing Ã¢â€°Â¤ 30 days",
+            "lineType": "data",
+            "displayOrder": 167,
+            "weight": 1.00,
+            "weightedLineCode": "71411"
+        },
+        {
+            "lineCode": "21412",
+            "lineName": "with embedded options in financing arrangements",
+            "lineType": "data",
+            "displayOrder": 168,
+            "weight": 1.00,
+            "weightedLineCode": "71412"
+        },
+        {
+            "lineCode": "21413",
+            "lineName": "other potential loss of such funding",
+            "lineType": "data",
+            "displayOrder": 169,
+            "weight": 1.00,
+            "weightedLineCode": "71413"
+        },
+        {
+            "lineCode": "21414",
+            "lineName": "Undrawn committed credit and liquidity facilities to retail and small business customers",
+            "lineType": "data",
+            "displayOrder": 170,
+            "weight": 0.05,
+            "weightedLineCode": "71414"
+        },
+        {
+            "lineCode": "21415",
+            "lineName": "non-financial corporates",
+            "lineType": "data",
+            "displayOrder": 171,
+            "weight": 0.10,
+            "weightedLineCode": "71415"
+        },
+        {
+            "lineCode": "21416",
+            "lineName": "non-financial corporates",
+            "lineType": "data",
+            "displayOrder": 172,
+            "weight": 0.30,
+            "weightedLineCode": "71416"
+        },
+        {
+            "lineCode": "21417",
+            "lineName": "sovereigns, central banks, PSEs and MDBs",
+            "lineType": "data",
+            "displayOrder": 173,
+            "weight": 0.10,
+            "weightedLineCode": "71417"
+        },
+        {
+            "lineCode": "21418",
+            "lineName": "sovereigns, central banks, PSEs and MDBs",
+            "lineType": "data",
+            "displayOrder": 174,
+            "weight": 0.30,
+            "weightedLineCode": "71418"
+        },
+        {
+            "lineCode": "21419",
+            "lineName": "Undrawn committed credit and liquidity facilities provided to banks subject to prudential supervision",
+            "lineType": "data",
+            "displayOrder": 175,
+            "weight": 0.40,
+            "weightedLineCode": "71419"
+        },
+        {
+            "lineCode": "21420",
+            "lineName": "Undrawn committed credit facilities provided to other Fis",
+            "lineType": "data",
+            "displayOrder": 176,
+            "weight": 0.40,
+            "weightedLineCode": "71420"
+        },
+        {
+            "lineCode": "21421",
+            "lineName": "Undrawn committed liquidity facilities provided to other Fis",
+            "lineType": "data",
+            "displayOrder": 177,
+            "weight": 1.00,
+            "weightedLineCode": "71421"
+        },
+        {
+            "lineCode": "21422",
+            "lineName": "Undrawn committed credit and liquidity facilities to other legal entities",
+            "lineType": "data",
+            "displayOrder": 178,
+            "weight": 1.00,
+            "weightedLineCode": "71422"
+        },
+        {
+            "lineCode": "21423",
+            "lineName": "financial institutions",
+            "lineType": "data",
+            "displayOrder": 179,
+            "weight": 1.00,
+            "weightedLineCode": "71423"
+        },
+        {
+            "lineCode": "21424",
+            "lineName": "retail clients",
+            "lineType": "data",
+            "displayOrder": 180,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21425",
+            "lineName": "small business customers",
+            "lineType": "data",
+            "displayOrder": 181,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21426",
+            "lineName": "non-financial corporates",
+            "lineType": "data",
+            "displayOrder": 182,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21427",
+            "lineName": "other clients",
+            "lineType": "data",
+            "displayOrder": 183,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "21428",
+            "lineName": "Non-contractual obligations related to potential liquidity draws from joint ventures or minority investments in entities",
+            "lineType": "data",
+            "displayOrder": 184,
+            "weight": 1.00,
+            "weightedLineCode": "71428"
+        },
+        {
+            "lineCode": "21429",
+            "lineName": "\"Unconditionally revocable \"\"uncommitted\"\" credit and liquidity facilities provided to retail and small business customers\"",
+            "lineType": "data",
+            "displayOrder": 185,
+            "weight": 0.02,
+            "weightedLineCode": "71429"
+        },
+        {
+            "lineCode": "21430",
+            "lineName": "\"Unconditionally revocable \"\"uncommitted\"\" credit and liquidity facilities provided to all other customers\"",
+            "lineType": "data",
+            "displayOrder": 186,
+            "weight": 0.05,
+            "weightedLineCode": "71430"
+        },
+        {
+            "lineCode": "21431",
+            "lineName": "Trade finance-related obligations (including guarantees and letters of credit)",
+            "lineType": "data",
+            "displayOrder": 187,
+            "weight": 0.03,
+            "weightedLineCode": "71431"
+        },
+        {
+            "lineCode": "21432",
+            "lineName": "Guarantees and letters of credit unrelated to trade finance obligations",
+            "lineType": "data",
+            "displayOrder": 188,
+            "weight": 0.05,
+            "weightedLineCode": "71432"
+        },
+        {
+            "lineCode": "21433",
+            "lineName": "Debt-buy back requests (incl related conduits)",
+            "lineType": "data",
+            "displayOrder": 189,
+            "weight": 0.00,
+            "weightedLineCode": "71433"
+        },
+        {
+            "lineCode": "21434",
+            "lineName": "Structured products",
+            "lineType": "data",
+            "displayOrder": 190,
+            "weight": 0.05,
+            "weightedLineCode": "71434"
+        },
+        {
+            "lineCode": "21435",
+            "lineName": "Managed funds",
+            "lineType": "data",
+            "displayOrder": 191,
+            "weight": 0.00,
+            "weightedLineCode": "71435"
+        },
+        {
+            "lineCode": "21436",
+            "lineName": "Other non-contractual obligations",
+            "lineType": "data",
+            "displayOrder": 192,
+            "weight": 0.05,
+            "weightedLineCode": "71436"
+        },
+        {
+            "lineCode": "21437",
+            "lineName": "Outstanding debt securities with remaining maturity > 30 days",
+            "lineType": "data",
+            "displayOrder": 193,
+            "weight": 0.00,
+            "weightedLineCode": "71437"
+        },
+        {
+            "lineCode": "21438",
+            "lineName": "Non contractual obligations where customer short positions are covered by other customersÃ¢â‚¬â„¢ collateral",
+            "lineType": "data",
+            "displayOrder": 194,
+            "weight": 0.50,
+            "weightedLineCode": "71438"
+        },
+        {
+            "lineCode": "21439",
+            "lineName": "Bank outright short positions covered by a collateralised securities financing transaction",
+            "lineType": "data",
+            "displayOrder": 195,
+            "weight": 0.00,
+            "weightedLineCode": "71439"
+        },
+        {
+            "lineCode": "21440",
+            "lineName": "Other contractual cash outflows (including those related to unsecured collateral borrowings and uncovered short positions)",
+            "lineType": "data",
+            "displayOrder": 196,
+            "weight": 1.00,
+            "weightedLineCode": "71440"
+        },
+        {
+            "lineCode": "99024",
+            "lineName": "Total retail deposits run-off",
+            "lineType": "data",
+            "displayOrder": 197,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99025",
+            "lineName": "Total unsecured wholesale funding run-off",
+            "lineType": "data",
+            "displayOrder": 198,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99026",
+            "lineName": "Total secured wholesale funding run-off",
+            "lineType": "data",
+            "displayOrder": 199,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99027",
+            "lineName": "retail, small business customers, non-financials and other clients",
+            "lineType": "data",
+            "displayOrder": 200,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99035",
+            "lineName": "Total contractual obligations to extend funds in excess of 50% roll-over assumption",
+            "lineType": "data",
+            "displayOrder": 201,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99036",
+            "lineName": "Total additional requirements run-off",
+            "lineType": "data",
+            "displayOrder": 202,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99037",
+            "lineName": "Total run-off on other contingent funding obligations",
+            "lineType": "data",
+            "displayOrder": 203,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99038",
+            "lineName": "Total cash outlfows",
+            "lineType": "data",
+            "displayOrder": 204,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H205",
+            "lineName": "2.2. Cash inflows",
+            "lineType": "subsection",
+            "displayOrder": 205,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22101",
+            "lineName": "Transactions involving eligible liquid assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 206,
+            "weight": 0.00,
+            "weightedLineCode": "72101"
+        },
+        {
+            "lineCode": "22102",
+            "lineName": "Inflow item 22102",
+            "lineType": "data",
+            "displayOrder": 207,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22103",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 208,
+            "weight": 0.00,
+            "weightedLineCode": "72103"
+        },
+        {
+            "lineCode": "22104",
+            "lineName": "Inflow item 22104",
+            "lineType": "data",
+            "displayOrder": 209,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22105",
+            "lineName": "Transactions involving eligible liquid assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 210,
+            "weight": 0.15,
+            "weightedLineCode": "72105"
+        },
+        {
+            "lineCode": "22106",
+            "lineName": "Inflow item 22106",
+            "lineType": "data",
+            "displayOrder": 211,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22107",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 212,
+            "weight": 0.15,
+            "weightedLineCode": "72107"
+        },
+        {
+            "lineCode": "22108",
+            "lineName": "Inflow item 22108",
+            "lineType": "data",
+            "displayOrder": 213,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22109",
+            "lineName": "Transactions involving eligible liquid assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 214,
+            "weight": 0.25,
+            "weightedLineCode": "72109"
+        },
+        {
+            "lineCode": "22110",
+            "lineName": "Inflow item 22110",
+            "lineType": "data",
+            "displayOrder": 215,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22111",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 216,
+            "weight": 0.25,
+            "weightedLineCode": "72111"
+        },
+        {
+            "lineCode": "22112",
+            "lineName": "Inflow item 22112",
+            "lineType": "data",
+            "displayOrder": 217,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22113",
+            "lineName": "Transactions involving eligible liquid assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 218,
+            "weight": 0.50,
+            "weightedLineCode": "72113"
+        },
+        {
+            "lineCode": "22114",
+            "lineName": "Inflow item 22114",
+            "lineType": "data",
+            "displayOrder": 219,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22115",
+            "lineName": "Transactions not involving eligible liquid assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 220,
+            "weight": 0.50,
+            "weightedLineCode": "72115"
+        },
+        {
+            "lineCode": "22116",
+            "lineName": "Inflow item 22116",
+            "lineType": "data",
+            "displayOrder": 221,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22117",
+            "lineName": "Margin lending backed by non-Level 1 or non-Level 2 collateral - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 222,
+            "weight": 0.50,
+            "weightedLineCode": "72117"
+        },
+        {
+            "lineCode": "22118",
+            "lineName": "Inflow item 22118",
+            "lineType": "data",
+            "displayOrder": 223,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22119",
+            "lineName": "Transactions backed by other collateral - Amount Extended - Market Value of Received Colllateral",
+            "lineType": "data",
+            "displayOrder": 224,
+            "weight": 1.00,
+            "weightedLineCode": "72119"
+        },
+        {
+            "lineCode": "22120",
+            "lineName": "Inflow item 22120",
+            "lineType": "data",
+            "displayOrder": 225,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22121",
+            "lineName": "Transactions backed by Level 1 assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 226,
+            "weight": 0.00,
+            "weightedLineCode": "72121"
+        },
+        {
+            "lineCode": "22122",
+            "lineName": "Inflow item 22122",
+            "lineType": "data",
+            "displayOrder": 227,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22123",
+            "lineName": "Transactions backed by Level 2A assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 228,
+            "weight": 0.00,
+            "weightedLineCode": "72123"
+        },
+        {
+            "lineCode": "22124",
+            "lineName": "Inflow item 22124",
+            "lineType": "data",
+            "displayOrder": 229,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22125",
+            "lineName": "Transactions backed by Level 2B RMBS assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 230,
+            "weight": 0.00,
+            "weightedLineCode": "72125"
+        },
+        {
+            "lineCode": "22126",
+            "lineName": "Inflow item 22126",
+            "lineType": "data",
+            "displayOrder": 231,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22127",
+            "lineName": "Transactions backed by Level 2B non-RMBS assets - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 232,
+            "weight": 0.00,
+            "weightedLineCode": "72127"
+        },
+        {
+            "lineCode": "22128",
+            "lineName": "Inflow item 22128",
+            "lineType": "data",
+            "displayOrder": 233,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22129",
+            "lineName": "Margin lending backed by non-Level 1 or non-Level 2 collateral - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 234,
+            "weight": 0.00,
+            "weightedLineCode": "72129"
+        },
+        {
+            "lineCode": "22130",
+            "lineName": "Inflow item 22130",
+            "lineType": "data",
+            "displayOrder": 235,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22131",
+            "lineName": "Transactions backed by other collateral - Amount Extended",
+            "lineType": "data",
+            "displayOrder": 236,
+            "weight": 0.00,
+            "weightedLineCode": "72131"
+        },
+        {
+            "lineCode": "22132",
+            "lineName": "Inflow item 22132",
+            "lineType": "data",
+            "displayOrder": 237,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "22201",
+            "lineName": "Retail customers",
+            "lineType": "data",
+            "displayOrder": 238,
+            "weight": 0.50,
+            "weightedLineCode": "72201"
+        },
+        {
+            "lineCode": "22202",
+            "lineName": "Small business customers",
+            "lineType": "data",
+            "displayOrder": 239,
+            "weight": 0.50,
+            "weightedLineCode": "72202"
+        },
+        {
+            "lineCode": "22203",
+            "lineName": "Non-financial corporates",
+            "lineType": "data",
+            "displayOrder": 240,
+            "weight": 0.50,
+            "weightedLineCode": "72203"
+        },
+        {
+            "lineCode": "22204",
+            "lineName": "Central banks",
+            "lineType": "data",
+            "displayOrder": 241,
+            "weight": 1.00,
+            "weightedLineCode": "72204"
+        },
+        {
+            "lineCode": "22205",
+            "lineName": "operational deposits related to clearing activities placed by indirect clearers with an OSFI or provincially-regulated direct clearer",
+            "lineType": "data",
+            "displayOrder": 242,
+            "weight": 0.25,
+            "weightedLineCode": "72205"
+        },
+        {
+            "lineCode": "22206",
+            "lineName": "other operational deposits",
+            "lineType": "data",
+            "displayOrder": 243,
+            "weight": 0.00,
+            "weightedLineCode": "72206"
+        },
+        {
+            "lineCode": "22207",
+            "lineName": "all payments on other loans and deposits due in Ã¢â€°Â¤ 30 days",
+            "lineType": "data",
+            "displayOrder": 244,
+            "weight": 1.00,
+            "weightedLineCode": "72207"
+        },
+        {
+            "lineCode": "22208",
+            "lineName": "Other entities",
+            "lineType": "data",
+            "displayOrder": 245,
+            "weight": 0.50,
+            "weightedLineCode": "72208"
+        },
+        {
+            "lineCode": "22209",
+            "lineName": "Non-operational demand deposits placed by indirect clearers with an OSFI or provincially-regulated direct clearer",
+            "lineType": "data",
+            "displayOrder": 246,
+            "weight": 1.00,
+            "weightedLineCode": "72209"
+        },
+        {
+            "lineCode": "22301",
+            "lineName": "Derivatives cash inflow",
+            "lineType": "data",
+            "displayOrder": 247,
+            "weight": 1.00,
+            "weightedLineCode": "72301"
+        },
+        {
+            "lineCode": "22302",
+            "lineName": "Contractual inflows from securities maturing Ã¢â€°Â¤ 30 days, not included anywhere above",
+            "lineType": "data",
+            "displayOrder": 248,
+            "weight": 1.00,
+            "weightedLineCode": "72302"
+        },
+        {
+            "lineCode": "22303",
+            "lineName": "Other contractual cash inflows",
+            "lineType": "data",
+            "displayOrder": 249,
+            "weight": 1.00,
+            "weightedLineCode": "72303"
+        },
+        {
+            "lineCode": "99039",
+            "lineName": "Is reporting institution an indirect clearer that is not a subsidiary of an OSFI or provincially-regulated direct clearer? (Enter 1 if yes, 0 if no)",
+            "lineType": "data",
+            "displayOrder": 250,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99040",
+            "lineName": "Total inflows on reverse repo and securities borrowing transactions",
+            "lineType": "data",
+            "displayOrder": 251,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99041",
+            "lineName": "Total of other inflows by counterparty",
+            "lineType": "data",
+            "displayOrder": 252,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99042",
+            "lineName": "Total of other cash inflows",
+            "lineType": "data",
+            "displayOrder": 253,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99043",
+            "lineName": "Cap on cash inflows ",
+            "lineType": "data",
+            "displayOrder": 254,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99046",
+            "lineName": "Total cash inflows after applying the cap",
+            "lineType": "data",
+            "displayOrder": 255,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H256",
+            "lineName": "3. Collateral swaps",
+            "lineType": "section",
+            "displayOrder": 256,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H257",
+            "lineName": "3. Collateral swaps",
+            "lineType": "subsection",
+            "displayOrder": 257,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30001",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 258,
+            "weight": 0.00,
+            "weightedLineCode": "80001"
+        },
+        {
+            "lineCode": "30002",
+            "lineName": "Collateral swap item 30002",
+            "lineType": "data",
+            "displayOrder": 259,
+            "weight": 0.00,
+            "weightedLineCode": "80002"
+        },
+        {
+            "lineCode": "30003",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 260,
+            "weight": 0.00,
+            "weightedLineCode": "80003"
+        },
+        {
+            "lineCode": "30004",
+            "lineName": "Collateral swap item 30004",
+            "lineType": "data",
+            "displayOrder": 261,
+            "weight": 0.00,
+            "weightedLineCode": "80004"
+        },
+        {
+            "lineCode": "30005",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 262,
+            "weight": 0.15,
+            "weightedLineCode": "80005"
+        },
+        {
+            "lineCode": "30006",
+            "lineName": "Collateral swap item 30006",
+            "lineType": "data",
+            "displayOrder": 263,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30007",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 264,
+            "weight": 0.15,
+            "weightedLineCode": "80007"
+        },
+        {
+            "lineCode": "30008",
+            "lineName": "Collateral swap item 30008",
+            "lineType": "data",
+            "displayOrder": 265,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30009",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 266,
+            "weight": 0.25,
+            "weightedLineCode": "80009"
+        },
+        {
+            "lineCode": "30010",
+            "lineName": "Collateral swap item 30010",
+            "lineType": "data",
+            "displayOrder": 267,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30011",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 268,
+            "weight": 0.25,
+            "weightedLineCode": "80011"
+        },
+        {
+            "lineCode": "30012",
+            "lineName": "Collateral swap item 30012",
+            "lineType": "data",
+            "displayOrder": 269,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30013",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 270,
+            "weight": 0.50,
+            "weightedLineCode": "80013"
+        },
+        {
+            "lineCode": "30014",
+            "lineName": "Collateral swap item 30014",
+            "lineType": "data",
+            "displayOrder": 271,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30015",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 272,
+            "weight": 0.50,
+            "weightedLineCode": "80015"
+        },
+        {
+            "lineCode": "30016",
+            "lineName": "Collateral swap item 30016",
+            "lineType": "data",
+            "displayOrder": 273,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30017",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 274,
+            "weight": 1.00,
+            "weightedLineCode": "80017"
+        },
+        {
+            "lineCode": "30018",
+            "lineName": "Collateral swap item 30018",
+            "lineType": "data",
+            "displayOrder": 275,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30019",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 276,
+            "weight": 1.00,
+            "weightedLineCode": "80019"
+        },
+        {
+            "lineCode": "30020",
+            "lineName": "Collateral swap item 30020",
+            "lineType": "data",
+            "displayOrder": 277,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30021",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 278,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30022",
+            "lineName": "Collateral swap item 30022",
+            "lineType": "data",
+            "displayOrder": 279,
+            "weight": 0.15,
+            "weightedLineCode": "80022"
+        },
+        {
+            "lineCode": "30023",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 280,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30024",
+            "lineName": "Collateral swap item 30024",
+            "lineType": "data",
+            "displayOrder": 281,
+            "weight": 0.15,
+            "weightedLineCode": "80024"
+        },
+        {
+            "lineCode": "30025",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 282,
+            "weight": 0.00,
+            "weightedLineCode": "80025"
+        },
+        {
+            "lineCode": "30026",
+            "lineName": "Collateral swap item 30026",
+            "lineType": "data",
+            "displayOrder": 283,
+            "weight": 0.00,
+            "weightedLineCode": "80026"
+        },
+        {
+            "lineCode": "30027",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 284,
+            "weight": 0.00,
+            "weightedLineCode": "80027"
+        },
+        {
+            "lineCode": "30028",
+            "lineName": "Collateral swap item 30028",
+            "lineType": "data",
+            "displayOrder": 285,
+            "weight": 0.00,
+            "weightedLineCode": "80028"
+        },
+        {
+            "lineCode": "30029",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 286,
+            "weight": 0.10,
+            "weightedLineCode": "80029"
+        },
+        {
+            "lineCode": "30030",
+            "lineName": "Collateral swap item 30030",
+            "lineType": "data",
+            "displayOrder": 287,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30031",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 288,
+            "weight": 0.10,
+            "weightedLineCode": "80031"
+        },
+        {
+            "lineCode": "30032",
+            "lineName": "Collateral swap item 30032",
+            "lineType": "data",
+            "displayOrder": 289,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30033",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 290,
+            "weight": 0.35,
+            "weightedLineCode": "80033"
+        },
+        {
+            "lineCode": "30034",
+            "lineName": "Collateral swap item 30034",
+            "lineType": "data",
+            "displayOrder": 291,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30035",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 292,
+            "weight": 0.35,
+            "weightedLineCode": "80035"
+        },
+        {
+            "lineCode": "30036",
+            "lineName": "Collateral swap item 30036",
+            "lineType": "data",
+            "displayOrder": 293,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30037",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 294,
+            "weight": 0.85,
+            "weightedLineCode": "80037"
+        },
+        {
+            "lineCode": "30038",
+            "lineName": "Collateral swap item 30038",
+            "lineType": "data",
+            "displayOrder": 295,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30039",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 296,
+            "weight": 0.85,
+            "weightedLineCode": "80039"
+        },
+        {
+            "lineCode": "30040",
+            "lineName": "Collateral swap item 30040",
+            "lineType": "data",
+            "displayOrder": 297,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30041",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 298,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30042",
+            "lineName": "Collateral swap item 30042",
+            "lineType": "data",
+            "displayOrder": 299,
+            "weight": 0.25,
+            "weightedLineCode": "80042"
+        },
+        {
+            "lineCode": "30043",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 300,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30044",
+            "lineName": "Collateral swap item 30044",
+            "lineType": "data",
+            "displayOrder": 301,
+            "weight": 0.25,
+            "weightedLineCode": "80044"
+        },
+        {
+            "lineCode": "30045",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 302,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30046",
+            "lineName": "Collateral swap item 30046",
+            "lineType": "data",
+            "displayOrder": 303,
+            "weight": 0.10,
+            "weightedLineCode": "80046"
+        },
+        {
+            "lineCode": "30047",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 304,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30048",
+            "lineName": "Collateral swap item 30048",
+            "lineType": "data",
+            "displayOrder": 305,
+            "weight": 0.10,
+            "weightedLineCode": "80048"
+        },
+        {
+            "lineCode": "30049",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 306,
+            "weight": 0.00,
+            "weightedLineCode": "80049"
+        },
+        {
+            "lineCode": "30050",
+            "lineName": "Collateral swap item 30050",
+            "lineType": "data",
+            "displayOrder": 307,
+            "weight": 0.00,
+            "weightedLineCode": "80050"
+        },
+        {
+            "lineCode": "30051",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 308,
+            "weight": 0.00,
+            "weightedLineCode": "80051"
+        },
+        {
+            "lineCode": "30052",
+            "lineName": "Collateral swap item 30052",
+            "lineType": "data",
+            "displayOrder": 309,
+            "weight": 0.00,
+            "weightedLineCode": "80052"
+        },
+        {
+            "lineCode": "30053",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 310,
+            "weight": 0.25,
+            "weightedLineCode": "80053"
+        },
+        {
+            "lineCode": "30054",
+            "lineName": "Collateral swap item 30054",
+            "lineType": "data",
+            "displayOrder": 311,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30055",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 312,
+            "weight": 0.25,
+            "weightedLineCode": "80055"
+        },
+        {
+            "lineCode": "30056",
+            "lineName": "Collateral swap item 30056",
+            "lineType": "data",
+            "displayOrder": 313,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30057",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 314,
+            "weight": 0.75,
+            "weightedLineCode": "80057"
+        },
+        {
+            "lineCode": "30058",
+            "lineName": "Collateral swap item 30058",
+            "lineType": "data",
+            "displayOrder": 315,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30059",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 316,
+            "weight": 0.75,
+            "weightedLineCode": "80059"
+        },
+        {
+            "lineCode": "30060",
+            "lineName": "Collateral swap item 30060",
+            "lineType": "data",
+            "displayOrder": 317,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30061",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 318,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30062",
+            "lineName": "Collateral swap item 30062",
+            "lineType": "data",
+            "displayOrder": 319,
+            "weight": 0.50,
+            "weightedLineCode": "80062"
+        },
+        {
+            "lineCode": "30063",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 320,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30064",
+            "lineName": "Collateral swap item 30064",
+            "lineType": "data",
+            "displayOrder": 321,
+            "weight": 0.50,
+            "weightedLineCode": "80064"
+        },
+        {
+            "lineCode": "30065",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 322,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30066",
+            "lineName": "Collateral swap item 30066",
+            "lineType": "data",
+            "displayOrder": 323,
+            "weight": 0.35,
+            "weightedLineCode": "80066"
+        },
+        {
+            "lineCode": "30067",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 324,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30068",
+            "lineName": "Collateral swap item 30068",
+            "lineType": "data",
+            "displayOrder": 325,
+            "weight": 0.35,
+            "weightedLineCode": "80068"
+        },
+        {
+            "lineCode": "30069",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 326,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30070",
+            "lineName": "Collateral swap item 30070",
+            "lineType": "data",
+            "displayOrder": 327,
+            "weight": 0.25,
+            "weightedLineCode": "80070"
+        },
+        {
+            "lineCode": "30071",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 328,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30072",
+            "lineName": "Collateral swap item 30072",
+            "lineType": "data",
+            "displayOrder": 329,
+            "weight": 0.25,
+            "weightedLineCode": "80072"
+        },
+        {
+            "lineCode": "30073",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 330,
+            "weight": 0.00,
+            "weightedLineCode": "80073"
+        },
+        {
+            "lineCode": "30074",
+            "lineName": "Collateral swap item 30074",
+            "lineType": "data",
+            "displayOrder": 331,
+            "weight": 0.00,
+            "weightedLineCode": "80074"
+        },
+        {
+            "lineCode": "30075",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 332,
+            "weight": 0.00,
+            "weightedLineCode": "80075"
+        },
+        {
+            "lineCode": "30076",
+            "lineName": "Collateral swap item 30076",
+            "lineType": "data",
+            "displayOrder": 333,
+            "weight": 0.00,
+            "weightedLineCode": "80076"
+        },
+        {
+            "lineCode": "30077",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 334,
+            "weight": 0.50,
+            "weightedLineCode": "80077"
+        },
+        {
+            "lineCode": "30078",
+            "lineName": "Collateral swap item 30078",
+            "lineType": "data",
+            "displayOrder": 335,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30079",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 336,
+            "weight": 0.50,
+            "weightedLineCode": "80079"
+        },
+        {
+            "lineCode": "30080",
+            "lineName": "Collateral swap item 30080",
+            "lineType": "data",
+            "displayOrder": 337,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30081",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 338,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30082",
+            "lineName": "Collateral swap item 30082",
+            "lineType": "data",
+            "displayOrder": 339,
+            "weight": 1.00,
+            "weightedLineCode": "80082"
+        },
+        {
+            "lineCode": "30083",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 340,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30084",
+            "lineName": "Collateral swap item 30084",
+            "lineType": "data",
+            "displayOrder": 341,
+            "weight": 1.00,
+            "weightedLineCode": "80084"
+        },
+        {
+            "lineCode": "30085",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 342,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30086",
+            "lineName": "Collateral swap item 30086",
+            "lineType": "data",
+            "displayOrder": 343,
+            "weight": 0.85,
+            "weightedLineCode": "80086"
+        },
+        {
+            "lineCode": "30087",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 344,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30088",
+            "lineName": "Collateral swap item 30088",
+            "lineType": "data",
+            "displayOrder": 345,
+            "weight": 0.85,
+            "weightedLineCode": "80088"
+        },
+        {
+            "lineCode": "30089",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 346,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30090",
+            "lineName": "Collateral swap item 30090",
+            "lineType": "data",
+            "displayOrder": 347,
+            "weight": 0.75,
+            "weightedLineCode": "80090"
+        },
+        {
+            "lineCode": "30091",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 348,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30092",
+            "lineName": "Collateral swap item 30092",
+            "lineType": "data",
+            "displayOrder": 349,
+            "weight": 0.75,
+            "weightedLineCode": "80092"
+        },
+        {
+            "lineCode": "30093",
+            "lineName": "Involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 350,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30094",
+            "lineName": "Collateral swap item 30094",
+            "lineType": "data",
+            "displayOrder": 351,
+            "weight": 0.50,
+            "weightedLineCode": "80094"
+        },
+        {
+            "lineCode": "30095",
+            "lineName": "Not involving eligible liquid assets",
+            "lineType": "data",
+            "displayOrder": 352,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30096",
+            "lineName": "Collateral swap item 30096",
+            "lineType": "data",
+            "displayOrder": 353,
+            "weight": 0.50,
+            "weightedLineCode": "80096"
+        },
+        {
+            "lineCode": "30097",
+            "lineName": "Other assets are lent and other assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 354,
+            "weight": 0.00,
+            "weightedLineCode": "80097"
+        },
+        {
+            "lineCode": "30098",
+            "lineName": "Collateral swap item 30098",
+            "lineType": "data",
+            "displayOrder": 355,
+            "weight": 0.00,
+            "weightedLineCode": "80098"
+        },
+        {
+            "lineCode": "30099",
+            "lineName": "Level 1 assets are lent and Level 1 assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 356,
+            "weight": 0.00,
+            "weightedLineCode": "80099"
+        },
+        {
+            "lineCode": "30100",
+            "lineName": "Collateral swap item 30100",
+            "lineType": "data",
+            "displayOrder": 357,
+            "weight": 0.00,
+            "weightedLineCode": "80100"
+        },
+        {
+            "lineCode": "30101",
+            "lineName": "Level 1 assets are lent and Level 2A assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 358,
+            "weight": 0.00,
+            "weightedLineCode": "80101"
+        },
+        {
+            "lineCode": "30102",
+            "lineName": "Collateral swap item 30102",
+            "lineType": "data",
+            "displayOrder": 359,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30103",
+            "lineName": "Level 1 assets are lent and Level 2B RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 360,
+            "weight": 0.00,
+            "weightedLineCode": "80103"
+        },
+        {
+            "lineCode": "30104",
+            "lineName": "Collateral swap item 30104",
+            "lineType": "data",
+            "displayOrder": 361,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30105",
+            "lineName": "Level 1 assets are lent and Level 2B non-RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 362,
+            "weight": 0.00,
+            "weightedLineCode": "80105"
+        },
+        {
+            "lineCode": "30106",
+            "lineName": "Collateral swap item 30106",
+            "lineType": "data",
+            "displayOrder": 363,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30107",
+            "lineName": "Level 1 assets are lent and other assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 364,
+            "weight": 0.00,
+            "weightedLineCode": "80107"
+        },
+        {
+            "lineCode": "30108",
+            "lineName": "Collateral swap item 30108",
+            "lineType": "data",
+            "displayOrder": 365,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30109",
+            "lineName": "Level 2A assets are lent and Level 1 assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 366,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30110",
+            "lineName": "Collateral swap item 30110",
+            "lineType": "data",
+            "displayOrder": 367,
+            "weight": 0.15,
+            "weightedLineCode": "80110"
+        },
+        {
+            "lineCode": "30111",
+            "lineName": "Level 2A assets are lent and Level 2A assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 368,
+            "weight": 0.00,
+            "weightedLineCode": "80111"
+        },
+        {
+            "lineCode": "30112",
+            "lineName": "Collateral swap item 30112",
+            "lineType": "data",
+            "displayOrder": 369,
+            "weight": 0.00,
+            "weightedLineCode": "80112"
+        },
+        {
+            "lineCode": "30113",
+            "lineName": "Level 2A assets are lent and Level 2B RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 370,
+            "weight": 0.00,
+            "weightedLineCode": "80113"
+        },
+        {
+            "lineCode": "30114",
+            "lineName": "Collateral swap item 30114",
+            "lineType": "data",
+            "displayOrder": 371,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30115",
+            "lineName": "Level 2A assets are lent and Level 2B non-RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 372,
+            "weight": 0.00,
+            "weightedLineCode": "80115"
+        },
+        {
+            "lineCode": "30116",
+            "lineName": "Collateral swap item 30116",
+            "lineType": "data",
+            "displayOrder": 373,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30117",
+            "lineName": "Level 2A assets are lent and other assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 374,
+            "weight": 0.00,
+            "weightedLineCode": "80117"
+        },
+        {
+            "lineCode": "30118",
+            "lineName": "Collateral swap item 30118",
+            "lineType": "data",
+            "displayOrder": 375,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30119",
+            "lineName": "Level 2B RMBS assets are lent and Level 1 assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 376,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30120",
+            "lineName": "Collateral swap item 30120",
+            "lineType": "data",
+            "displayOrder": 377,
+            "weight": 0.25,
+            "weightedLineCode": "80120"
+        },
+        {
+            "lineCode": "30121",
+            "lineName": "Level 2B RMBS assets are lent and Level 2A assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 378,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30122",
+            "lineName": "Collateral swap item 30122",
+            "lineType": "data",
+            "displayOrder": 379,
+            "weight": 0.10,
+            "weightedLineCode": "80122"
+        },
+        {
+            "lineCode": "30123",
+            "lineName": "Level 2B RMBS assets are lent and Level 2B RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 380,
+            "weight": 0.00,
+            "weightedLineCode": "80123"
+        },
+        {
+            "lineCode": "30124",
+            "lineName": "Collateral swap item 30124",
+            "lineType": "data",
+            "displayOrder": 381,
+            "weight": 0.00,
+            "weightedLineCode": "80124"
+        },
+        {
+            "lineCode": "30125",
+            "lineName": "Level 2B RMBS assets are lent and Level 2B non-RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 382,
+            "weight": 0.00,
+            "weightedLineCode": "80125"
+        },
+        {
+            "lineCode": "30126",
+            "lineName": "Collateral swap item 30126",
+            "lineType": "data",
+            "displayOrder": 383,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30127",
+            "lineName": "Level 2B RMBS assets are lent and other assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 384,
+            "weight": 0.00,
+            "weightedLineCode": "80127"
+        },
+        {
+            "lineCode": "30128",
+            "lineName": "Collateral swap item 30128",
+            "lineType": "data",
+            "displayOrder": 385,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30129",
+            "lineName": "Level 2B non-RMBS assets are lent and Level 1 assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 386,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30130",
+            "lineName": "Collateral swap item 30130",
+            "lineType": "data",
+            "displayOrder": 387,
+            "weight": 0.50,
+            "weightedLineCode": "80130"
+        },
+        {
+            "lineCode": "30131",
+            "lineName": "Level 2B non-RMBS assets are lent and Level 2A assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 388,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30132",
+            "lineName": "Collateral swap item 30132",
+            "lineType": "data",
+            "displayOrder": 389,
+            "weight": 0.35,
+            "weightedLineCode": "80132"
+        },
+        {
+            "lineCode": "30133",
+            "lineName": "Level 2B non-RMBS assets are lent and Level 2B RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 390,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30134",
+            "lineName": "Collateral swap item 30134",
+            "lineType": "data",
+            "displayOrder": 391,
+            "weight": 0.25,
+            "weightedLineCode": "80134"
+        },
+        {
+            "lineCode": "30135",
+            "lineName": "Level 2B non-RMBS assets are lent and Level 2B non-RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 392,
+            "weight": 0.00,
+            "weightedLineCode": "80135"
+        },
+        {
+            "lineCode": "30136",
+            "lineName": "Collateral swap item 30136",
+            "lineType": "data",
+            "displayOrder": 393,
+            "weight": 0.00,
+            "weightedLineCode": "80136"
+        },
+        {
+            "lineCode": "30137",
+            "lineName": "Level 2B non-RMBS assets are lent and other assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 394,
+            "weight": 0.00,
+            "weightedLineCode": "80137"
+        },
+        {
+            "lineCode": "30138",
+            "lineName": "Collateral swap item 30138",
+            "lineType": "data",
+            "displayOrder": 395,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30139",
+            "lineName": "Other assets are lent and Level 1 assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 396,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30140",
+            "lineName": "Collateral swap item 30140",
+            "lineType": "data",
+            "displayOrder": 397,
+            "weight": 1.00,
+            "weightedLineCode": "80140"
+        },
+        {
+            "lineCode": "30141",
+            "lineName": "Other assets are lent and Level 2A assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 398,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30142",
+            "lineName": "Collateral swap item 30142",
+            "lineType": "data",
+            "displayOrder": 399,
+            "weight": 0.85,
+            "weightedLineCode": "80142"
+        },
+        {
+            "lineCode": "30143",
+            "lineName": "Other assets are lent and Level 2B RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 400,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30144",
+            "lineName": "Collateral swap item 30144",
+            "lineType": "data",
+            "displayOrder": 401,
+            "weight": 0.75,
+            "weightedLineCode": "80144"
+        },
+        {
+            "lineCode": "30145",
+            "lineName": "Other assets are lent and Level 2B non-RMBS assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 402,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "30146",
+            "lineName": "Collateral swap item 30146",
+            "lineType": "data",
+            "displayOrder": 403,
+            "weight": 0.50,
+            "weightedLineCode": "80146"
+        },
+        {
+            "lineCode": "30147",
+            "lineName": "Other assets are lent and other assets are borrowed",
+            "lineType": "data",
+            "displayOrder": 404,
+            "weight": 0.00,
+            "weightedLineCode": "80147"
+        },
+        {
+            "lineCode": "30148",
+            "lineName": "Collateral swap item 30148",
+            "lineType": "data",
+            "displayOrder": 405,
+            "weight": 0.00,
+            "weightedLineCode": "80148"
+        },
+        {
+            "lineCode": "99047",
+            "lineName": "Total outflows and total inflows from collateral swaps",
+            "lineType": "data",
+            "displayOrder": 406,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H407",
+            "lineName": "4. LCR",
+            "lineType": "section",
+            "displayOrder": 407,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H408",
+            "lineName": "4. LCR",
+            "lineType": "subsection",
+            "displayOrder": 408,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "91108",
+            "lineName": "LCR item 91108",
+            "lineType": "data",
+            "displayOrder": 409,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "91116",
+            "lineName": "LCR item 91116",
+            "lineType": "data",
+            "displayOrder": 410,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99057",
+            "lineName": "Total stock of high quality liquid assets",
+            "lineType": "data",
+            "displayOrder": 411,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99058",
+            "lineName": "Net cash outflows",
+            "lineType": "data",
+            "displayOrder": 412,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99059",
+            "lineName": "LCR",
+            "lineType": "data",
+            "displayOrder": 413,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99061",
+            "lineName": "Total of high quality liquid assets and eligible non-operational demand deposits",
+            "lineType": "data",
+            "displayOrder": 414,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H415",
+            "lineName": "5. Supplemental Information",
+            "lineType": "section",
+            "displayOrder": 415,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H416",
+            "lineName": "5. Supplemental Information",
+            "lineType": "subsection",
+            "displayOrder": 416,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "50001",
+            "lineName": "Amount related to third-party issued NHA-MBS",
+            "lineType": "data",
+            "displayOrder": 417,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "50002",
+            "lineName": "Amount related to pooled and unsold NHA-MBS",
+            "lineType": "data",
+            "displayOrder": 418,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "50003",
+            "lineName": "Amount related to Canada Mortgage Bonds",
+            "lineType": "data",
+            "displayOrder": 419,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "52001",
+            "lineName": "Host requirement outflow of 10%",
+            "lineType": "data",
+            "displayOrder": 420,
+            "weight": 0.10,
+            "weightedLineCode": "91101"
+        },
+        {
+            "lineCode": "52002",
+            "lineName": "Host requirement outflow of 15%",
+            "lineType": "data",
+            "displayOrder": 421,
+            "weight": 0.15,
+            "weightedLineCode": "91102"
+        },
+        {
+            "lineCode": "52003",
+            "lineName": "Host requirement outflow of 20%",
+            "lineType": "data",
+            "displayOrder": 422,
+            "weight": 0.20,
+            "weightedLineCode": "91103"
+        },
+        {
+            "lineCode": "52004",
+            "lineName": "Host requirement outflow of 25%",
+            "lineType": "data",
+            "displayOrder": 423,
+            "weight": 0.25,
+            "weightedLineCode": "91104"
+        },
+        {
+            "lineCode": "52005",
+            "lineName": "Host requirement outflow of 30%",
+            "lineType": "data",
+            "displayOrder": 424,
+            "weight": 0.30,
+            "weightedLineCode": "91105"
+        },
+        {
+            "lineCode": "52006",
+            "lineName": "Host requirement outflow of 40%",
+            "lineType": "data",
+            "displayOrder": 425,
+            "weight": 0.40,
+            "weightedLineCode": "91106"
+        },
+        {
+            "lineCode": "52007",
+            "lineName": "Host requirement outflow of 100%",
+            "lineType": "data",
+            "displayOrder": 426,
+            "weight": 1.00,
+            "weightedLineCode": "91107"
+        },
+        {
+            "lineCode": "52008",
+            "lineName": "Other host requirements",
+            "lineType": "data",
+            "displayOrder": 427,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "52009",
+            "lineName": "Host requirement outflow of 10%",
+            "lineType": "data",
+            "displayOrder": 428,
+            "weight": 0.10,
+            "weightedLineCode": "91109"
+        },
+        {
+            "lineCode": "52010",
+            "lineName": "Host requirement outflow of 15%",
+            "lineType": "data",
+            "displayOrder": 429,
+            "weight": 0.15,
+            "weightedLineCode": "91110"
+        },
+        {
+            "lineCode": "52011",
+            "lineName": "Host requirement outflow of 20%",
+            "lineType": "data",
+            "displayOrder": 430,
+            "weight": 0.20,
+            "weightedLineCode": "91111"
+        },
+        {
+            "lineCode": "52012",
+            "lineName": "Host requirement outflow of 25%",
+            "lineType": "data",
+            "displayOrder": 431,
+            "weight": 0.25,
+            "weightedLineCode": "91112"
+        },
+        {
+            "lineCode": "52013",
+            "lineName": "Host requirement outflow of 30%",
+            "lineType": "data",
+            "displayOrder": 432,
+            "weight": 0.30,
+            "weightedLineCode": "91113"
+        },
+        {
+            "lineCode": "52014",
+            "lineName": "Host requirement outflow of 40%",
+            "lineType": "data",
+            "displayOrder": 433,
+            "weight": 0.40,
+            "weightedLineCode": "91114"
+        },
+        {
+            "lineCode": "52015",
+            "lineName": "Host requirement outflow of 100%",
+            "lineType": "data",
+            "displayOrder": 434,
+            "weight": 1.00,
+            "weightedLineCode": "91115"
+        },
+        {
+            "lineCode": "52016",
+            "lineName": "Other host requirements",
+            "lineType": "data",
+            "displayOrder": 435,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99100",
+            "lineName": "Total retail deposits in host jurisdictions ",
+            "lineType": "data",
+            "displayOrder": 436,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99102",
+            "lineName": "Total small business deposits in host jurisdictions ",
+            "lineType": "data",
+            "displayOrder": 437,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H438",
+            "lineName": "Totals",
+            "lineType": "section",
+            "displayOrder": 438,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "H439",
+            "lineName": "Totals",
+            "lineType": "subsection",
+            "displayOrder": 439,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99016",
+            "lineName": "Calculated total 99016",
+            "lineType": "data",
+            "displayOrder": 440,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99021",
+            "lineName": "Calculated total 99021",
+            "lineType": "data",
+            "displayOrder": 441,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99022",
+            "lineName": "Calculated total 99022",
+            "lineType": "data",
+            "displayOrder": 442,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99028",
+            "lineName": "Calculated total 99028",
+            "lineType": "data",
+            "displayOrder": 443,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99029",
+            "lineName": "Calculated total 99029",
+            "lineType": "data",
+            "displayOrder": 444,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99030",
+            "lineName": "Calculated total 99030",
+            "lineType": "data",
+            "displayOrder": 445,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99031",
+            "lineName": "Calculated total 99031",
+            "lineType": "data",
+            "displayOrder": 446,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99032",
+            "lineName": "Calculated total 99032",
+            "lineType": "data",
+            "displayOrder": 447,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99033",
+            "lineName": "Calculated total 99033",
+            "lineType": "data",
+            "displayOrder": 448,
+            "weight": null,
+            "weightedLineCode": null
+        },
+        {
+            "lineCode": "99044",
+            "lineName": "Calculated total 99044",
+            "lineType": "data",
+            "displayOrder": 449,
+            "weight": null,
+            "weightedLineCode": null
+        }
     ]
 }

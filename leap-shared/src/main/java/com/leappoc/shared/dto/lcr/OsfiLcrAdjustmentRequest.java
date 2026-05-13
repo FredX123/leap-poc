@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public class OsfiLcrAdjustmentRequest {
 
     private Integer calcId;
-    private Long lineId;
+    private String lineCode;
     private String currency;
     private BigDecimal adjustmentValue;
     private String comment;
@@ -13,8 +13,8 @@ public class OsfiLcrAdjustmentRequest {
     public Integer getCalcId() { return calcId; }
     public void setCalcId(Integer calcId) { this.calcId = calcId; }
 
-    public Long getLineId() { return lineId; }
-    public void setLineId(Long lineId) { this.lineId = lineId; }
+    public String getLineCode() { return lineCode; }
+    public void setLineCode(String lineCode) { this.lineCode = lineCode; }
 
     public String getCurrency() { return currency; }
     public void setCurrency(String currency) { this.currency = currency; }
